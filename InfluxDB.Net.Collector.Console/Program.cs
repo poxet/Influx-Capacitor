@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using InfluxDB.Net.Models;
 
 namespace InfluxDB.Net.Collector.Console
 {
@@ -28,8 +30,33 @@ namespace InfluxDB.Net.Collector.Console
             var version = _client.VersionAsync().Result;
             System.Console.WriteLine("Version: {0}", version);
 
-            System.Console.WriteLine("Press any key to exit...");
+            var processorCounter = GetPerformanceCounter();
+            System.Threading.Thread.Sleep(100);
+
+            var result = RegisterCounterValue(processorCounter);
+            System.Console.WriteLine(result.StatusCode);
+
+            System.Console.WriteLine("Press enter to exit...");
             System.Console.ReadKey();
+        }
+
+        private static InfluxDbApiResponse RegisterCounterValue(PerformanceCounter processorCounter)
+        {
+            var data = processorCounter.NextValue();
+            System.Console.WriteLine("Processor value: {0}%", data);
+            var serie = new Serie.Builder("Processor")
+                .Columns("Total")
+                .Values(data)
+                .Build();
+            var result = _client.WriteAsync("QTest", TimeUnit.Milliseconds, serie);
+            return result.Result;
+        }
+
+        private static PerformanceCounter GetPerformanceCounter()
+        {
+            var processorCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            processorCounter.NextValue();
+            return processorCounter;
         }
     }
 }
