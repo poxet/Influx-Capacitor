@@ -1,3 +1,5 @@
+using System;
+
 namespace InfluxDB.Net.Collector.Entities
 {
     public class DatabaseConfig
@@ -9,6 +11,11 @@ namespace InfluxDB.Net.Collector.Entities
 
         public DatabaseConfig(string url, string username, string password, string name)
         {
+            if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url", "No url provided.");
+            if (string.IsNullOrEmpty(username)) throw new ArgumentNullException("username", "No username provided.");
+            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("password", "No password provided.");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name", "No name provided.");
+
             _url = url;
             _username = username;
             _password = password;

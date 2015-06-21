@@ -79,10 +79,10 @@ namespace InfluxDB.Net.Collector.Business
 
         private static string GetString(XmlElement element, string name)
         {
-            var value = element.Attributes.GetNamedItem(name).Value;
-            if (string.IsNullOrEmpty(value))
+            var attr = element.Attributes.GetNamedItem(name);
+            if (attr == null || string.IsNullOrEmpty(attr.Value))
                 throw new InvalidOperationException(string.Format("No {0} attribute specified for the CounterGroup.", name));
-            return value;
+            return attr.Value;
         }
 
         private static int GetInt(XmlElement element, string name)
@@ -133,23 +133,15 @@ namespace InfluxDB.Net.Collector.Business
                 {
                     case "Url":
                         url = item.InnerText;
-                        if (string.IsNullOrEmpty(url))
-                            throw new InvalidOperationException("There is no url provided in the configuration file.");
                         break;
                     case "Username":
                         username = item.InnerText;
-                        if (string.IsNullOrEmpty(username))
-                            throw new InvalidOperationException("There is no username provided in the configuration file.");
                         break;
                     case "Password":
                         password = item.InnerText;
-                        if (string.IsNullOrEmpty(password))
-                            throw new InvalidOperationException("There is no password provided in the configuration file.");
                         break;
                     case "Name":
                         name = item.InnerText;
-                        if (string.IsNullOrEmpty(name))
-                            throw new InvalidOperationException("There is no name provided in the configuration file.");
                         break;
                 }
             }
