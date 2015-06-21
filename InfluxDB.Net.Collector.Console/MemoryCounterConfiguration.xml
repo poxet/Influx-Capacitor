@@ -1,6 +1,6 @@
 ﻿<InfluxDB.Net.Collector>
   <CounterGroups>
-    <CounterGroup Name="Memory">
+    <CounterGroup Name="Memory" SecondsInterval="10">
       <Counter>
         <CategoryName>Paging File</CategoryName>
         <CounterName>% Usage</CounterName>

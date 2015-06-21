@@ -19,7 +19,7 @@ namespace InfluxDB.Net.Collector.Console.Business
                     performanceCounters.Add(GetPerformanceCounter(counter.CategoryName, counter.CounterName, counter.InstanceName));
                 }
 
-                var performanceCounterGroup = new PerformanceCounterGroup(group.Name, performanceCounters);
+                var performanceCounterGroup = new PerformanceCounterGroup(group.Name, group.SecondsInterval, performanceCounters);
                 counterGroups.Add(performanceCounterGroup);
             }
 

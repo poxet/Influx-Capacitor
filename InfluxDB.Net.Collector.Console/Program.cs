@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using InfluxDB.Net.Collector.Console.Business;
+﻿using InfluxDB.Net.Collector.Console.Business;
 using InfluxDB.Net.Collector.Console.Entities;
-using InfluxDB.Net.Models;
 
 namespace InfluxDB.Net.Collector.Console
 {
@@ -30,34 +26,12 @@ namespace InfluxDB.Net.Collector.Console
 
             foreach (var counterGroup in counterGroups)
             {
-                RegisterCounterValues(counterGroup.Name, counterGroup.PerformanceCounters);
+                var engine = new CollectorEngine(_client, _config.Database.Name, counterGroup);
+                engine.Start();
             }
 
             System.Console.WriteLine("Press enter to exit...");
             System.Console.ReadKey();
-        }
-
-        private static InfluxDbApiResponse RegisterCounterValues(string name, IEnumerable<PerformanceCounter> processorCounters)
-        {
-            var columnNames = new List<string>();
-            var datas = new List<object>();
-
-            foreach (var processorCounter in processorCounters)
-            {
-                var data = processorCounter.NextValue();
-
-                columnNames.Add(processorCounter.InstanceName);
-                datas.Add(data);
-
-                System.Console.WriteLine("{0} {1}: {2}", processorCounter.CounterName, processorCounter.InstanceName, data);
-            }
-
-            var serie = new Serie.Builder(name)
-                .Columns(columnNames.Select(x => name + x).ToArray())
-                .Values(datas.ToArray())
-                .Build();
-            var result = _client.WriteAsync(_config.Database.Name, TimeUnit.Milliseconds, serie);
-            return result.Result;
         }
     }
 }

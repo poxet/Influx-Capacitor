@@ -53,9 +53,8 @@ namespace InfluxDB.Net.Collector.Console.Business
 
         private CounterGroup GetCounterGroup(XmlElement counterGroup)
         {
-            var name = counterGroup.Attributes.GetNamedItem("Name").Value;
-            if (string.IsNullOrEmpty(name))
-                throw new InvalidOperationException("No name attribute specified for the CounterGroup.");
+            var name = GetString(counterGroup, "Name");
+            var secondsInterval = GetInt(counterGroup, "SecondsInterval");
 
             var counters = counterGroup.GetElementsByTagName("Counter");
             var cts = new List<Counter>();
@@ -63,7 +62,24 @@ namespace InfluxDB.Net.Collector.Console.Business
             {
                 cts.Add(GetCounter(counter));
             }
-            return new CounterGroup(name, cts);
+            return new CounterGroup(name, secondsInterval, cts);
+        }
+
+        private static string GetString(XmlElement element, string name)
+        {
+            var value = element.Attributes.GetNamedItem(name).Value;
+            if (string.IsNullOrEmpty(value))
+                throw new InvalidOperationException(string.Format("No {0} attribute specified for the CounterGroup.", name));
+            return value;
+        }
+
+        private static int GetInt(XmlElement element, string name)
+        {
+            var stringValue = GetString(element, name);
+            int value;
+            if (!int.TryParse(stringValue, out value))
+                throw new InvalidOperationException(string.Format("Cannot parse attribute {0} value to integer.", name));
+            return value;
         }
 
         private Counter GetCounter(XmlElement counter)
