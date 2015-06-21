@@ -32,17 +32,10 @@ namespace InfluxDB.Net.Collector.Console
             var version = _client.VersionAsync().Result;
             System.Console.WriteLine("Version: {0}", version);
 
-            var processorCounters = new List<PerformanceCounter>
-            {
-                GetPerformanceCounter("Processor", "% Processor Time", "_Total"),
-                GetPerformanceCounter("Processor", "% Processor Time", "0"),
-                GetPerformanceCounter("Processor", "% Processor Time", "1"),
-                GetPerformanceCounter("Processor", "% Processor Time", "2"),
-                GetPerformanceCounter("Processor", "% Processor Time", "3"),
-            };
-            Thread.Sleep(100);
+            var counterBusiness = new CounterBusiness();
+            var counterGroups = counterBusiness.GetPerformanceCounterGroups(_config).ToArray();
 
-            RegisterCounterValues("Processor", processorCounters);
+            RegisterCounterValues("Processor", counterGroups.First());
 
             System.Console.WriteLine("Press enter to exit...");
             System.Console.ReadKey();
@@ -69,13 +62,6 @@ namespace InfluxDB.Net.Collector.Console
                 .Build();
             var result = _client.WriteAsync(_config.Database.Name, TimeUnit.Milliseconds, serie);
             return result.Result;
-        }
-
-        private static PerformanceCounter GetPerformanceCounter(string categoryName, string counterName, string instanceName)
-        {
-            var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName);
-            processorCounter.NextValue();
-            return processorCounter;
         }
     }
 }

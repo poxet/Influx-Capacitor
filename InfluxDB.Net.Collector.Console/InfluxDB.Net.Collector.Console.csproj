@@ -71,7 +71,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\ConfigBusiness.cs" />
+    <Compile Include="Business\CounterBusiness.cs" />
     <Compile Include="Entities\Config.cs" />
+    <Compile Include="Entities\Counter.cs" />
+    <Compile Include="Entities\CounterGroup.cs" />
     <Compile Include="Entities\DatabaseConfig.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

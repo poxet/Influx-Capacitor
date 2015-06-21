@@ -1,10 +1,12 @@
-﻿using System.Configuration;
+﻿using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using System.Xml;
 using InfluxDB.Net.Collector.Console.Entities;
 
 namespace InfluxDB.Net.Collector.Console.Business
 {
-    public class ConfigBusiness
+    internal class ConfigBusiness
     {
         public Config LoadFile(string configurationFilename)
         {
@@ -12,9 +14,53 @@ namespace InfluxDB.Net.Collector.Console.Business
             document.Load(configurationFilename);
 
             var database = GetDatabaseConfig(document);
+            var groups = GetCounterGroups(document).ToList();
 
-            var config = new Config(database);
+            var config = new Config(database, groups);
             return config;
+        }
+
+        private IEnumerable<CounterGroup> GetCounterGroups(XmlDocument document)
+        {
+            var counterGroups = document.GetElementsByTagName("CounterGroup");
+            foreach (XmlElement counterGroup in counterGroups)
+            {
+                yield return GetCounterGroup(counterGroup);
+            }
+        }
+
+        private CounterGroup GetCounterGroup(XmlElement counterGroup)
+        {
+            var counters = counterGroup.GetElementsByTagName("Counter");
+            var cts = new List<Counter>();
+            foreach (XmlElement counter in counters)
+            {
+                cts.Add(GetCounter(counter));
+            }
+            return new CounterGroup(cts);
+        }
+
+        private Counter GetCounter(XmlElement counter)
+        {
+            string categoryName = null;
+            string counterName = null;
+            string instanceName = null;
+            foreach (XmlElement item in counter.ChildNodes)
+            {
+                switch (item.Name)
+                {
+                    case "CategoryName":
+                        categoryName = item.InnerText;
+                        break;
+                    case "CounterName":
+                        counterName = item.InnerText;
+                        break;
+                    case "InstanceName":
+                        instanceName = item.InnerText;
+                        break;
+                }
+            }
+            return new Counter(categoryName, counterName, instanceName);
         }
 
         private static DatabaseConfig GetDatabaseConfig(XmlDocument document)

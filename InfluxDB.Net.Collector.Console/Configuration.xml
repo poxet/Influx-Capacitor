@@ -5,4 +5,33 @@
     <Password></Password>
     <Name></Name>
   </Database>
+  <CounterGroups>
+    <CounterGroup>
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>_Total</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>0</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>1</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>2</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>3</InstanceName>
+      </Counter>
+    </CounterGroup>
+  </CounterGroups>
 </InfluxDB.Net.Collector>
