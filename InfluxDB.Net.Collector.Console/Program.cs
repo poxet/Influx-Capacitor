@@ -6,7 +6,7 @@ namespace InfluxDB.Net.Collector.Console
     {
         static void Main(string[] args)
         {
-            var processor = new Processor(new ConfigBusiness(), new CounterBusiness());
+            var processor = new Processor(new ConfigBusiness(new FileLoader()), new CounterBusiness());
             processor.Run(args);
 
             System.Console.WriteLine("Press enter to exit...");

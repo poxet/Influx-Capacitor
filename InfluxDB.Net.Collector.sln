@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{04FB46
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxDB.Net.Collector", "InfluxDB.Net.Collector\InfluxDB.Net.Collector.csproj", "{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxDB.Net.Collector.Tests", "InfluxDB.Net.Collector.Tests\InfluxDB.Net.Collector.Tests.csproj", "{93FB507A-A7DC-4809-82ED-3E67C45D79AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93FB507A-A7DC-4809-82ED-3E67C45D79AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93FB507A-A7DC-4809-82ED-3E67C45D79AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93FB507A-A7DC-4809-82ED-3E67C45D79AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93FB507A-A7DC-4809-82ED-3E67C45D79AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

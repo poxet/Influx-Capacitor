@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using InfluxDB.Net.Collector.Entities;
+using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Business
 {
     public class ConfigBusiness
     {
+        private readonly IFileLoader _fileLoader;
+
+        public ConfigBusiness(IFileLoader fileLoader)
+        {
+            _fileLoader = fileLoader;
+        }
+
         public Config LoadFile(string configurationFilename)
         {
             return LoadFiles(new[] { configurationFilename });
@@ -20,8 +28,10 @@ namespace InfluxDB.Net.Collector.Business
 
             foreach (var configurationFilename in configurationFilenames)
             {
+                var fileData = _fileLoader.ReadAllText(configurationFilename);
+
                 var document = new XmlDocument();
-                document.Load(configurationFilename);
+                document.LoadXml(fileData);
 
                 var db = GetDatabaseConfig(document);
                 var grp = GetCounterGroups(document).ToList();
@@ -36,6 +46,9 @@ namespace InfluxDB.Net.Collector.Business
                 }
                 groups.AddRange(grp);
             }
+
+            if ( database == null)
+                throw new InvalidOperationException("No file contains configuration information for the database.");
 
             var config = new Config(database, groups);
             return config;
