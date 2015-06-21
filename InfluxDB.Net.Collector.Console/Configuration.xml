@@ -1,0 +1,8 @@
+﻿<InfluxDB.Net.Collector>
+  <Database>
+    <Url></Url>
+    <Username>root</Username>
+    <Password></Password>
+    <Name></Name>
+  </Database>
+</InfluxDB.Net.Collector>

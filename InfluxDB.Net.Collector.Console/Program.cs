@@ -1,5 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using InfluxDB.Net.Collector.Console.Business;
+using InfluxDB.Net.Collector.Console.Entities;
 using InfluxDB.Net.Models;
 
 namespace InfluxDB.Net.Collector.Console
@@ -7,22 +11,20 @@ namespace InfluxDB.Net.Collector.Console
     static class Program
     {
         private static InfluxDb _client;
+        private static Config _config;
 
         static void Main(string[] args)
         {
-            if (args.Length != 3)
+            var configurationFilename = "";
+            if (args.Length > 0)
             {
-                //url:      http://128.199.43.107:8086
-                //username: root
-                //Password: ?????
-                throw new InvalidOperationException("Three parameters needs to be provided to this application. url, username and password for the InfluxDB database.");
+                configurationFilename = args[0];
             }
 
-            var url = args[0];
-            var username = args[1];
-            var password = args[2];
+            var configBusiness = new ConfigBusiness();
+            _config = configBusiness.LoadFile(configurationFilename);
 
-            _client = new InfluxDb(url, username, password);
+            _client = new InfluxDb(_config.Database.Url, _config.Database.Username, _config.Database.Password);
 
             var pong = _client.PingAsync().Result;
             System.Console.WriteLine("Ping: {0} ({1} ms)", pong.Status, pong.ResponseTime);
@@ -30,31 +32,48 @@ namespace InfluxDB.Net.Collector.Console
             var version = _client.VersionAsync().Result;
             System.Console.WriteLine("Version: {0}", version);
 
-            var processorCounter = GetPerformanceCounter();
-            System.Threading.Thread.Sleep(100);
+            var processorCounters = new List<PerformanceCounter>
+            {
+                GetPerformanceCounter("Processor", "% Processor Time", "_Total"),
+                GetPerformanceCounter("Processor", "% Processor Time", "0"),
+                GetPerformanceCounter("Processor", "% Processor Time", "1"),
+                GetPerformanceCounter("Processor", "% Processor Time", "2"),
+                GetPerformanceCounter("Processor", "% Processor Time", "3"),
+            };
+            Thread.Sleep(100);
 
-            var result = RegisterCounterValue(processorCounter);
-            System.Console.WriteLine(result.StatusCode);
+            RegisterCounterValues("Processor", processorCounters);
 
             System.Console.WriteLine("Press enter to exit...");
             System.Console.ReadKey();
         }
 
-        private static InfluxDbApiResponse RegisterCounterValue(PerformanceCounter processorCounter)
+        private static InfluxDbApiResponse RegisterCounterValues(string name, IEnumerable<PerformanceCounter> processorCounters)
         {
-            var data = processorCounter.NextValue();
-            System.Console.WriteLine("Processor value: {0}%", data);
-            var serie = new Serie.Builder("Processor")
-                .Columns("Total")
-                .Values(data)
+            var columnNames = new List<string>();
+            var datas = new List<object>();
+
+            foreach (var processorCounter in processorCounters)
+            {
+                var data = processorCounter.NextValue();
+
+                columnNames.Add(processorCounter.InstanceName);
+                datas.Add(data);
+
+                System.Console.WriteLine("{0} {1}: {2}", processorCounter.CounterName, processorCounter.InstanceName, data);
+            }
+
+            var serie = new Serie.Builder(name)
+                .Columns(columnNames.Select(x => name + x).ToArray())
+                .Values(datas.ToArray()) //TODO: This is provided as one value, hot as a list as it should
                 .Build();
-            var result = _client.WriteAsync("QTest", TimeUnit.Milliseconds, serie);
+            var result = _client.WriteAsync(_config.Database.Name, TimeUnit.Milliseconds, serie);
             return result.Result;
         }
 
-        private static PerformanceCounter GetPerformanceCounter()
+        private static PerformanceCounter GetPerformanceCounter(string categoryName, string counterName, string instanceName)
         {
-            var processorCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName);
             processorCounter.NextValue();
             return processorCounter;
         }
