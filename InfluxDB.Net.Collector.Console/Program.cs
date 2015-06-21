@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using InfluxDB.Net.Collector.Console.Business;
 using InfluxDB.Net.Collector.Console.Entities;
 using InfluxDB.Net.Models;
@@ -15,14 +14,8 @@ namespace InfluxDB.Net.Collector.Console
 
         static void Main(string[] args)
         {
-            var configurationFilename = "";
-            if (args.Length > 0)
-            {
-                configurationFilename = args[0];
-            }
-
             var configBusiness = new ConfigBusiness();
-            _config = configBusiness.LoadFile(configurationFilename);
+            _config = configBusiness.LoadFiles(args);
 
             _client = new InfluxDb(_config.Database.Url, _config.Database.Username, _config.Database.Password);
 

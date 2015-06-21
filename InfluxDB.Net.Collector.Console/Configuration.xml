@@ -1,10 +1,4 @@
 ﻿<InfluxDB.Net.Collector>
-  <Database>
-    <Url></Url>
-    <Username>root</Username>
-    <Password></Password>
-    <Name></Name>
-  </Database>
   <CounterGroups>
     <CounterGroup>
       <Counter>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Xml;
@@ -10,11 +11,32 @@ namespace InfluxDB.Net.Collector.Console.Business
     {
         public Config LoadFile(string configurationFilename)
         {
-            var document = new XmlDocument();
-            document.Load(configurationFilename);
+            return LoadFiles(new[] { configurationFilename });
+        }
 
-            var database = GetDatabaseConfig(document);
-            var groups = GetCounterGroups(document).ToList();
+        public Config LoadFiles(string[] configurationFilenames)
+        {
+            DatabaseConfig database = null;
+            var groups = new List<CounterGroup>();
+
+            foreach (var configurationFilename in configurationFilenames)
+            {
+                var document = new XmlDocument();
+                document.Load(configurationFilename);
+
+                var db = GetDatabaseConfig(document);
+                var grp = GetCounterGroups(document).ToList();
+
+                if (db != null)
+                {
+                    if (database != null)
+                    {
+                        throw new InvalidOperationException("There are database configuration sections in more than one file.");
+                    }
+                    database = db;
+                }
+                groups.AddRange(grp);
+            }
 
             var config = new Config(database, groups);
             return config;
@@ -66,6 +88,9 @@ namespace InfluxDB.Net.Collector.Console.Business
         private static DatabaseConfig GetDatabaseConfig(XmlDocument document)
         {
             var databases = document.GetElementsByTagName("Database");
+            if (databases.Count == 0)
+                return null;
+
             string url = null;
             string username = null;
             string password = null;
