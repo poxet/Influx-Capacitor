@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using InfluxDB.Net.Collector.Entities;
+using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Business
 {
     public class CounterBusiness
     {
-        public List<PerformanceCounterGroup> GetPerformanceCounterGroups(Config config)
+        public List<PerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
         {
+            if (config.Groups == null) throw new NullReferenceException("No groups in config.");
+
             var counterGroups = new List<PerformanceCounterGroup>();
 
             foreach (var group in config.Groups)

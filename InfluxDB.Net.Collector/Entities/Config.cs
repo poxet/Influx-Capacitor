@@ -1,19 +1,20 @@
 using System.Collections.Generic;
+using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Entities
 {
-    public class Config
+    public class Config : IConfig
     {
         private readonly DatabaseConfig _database;
-        private readonly List<CounterGroup> _groups;
+        private readonly List<ICounterGroup> _groups;
 
-        public Config(DatabaseConfig database, List<CounterGroup> groups)
+        public Config(DatabaseConfig database, List<ICounterGroup> groups)
         {
             _database = database;
             _groups = groups;
         }
 
         public DatabaseConfig Database { get { return _database; } }
-        public List<CounterGroup> Groups { get { return _groups; } }
+        public List<ICounterGroup> Groups { get { return _groups; } }
     }
 }

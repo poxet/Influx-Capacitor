@@ -27,7 +27,7 @@ namespace InfluxDB.Net.Collector.Business
                 throw new InvalidOperationException("No configuration files provided.");
 
             DatabaseConfig database = null;
-            var groups = new List<CounterGroup>();
+            var groups = new List<ICounterGroup>();
 
             foreach (var configurationFilename in configurationFilenames)
             {
@@ -57,7 +57,7 @@ namespace InfluxDB.Net.Collector.Business
             return config;
         }
 
-        private IEnumerable<CounterGroup> GetCounterGroups(XmlDocument document)
+        private IEnumerable<ICounterGroup> GetCounterGroups(XmlDocument document)
         {
             var counterGroups = document.GetElementsByTagName("CounterGroup");
             foreach (XmlElement counterGroup in counterGroups)
@@ -66,13 +66,13 @@ namespace InfluxDB.Net.Collector.Business
             }
         }
 
-        private CounterGroup GetCounterGroup(XmlElement counterGroup)
+        private ICounterGroup GetCounterGroup(XmlElement counterGroup)
         {
             var name = GetString(counterGroup, "Name");
             var secondsInterval = GetInt(counterGroup, "SecondsInterval");
 
             var counters = counterGroup.GetElementsByTagName("Counter");
-            var cts = new List<Counter>();
+            var cts = new List<ICounter>();
             foreach (XmlElement counter in counters)
             {
                 cts.Add(GetCounter(counter));
@@ -97,7 +97,7 @@ namespace InfluxDB.Net.Collector.Business
             return value;
         }
 
-        private Counter GetCounter(XmlElement counter)
+        private ICounter GetCounter(XmlElement counter)
         {
             string categoryName = null;
             string counterName = null;

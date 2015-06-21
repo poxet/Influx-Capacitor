@@ -1,6 +1,8 @@
+using InfluxDB.Net.Collector.Interface;
+
 namespace InfluxDB.Net.Collector.Entities
 {
-    public class Counter
+    public class Counter : ICounter
     {
         private readonly string _categoryName;
         private readonly string _counterName;

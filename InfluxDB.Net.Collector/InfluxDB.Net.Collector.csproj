@@ -75,6 +75,9 @@
     <Compile Include="Business\ConfigBusiness.cs" />
     <Compile Include="Business\CounterBusiness.cs" />
     <Compile Include="Business\FileLoader.cs" />
+    <Compile Include="Interface\IConfig.cs" />
+    <Compile Include="Interface\ICounter.cs" />
+    <Compile Include="Interface\ICounterGroup.cs" />
     <Compile Include="Interface\IFileLoader.cs" />
     <Compile Include="CollectorEngine.cs" />
     <Compile Include="Entities\Config.cs" />
