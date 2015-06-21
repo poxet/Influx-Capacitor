@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
@@ -9,6 +10,8 @@ namespace InfluxDB.Net.Collector
 {
     internal class CollectorEngine
     {
+        public event EventHandler<NotificationEventArgs> NotificationEvent;
+
         private readonly PerformanceCounterGroup _performanceCounterGroup;
         private readonly Timer _timer;
         private readonly InfluxDb _client;
@@ -50,14 +53,21 @@ namespace InfluxDB.Net.Collector
 
             var serie = new Serie.Builder(_name).Columns(columnNames.Select(x => _name + x).ToArray()).Values(datas.ToArray()).Build();
             var result = await _client.WriteAsync(_databaseName, TimeUnit.Milliseconds, serie);
-            System.Diagnostics.Debug.WriteLine(_name + " --> " + result.StatusCode);
+            InvokeNotificationEvent(new NotificationEventArgs(string.Format("Collector engine {0} executed: {1}", _name, result.StatusCode)));
         }
 
         public void Start()
         {
             if (_timer == null) return;
+            InvokeNotificationEvent(new NotificationEventArgs(string.Format("Started collector engine {0}.", _name)));
             Task.Factory.StartNew(() => RegisterCounterValues());
             _timer.Start();
+        }
+
+        private void InvokeNotificationEvent(NotificationEventArgs e)
+        {
+            var handler = NotificationEvent;
+            if (handler != null) handler(this, e);
         }
     }
 }

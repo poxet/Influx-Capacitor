@@ -56,6 +56,7 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
             //Assert            
             Assert.That(config, Is.Null);
             Assert.That(exception, Is.Not.Null);
+            Assert.That(exception.Message, Is.EqualTo("No file contains configuration information for the database."));
         }
 
         [Test]
@@ -63,8 +64,8 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
         {
             //Arrange
             var fileLoaderMock = new Mock<IFileLoader>(MockBehavior.Strict);
-            fileLoaderMock.Setup(x => x.ReadAllText("File1.xml")).Returns(() => string.Format("<Database></Database>"));
-            fileLoaderMock.Setup(x => x.ReadAllText("File2.xml")).Returns(() => string.Format("<Database></Database>"));
+            fileLoaderMock.Setup(x => x.ReadAllText("File1.xml")).Returns(() => "<Database><Url>A</Url><Username>A</Username><Password>A</Password><Name>A</Name></Database>");
+            fileLoaderMock.Setup(x => x.ReadAllText("File2.xml")).Returns(() => "<Database><Url>A</Url><Username>A</Username><Password>A</Password><Name>A</Name></Database>");
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
             Config config = null;
             Exception exception = null;
@@ -82,6 +83,7 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
             //Assert            
             Assert.That(config, Is.Null);
             Assert.That(exception, Is.Not.Null);
+            Assert.That(exception.Message, Is.EqualTo("There are database configuration sections in more than one file."));
         }
     }
 }

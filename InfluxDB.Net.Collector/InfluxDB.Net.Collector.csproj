@@ -82,6 +82,7 @@
     <Compile Include="Entities\CounterGroup.cs" />
     <Compile Include="Entities\DatabaseConfig.cs" />
     <Compile Include="Entities\PerformanceCounterGroup.cs" />
+    <Compile Include="NotificationEventArgs.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

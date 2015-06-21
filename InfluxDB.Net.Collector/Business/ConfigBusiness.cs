@@ -23,6 +23,9 @@ namespace InfluxDB.Net.Collector.Business
 
         public Config LoadFiles(string[] configurationFilenames)
         {
+            if ( !configurationFilenames.Any())
+                throw new InvalidOperationException("No configuration files provided.");
+
             DatabaseConfig database = null;
             var groups = new List<CounterGroup>();
 
