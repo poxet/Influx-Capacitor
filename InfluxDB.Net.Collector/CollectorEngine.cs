@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
-using InfluxDB.Net.Collector.Entities;
+using InfluxDB.Net.Collector.Interface;
 using InfluxDB.Net.Models;
 
 namespace InfluxDB.Net.Collector
@@ -12,13 +12,13 @@ namespace InfluxDB.Net.Collector
     {
         public event EventHandler<NotificationEventArgs> NotificationEvent;
 
-        private readonly PerformanceCounterGroup _performanceCounterGroup;
+        private readonly IPerformanceCounterGroup _performanceCounterGroup;
         private readonly Timer _timer;
-        private readonly InfluxDb _client;
+        private readonly IInfluxDbAgent _client;
         private readonly string _databaseName;
         private readonly string _name;
 
-        public CollectorEngine(InfluxDb client, string databaseName, PerformanceCounterGroup performanceCounterGroup)
+        public CollectorEngine(IInfluxDbAgent client, string databaseName, IPerformanceCounterGroup performanceCounterGroup)
         {
             _client = client;
             _performanceCounterGroup = performanceCounterGroup;
@@ -33,10 +33,10 @@ namespace InfluxDB.Net.Collector
 
         private async void Elapsed(object sender, ElapsedEventArgs e)
         {
-            await RegisterCounterValues();
+            await RegisterCounterValuesAsync();
         }
 
-        private async Task RegisterCounterValues()
+        internal async Task RegisterCounterValuesAsync()
         {
             var columnNames = new List<string>();
             var datas = new List<object>();
@@ -51,16 +51,19 @@ namespace InfluxDB.Net.Collector
                 //System.Console.WriteLine("{0} {1}: {2}", processorCounter.CounterName, processorCounter.InstanceName, data);
             }
 
-            var serie = new Serie.Builder(_name).Columns(columnNames.Select(x => _name + x).ToArray()).Values(datas.ToArray()).Build();
-            var result = await _client.WriteAsync(_databaseName, TimeUnit.Milliseconds, serie);
-            InvokeNotificationEvent(new NotificationEventArgs(string.Format("Collector engine {0} executed: {1}", _name, result.StatusCode)));
+            if (datas.Any())
+            {
+                var serie = new Serie.Builder(_name).Columns(columnNames.Select(x => _name + x).ToArray()).Values(datas.ToArray()).Build();
+                var result = await _client.WriteAsync(_databaseName, TimeUnit.Milliseconds, serie);
+                InvokeNotificationEvent(new NotificationEventArgs(string.Format("Collector engine {0} executed: {1}", _name, result.StatusCode)));
+            }
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
             if (_timer == null) return;
             InvokeNotificationEvent(new NotificationEventArgs(string.Format("Started collector engine {0}.", _name)));
-            Task.Factory.StartNew(() => RegisterCounterValues());
+            await RegisterCounterValuesAsync();
             _timer.Start();
         }
 

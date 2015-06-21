@@ -72,19 +72,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Business\ConfigBusiness.cs" />
     <Compile Include="Business\CounterBusiness.cs" />
-    <Compile Include="Business\FileLoader.cs" />
+    <Compile Include="Agents\FileLoaderAgent.cs" />
     <Compile Include="Interface\IConfig.cs" />
+    <Compile Include="Interface\IConfigBusiness.cs" />
     <Compile Include="Interface\ICounter.cs" />
+    <Compile Include="Interface\ICounterBusiness.cs" />
     <Compile Include="Interface\ICounterGroup.cs" />
-    <Compile Include="Interface\IFileLoader.cs" />
+    <Compile Include="Interface\IDatabaseConfig.cs" />
+    <Compile Include="Interface\IFileLoaderAgent.cs" />
     <Compile Include="CollectorEngine.cs" />
     <Compile Include="Entities\Config.cs" />
     <Compile Include="Entities\Counter.cs" />
     <Compile Include="Entities\CounterGroup.cs" />
     <Compile Include="Entities\DatabaseConfig.cs" />
     <Compile Include="Entities\PerformanceCounterGroup.cs" />
+    <Compile Include="Interface\IInfluxDbAgent.cs" />
+    <Compile Include="Interface\IPerformanceCounterGroup.cs" />
     <Compile Include="NotificationEventArgs.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

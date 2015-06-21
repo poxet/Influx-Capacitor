@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using InfluxDB.Net.Collector.Business;
-using InfluxDB.Net.Collector.Entities;
 using InfluxDB.Net.Collector.Interface;
 using Moq;
 using NUnit.Framework;
@@ -15,10 +14,10 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
         public void Should_throw_if_group_has_no_Name()
         {
             //Arrange
-            var fileLoaderMock = new Mock<IFileLoader>(MockBehavior.Strict);
+            var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<CounterGroup></CounterGroup>"));
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
-            Config config = null;
+            IConfig config = null;
             Exception exception = null;
 
             //Act
@@ -41,10 +40,10 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
         public void Should_throw_if_group_has_no_SecondsInterval()
         {
             //Arrange
-            var fileLoaderMock = new Mock<IFileLoader>(MockBehavior.Strict);
+            var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<CounterGroup Name=\"A\"></CounterGroup>"));
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
-            Config config = null;
+            IConfig config = null;
             Exception exception = null;
 
             //Act
@@ -67,10 +66,10 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
         public void Should_throw_if_group_SecondsInterval_is_not_numeric()
         {
             //Arrange
-            var fileLoaderMock = new Mock<IFileLoader>(MockBehavior.Strict);
+            var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<CounterGroup Name=\"A\" SecondsInterval=\"A\"></CounterGroup>"));
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
-            Config config = null;
+            IConfig config = null;
             Exception exception = null;
 
             //Act
@@ -98,21 +97,13 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
             var counterName = "A";
             var categoryName = "B";
             var instanceName = "C";
-            var fileLoaderMock = new Mock<IFileLoader>(MockBehavior.Strict);
+            var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<InfluxDB.Net.Collector><Database><Url>X</Url><Username>X</Username><Password>X</Password><Name>X</Name></Database><CounterGroup Name=\"{0}\" SecondsInterval=\"{1}\"><Counter><CounterName>{2}</CounterName><CategoryName>{3}</CategoryName><InstanceName>{4}</InstanceName></Counter></CounterGroup></InfluxDB.Net.Collector>", counterGroupName, secondsInterval, counterName, categoryName, instanceName));
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
-            Config config = null;
             Exception exception = null;
 
             //Act
-            try
-            {
-                config = configBusiness.LoadFile("myFile.xml");
-            }
-            catch (Exception exp)
-            {
-                exception = exp;
-            }
+            var config = configBusiness.LoadFile("myFile.xml");
 
             //Assert            
             Assert.That(config, Is.Not.Null);

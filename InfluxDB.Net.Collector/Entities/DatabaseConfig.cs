@@ -1,8 +1,9 @@
 using System;
+using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Entities
 {
-    public class DatabaseConfig
+    public class DatabaseConfig : IDatabaseConfig
     {
         private readonly string _url;
         private readonly string _username;

@@ -7,21 +7,21 @@ using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Business
 {
-    public class ConfigBusiness
+    public class ConfigBusiness : IConfigBusiness
     {
-        private readonly IFileLoader _fileLoader;
+        private readonly IFileLoaderAgent _fileLoaderAgent;
 
-        public ConfigBusiness(IFileLoader fileLoader)
+        public ConfigBusiness(IFileLoaderAgent fileLoaderAgent)
         {
-            _fileLoader = fileLoader;
+            _fileLoaderAgent = fileLoaderAgent;
         }
 
-        public Config LoadFile(string configurationFilename)
+        public IConfig LoadFile(string configurationFilename)
         {
             return LoadFiles(new[] { configurationFilename });
         }
 
-        public Config LoadFiles(string[] configurationFilenames)
+        public IConfig LoadFiles(string[] configurationFilenames)
         {
             if ( !configurationFilenames.Any())
                 throw new InvalidOperationException("No configuration files provided.");
@@ -31,7 +31,7 @@ namespace InfluxDB.Net.Collector.Business
 
             foreach (var configurationFilename in configurationFilenames)
             {
-                var fileData = _fileLoader.ReadAllText(configurationFilename);
+                var fileData = _fileLoaderAgent.ReadAllText(configurationFilename);
 
                 var document = new XmlDocument();
                 document.LoadXml(fileData);

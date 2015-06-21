@@ -18,7 +18,7 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
             var username = "B";
             var password = "C";
             var databaseName = "D";
-            var fileLoaderMock = new Mock<IFileLoader>(MockBehavior.Strict);
+            var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<Database><Url>{0}</Url><Username>{1}</Username><Password>{2}</Password><Name>{3}</Name></Database>", url, username, password, databaseName));
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
 
@@ -37,10 +37,10 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
         public void Should_throw_if_there_is_no_database_configuration_information()
         {
             //Arrange
-            var fileLoaderMock = new Mock<IFileLoader>(MockBehavior.Strict);
+            var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<A></A>"));
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
-            Config config = null;
+            IConfig config = null;
             Exception exception = null;
 
             //Act
@@ -63,11 +63,11 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
         public void Should_throw_if_there_are_several_database_configuration_information()
         {
             //Arrange
-            var fileLoaderMock = new Mock<IFileLoader>(MockBehavior.Strict);
+            var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText("File1.xml")).Returns(() => "<Database><Url>A</Url><Username>A</Username><Password>A</Password><Name>A</Name></Database>");
             fileLoaderMock.Setup(x => x.ReadAllText("File2.xml")).Returns(() => "<Database><Url>A</Url><Username>A</Username><Password>A</Password><Name>A</Name></Database>");
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
-            Config config = null;
+            IConfig config = null;
             Exception exception = null;
 
             //Act

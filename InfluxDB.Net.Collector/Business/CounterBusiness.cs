@@ -7,13 +7,13 @@ using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Business
 {
-    public class CounterBusiness
+    public class CounterBusiness : ICounterBusiness
     {
-        public List<PerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
+        public List<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
         {
             if (config.Groups == null) throw new NullReferenceException("No groups in config.");
 
-            var counterGroups = new List<PerformanceCounterGroup>();
+            var counterGroups = new List<IPerformanceCounterGroup>();
 
             foreach (var group in config.Groups)
             {

@@ -1,5 +1,6 @@
 using System;
-using InfluxDB.Net.Collector.Business;
+using System.Threading.Tasks;
+using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector
 {
@@ -7,25 +8,27 @@ namespace InfluxDB.Net.Collector
     {
         public event EventHandler<NotificationEventArgs> NotificationEvent;
 
-        private readonly ConfigBusiness _configBusiness;
-        private readonly CounterBusiness _counterBusiness;
+        private readonly IConfigBusiness _configBusiness;
+        private readonly ICounterBusiness _counterBusiness;
+        private readonly IInfluxDbAgentLoader _influxDbAgentLoader;
 
-        public Processor(ConfigBusiness configBusiness, CounterBusiness counterBusiness)
+        public Processor(IConfigBusiness configBusiness, ICounterBusiness counterBusiness, IInfluxDbAgentLoader influxDbAgentLoader)
         {
             _configBusiness = configBusiness;
             _counterBusiness = counterBusiness;
+            _influxDbAgentLoader = influxDbAgentLoader;
         }
 
-        public void Run(string[] configFileNames)
+        public async Task RunAsync(string[] configFileNames)
         {
             var config = _configBusiness.LoadFiles(configFileNames);
 
-            var client = new InfluxDb(config.Database.Url, config.Database.Username, config.Database.Password);
+            var client = _influxDbAgentLoader.GetAgent(config.Database);
 
-            var pong = client.PingAsync().Result;
+            var pong = await client.PingAsync();
             InvokeNotificationEvent(string.Format("Ping: {0} ({1} ms)", pong.Status, pong.ResponseTime));
 
-            var version = client.VersionAsync().Result;
+            var version = await client.VersionAsync();
             InvokeNotificationEvent(string.Format("Version: {0}", version));
 
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
@@ -33,12 +36,12 @@ namespace InfluxDB.Net.Collector
             foreach (var counterGroup in counterGroups)
             {
                 var engine = new CollectorEngine(client, config.Database.Name, counterGroup);
-                engine.NotificationEvent += engine_NotificationEvent;
-                engine.Start();
+                engine.NotificationEvent += Engine_NotificationEvent;
+                await engine.StartAsync();
             }
         }
 
-        void engine_NotificationEvent(object sender, NotificationEventArgs e)
+        void Engine_NotificationEvent(object sender, NotificationEventArgs e)
         {
             InvokeNotificationEvent(e.Message);
         }

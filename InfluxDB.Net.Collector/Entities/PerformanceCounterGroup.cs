@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Entities
 {
-    public class PerformanceCounterGroup
+    public class PerformanceCounterGroup : IPerformanceCounterGroup
     {
         private readonly string _name;
         private readonly int _secondsInterval;
