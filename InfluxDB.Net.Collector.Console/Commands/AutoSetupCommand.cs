@@ -40,16 +40,22 @@ namespace InfluxDB.Net.Collector.Console.Commands
 
         private void StartService()
         {
+            var service = new ServiceController("InfluxDB.Net.Collector");
             try
             {
-                var timeout = new TimeSpan(5000);
-                var service = new ServiceController("InfluxDB.Net.Collector");
-                service.Start();
-                service.WaitForStatus(ServiceControllerStatus.Running, timeout);
+                if (service.Status != ServiceControllerStatus.Running)
+                {
+                    service.Start();
+                    service.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 15));
+                }
             }
             catch (Exception exception)
             {
                 OutputError(exception.Message);
+            }
+            finally
+            {
+                OutputInformation("Service " + service.Status);
             }
         }
 

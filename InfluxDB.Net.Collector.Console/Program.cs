@@ -1,8 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
-using InfluxDB.Net.Collector.Agents;
-using InfluxDB.Net.Collector.Business;
 using InfluxDB.Net.Collector.Console.Commands;
 using Tharga.Toolkit.Console;
 using Tharga.Toolkit.Console.Command;
@@ -21,10 +18,11 @@ namespace InfluxDB.Net.Collector.Console
             var command = new RootCommand(_clientConsole);
 
             command.RegisterCommand(new SettupCommands());
-            //TODO: Inject before this point
-            var processor = new Processor(new ConfigBusiness(new FileLoaderAgent(), new RegistryRepository()), new CounterBusiness(), new InfluxDbAgentLoader());
-            processor.NotificationEvent += NotificationEvent;
-            Task.Factory.StartNew(() => processor.RunAsync(new string[]{}));
+            
+            ////TODO: Inject before this point
+            //var processor = new Processor(new ConfigBusiness(new FileLoaderAgent(), new RegistryRepository()), new CounterBusiness(), new InfluxDbAgentLoader());
+            //processor.NotificationEvent += NotificationEvent;
+            //Task.Factory.StartNew(() => processor.RunAsync(new string[]{}));
 
             //If no parameters provided, automatically trigger the setup auto command
             if (!args.Any())
