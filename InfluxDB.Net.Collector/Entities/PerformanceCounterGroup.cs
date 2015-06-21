@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace InfluxDB.Net.Collector.Console.Entities
+namespace InfluxDB.Net.Collector.Entities
 {
     public class PerformanceCounterGroup
     {

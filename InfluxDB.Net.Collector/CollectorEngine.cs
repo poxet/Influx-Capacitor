@@ -1,13 +1,13 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
-using InfluxDB.Net.Collector.Console.Entities;
+using InfluxDB.Net.Collector.Entities;
 using InfluxDB.Net.Models;
 
-namespace InfluxDB.Net.Collector.Console
+namespace InfluxDB.Net.Collector
 {
-    public class CollectorEngine
+    internal class CollectorEngine
     {
         private readonly PerformanceCounterGroup _performanceCounterGroup;
         private readonly Timer _timer;
@@ -50,7 +50,7 @@ namespace InfluxDB.Net.Collector.Console
 
             var serie = new Serie.Builder(_name).Columns(columnNames.Select(x => _name + x).ToArray()).Values(datas.ToArray()).Build();
             var result = await _client.WriteAsync(_databaseName, TimeUnit.Milliseconds, serie);
-            System.Console.WriteLine(_name + " --> " + result.StatusCode);
+            System.Diagnostics.Debug.WriteLine(_name + " --> " + result.StatusCode);
         }
 
         public void Start()

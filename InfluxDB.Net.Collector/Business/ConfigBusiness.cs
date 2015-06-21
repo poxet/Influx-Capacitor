@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Xml;
-using InfluxDB.Net.Collector.Console.Entities;
+using InfluxDB.Net.Collector.Entities;
 
-namespace InfluxDB.Net.Collector.Console.Business
+namespace InfluxDB.Net.Collector.Business
 {
-    internal class ConfigBusiness
+    public class ConfigBusiness
     {
         public Config LoadFile(string configurationFilename)
         {
@@ -122,22 +121,22 @@ namespace InfluxDB.Net.Collector.Console.Business
                     case "Url":
                         url = item.InnerText;
                         if (string.IsNullOrEmpty(url))
-                            throw new ConfigurationErrorsException("There is no url provided in the configuration file.");
+                            throw new InvalidOperationException("There is no url provided in the configuration file.");
                         break;
                     case "Username":
                         username = item.InnerText;
                         if (string.IsNullOrEmpty(username))
-                            throw new ConfigurationErrorsException("There is no username provided in the configuration file.");
+                            throw new InvalidOperationException("There is no username provided in the configuration file.");
                         break;
                     case "Password":
                         password = item.InnerText;
                         if (string.IsNullOrEmpty(password))
-                            throw new ConfigurationErrorsException("There is no password provided in the configuration file.");
+                            throw new InvalidOperationException("There is no password provided in the configuration file.");
                         break;
                     case "Name":
                         name = item.InnerText;
                         if (string.IsNullOrEmpty(name))
-                            throw new ConfigurationErrorsException("There is no name provided in the configuration file.");
+                            throw new InvalidOperationException("There is no name provided in the configuration file.");
                         break;
                 }
             }

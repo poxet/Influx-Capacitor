@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using InfluxDB.Net.Collector.Console.Entities;
+using InfluxDB.Net.Collector.Entities;
 
-namespace InfluxDB.Net.Collector.Console.Business
+namespace InfluxDB.Net.Collector.Business
 {
-    internal class CounterBusiness
+    public class CounterBusiness
     {
         public List<PerformanceCounterGroup> GetPerformanceCounterGroups(Config config)
         {

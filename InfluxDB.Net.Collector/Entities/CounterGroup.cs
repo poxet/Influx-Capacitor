@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace InfluxDB.Net.Collector.Console.Entities
+namespace InfluxDB.Net.Collector.Entities
 {
     public class CounterGroup
     {
