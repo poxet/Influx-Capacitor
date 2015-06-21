@@ -9,11 +9,6 @@ namespace InfluxDB.Net.Collector.Service
     {
         public WindowsServiceInstaller()
         {
-            //var source = "InfluxDB.Net.Collector Installer";
-            //if (!EventLog.SourceExists(source))
-            //    EventLog.CreateEventSource(source, "Application");
-            //EventLog.WriteEntry(source, "Running the InfluxDB.Net.Collector installer.");
-
             var serviceProcessInstaller = new ServiceProcessInstaller();
             var serviceInstaller = new ServiceInstaller();
 

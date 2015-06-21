@@ -1,0 +1,2 @@
+"C:\Program Files (x86)\WiX Toolset v3.9\bin\candle.exe" InfluxDB.Net.Collector.Service.wsx
+"C:\Program Files (x86)\WiX Toolset v3.9\bin\light.exe" -ext WixUIExtension -cultures:en-us InfluxDB.Net.Collector.Service.wixobj

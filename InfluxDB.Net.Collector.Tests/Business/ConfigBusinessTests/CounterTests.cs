@@ -16,7 +16,8 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
             //Arrange
             var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<CounterGroup></CounterGroup>"));
-            var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
+            var registryRepositoryMock = new Mock<IRegistryRepository>(MockBehavior.Strict);
+            var configBusiness = new ConfigBusiness(fileLoaderMock.Object, registryRepositoryMock.Object);
             IConfig config = null;
             Exception exception = null;
 
@@ -42,7 +43,8 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
             //Arrange
             var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<CounterGroup Name=\"A\"></CounterGroup>"));
-            var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
+            var registryRepositoryMock = new Mock<IRegistryRepository>(MockBehavior.Strict);
+            var configBusiness = new ConfigBusiness(fileLoaderMock.Object, registryRepositoryMock.Object);
             IConfig config = null;
             Exception exception = null;
 
@@ -68,7 +70,8 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
             //Arrange
             var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<CounterGroup Name=\"A\" SecondsInterval=\"A\"></CounterGroup>"));
-            var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
+            var registryRepositoryMock = new Mock<IRegistryRepository>(MockBehavior.Strict);
+            var configBusiness = new ConfigBusiness(fileLoaderMock.Object, registryRepositoryMock.Object);
             IConfig config = null;
             Exception exception = null;
 
@@ -99,7 +102,8 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
             var instanceName = "C";
             var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<InfluxDB.Net.Collector><Database><Url>X</Url><Username>X</Username><Password>X</Password><Name>X</Name></Database><CounterGroup Name=\"{0}\" SecondsInterval=\"{1}\"><Counter><CounterName>{2}</CounterName><CategoryName>{3}</CategoryName><InstanceName>{4}</InstanceName></Counter></CounterGroup></InfluxDB.Net.Collector>", counterGroupName, secondsInterval, counterName, categoryName, instanceName));
-            var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
+            var registryRepositoryMock = new Mock<IRegistryRepository>(MockBehavior.Strict);
+            var configBusiness = new ConfigBusiness(fileLoaderMock.Object, registryRepositoryMock.Object);
             Exception exception = null;
 
             //Act

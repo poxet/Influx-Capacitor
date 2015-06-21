@@ -6,27 +6,33 @@ using InfluxDB.Net.Models;
 namespace InfluxDB.Net.Collector.Agents
 {
     [ExcludeFromCodeCoverage]
-    public class InfluxDbAgentLoader : IInfluxDbAgentLoader
-    {
-        public IInfluxDbAgent GetAgent(IDatabaseConfig database)
-        {
-            return new InfluxDbAgent(database);
-        }
-    }
-
-    [ExcludeFromCodeCoverage]
     public class InfluxDbAgent : IInfluxDbAgent
     {
         private readonly InfluxDb _influxDb;
+        private readonly IDatabaseConfig _databaseConfig;
 
-        public InfluxDbAgent(IDatabaseConfig database)
+        public InfluxDbAgent(IDatabaseConfig databaseConfig)
         {
-            _influxDb = new InfluxDb(database.Url, database.Username, database.Password);
+            _databaseConfig = databaseConfig;
+            _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password);
         }
 
-        public async Task<InfluxDbApiResponse> WriteAsync(string databaseName, TimeUnit milliseconds, Serie serie)
+        public async Task<InfluxDbApiResponse> WriteAsync(TimeUnit milliseconds, Serie serie)
         {
-            return await _influxDb.WriteAsync(databaseName, milliseconds, serie);
+            return await _influxDb.WriteAsync(_databaseConfig.Name, milliseconds, serie);
+        }
+
+        public async Task<InfluxDbApiResponse> AuthenticateDatabaseUserAsync()
+        {
+            return await _influxDb.AuthenticateDatabaseUserAsync(_databaseConfig.Name, _databaseConfig.Username, _databaseConfig.Password);
+        }
+
+        public async Task<bool> CanConnect()
+        {
+            var pong = await _influxDb.PingAsync();
+            if (pong.Status == "ok")
+                return true;
+            return false;
         }
 
         public async Task<Pong> PingAsync()

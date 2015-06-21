@@ -17,7 +17,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             //Arrange
             var databaseName = "AA";
             var client = new Mock<IInfluxDbAgent>(MockBehavior.Strict);
-            client.Setup(x => x.WriteAsync(databaseName, It.IsAny<TimeUnit>(), It.IsAny<Serie>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
+            client.Setup(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
             var performanceCounterGroup = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(0);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
@@ -28,7 +28,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             await collectorEngine.StartAsync();
 
             //Assert
-            client.Verify(x => x.WriteAsync(databaseName, It.IsAny<TimeUnit>(), It.IsAny<Serie>()), Times.Never);
+            client.Verify(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>()), Times.Never);
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             //Arrange
             var databaseName = "AA";
             var client = new Mock<IInfluxDbAgent>(MockBehavior.Strict);
-            client.Setup(x => x.WriteAsync(databaseName, It.IsAny<TimeUnit>(), It.IsAny<Serie>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
+            client.Setup(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
             var performanceCounterGroup = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
@@ -48,7 +48,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             await collectorEngine.StartAsync();
 
             //Assert
-            client.Verify(x => x.WriteAsync(databaseName, It.IsAny<TimeUnit>(), It.IsAny<Serie>()), Times.Once);
+            client.Verify(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>()), Times.Once);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             //Arrange
             var databaseName = "AA";
             var client = new Mock<IInfluxDbAgent>(MockBehavior.Strict);
-            client.Setup(x => x.WriteAsync(databaseName, It.IsAny<TimeUnit>(), It.IsAny<Serie>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
+            client.Setup(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
             var performanceCounterGroup = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
@@ -69,7 +69,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             System.Threading.Thread.Sleep(2000);
 
             //Assert
-            client.Verify(x => x.WriteAsync(databaseName, It.IsAny<TimeUnit>(), It.IsAny<Serie>()), Times.AtLeast(2));
+            client.Verify(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>()), Times.AtLeast(2));
         }
     }
 }

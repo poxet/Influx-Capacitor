@@ -18,7 +18,8 @@ namespace InfluxDB.Net.Collector.Service
             if (!EventLog.SourceExists(ServiceName))
                 EventLog.CreateEventSource(ServiceName, "Application");
 
-            _processor = new Processor(new ConfigBusiness(new FileLoaderAgent()), new CounterBusiness(), new InfluxDbAgentLoader());
+            //TODO: Inject before this point
+            _processor = new Processor(new ConfigBusiness(new FileLoaderAgent(), new RegistryRepository()), new CounterBusiness(), new InfluxDbAgentLoader());
 
             // These Flags set whether or not to handle that specific
             //  type of event. Set to true if you need it, false otherwise.
@@ -43,8 +44,7 @@ namespace InfluxDB.Net.Collector.Service
         {
             try
             {
-                var configFiles = GetConfigFiles();
-                if (!_processor.RunAsync(configFiles).Wait(5000))
+                if (!_processor.RunAsync(new string[]{}).Wait(5000))
                     throw new InvalidOperationException("Cannot start service.");
 
                 base.OnStart(args);
@@ -54,26 +54,6 @@ namespace InfluxDB.Net.Collector.Service
                 EventLog.WriteEntry(ServiceName, exception.Message, EventLogEntryType.Error);
                 throw;
             }
-        }
-
-        private string[] GetConfigFiles()
-        {
-            var configFile = System.Configuration.ConfigurationManager.AppSettings["ConfigFile"];
-
-            string[] configFiles;
-            if (!string.IsNullOrEmpty(configFile))
-            {
-                configFiles = configFile.Split(';');
-            }
-            else
-            {
-                var currentDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                configFiles = Directory.GetFiles(currentDirectory, "*.xml");
-            }
-
-            EventLog.WriteEntry(ServiceName, "Loading config files: " + string.Join(", ", configFiles));
-
-            return configFiles;
         }
 
         protected override void OnStop()

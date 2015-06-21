@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Name='InfluxDB Net Collector Service' Id='C8738BAA-C035-4D68-9231-31E2A213BF67' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='1.0' Manufacturer='Thargelion AB'>
+    
+    <Package InstallerVersion="300" Compressed="yes"/>     
+
+    <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
+    <UIRef Id="WixUI_InstallDir" />
+        
+    <Media Id="1" Cabinet="InfluxDB.Net.Collector.Service.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="CompanyDir" Name="Thargelion">
+          <Directory Id="APPLICATIONROOTDIRECTORY" Name="InfluxDB.Net.Collector.Service" />
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Service\bin\Release">
+      <Component Id="Core" Guid="D1F1D596-A757-4B10-9C80-35184D3608CD">
+        <File Name="InfluxDB.Net.Collector.dll" />
+		<File Name="InfluxDB.Net.dll" />
+		<File Name="Microsoft.Threading.Tasks.dll" />
+		<File Name="Newtonsoft.Json.dll" />
+      </Component>
+    </DirectoryRef>
+    
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Service\bin\Release">
+      <Component Id="ServiceServer" Guid="D341C6FB-5C67-47B7-B6AE-51ECAAE30703">
+        <File Name="InfluxDB.Net.Collector.Service.exe" KeyPath="yes" />
+		<File Name="InfluxDB.Net.Collector.Service.exe.config" />
+		<File Name="ProcessorCounterConfiguration.xml" />
+		<File Name="MemoryCounterConfiguration.xml" />
+        <ServiceInstall Name="InfluxDB.Net.Collector" DisplayName="InfluxDB.Net.Collector" Description="Collects performance and store it in InfluxDB." Type="ownProcess" Start="auto" ErrorControl="normal" Account="LocalSystem" />
+        <ServiceControl Name="InfluxDB.Net.Collector" Id="StartService" Start="install" Stop="both" Remove="uninstall" Wait="no" />
+      </Component>
+    </DirectoryRef>
+    
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Console\bin\Release">
+      <Component Id="Console" Guid="011E4067-8813-4223-AF15-B3F97C460E03">
+        <File Name="InfluxDB.Net.Collector.Console.exe" KeyPath="yes" />
+        <File Name="InfluxDB.Net.Collector.Console.exe.config" />
+		<File Name="ProcessorCounterConfiguration.xml" />
+		<File Name="MemoryCounterConfiguration.xml" />
+      </Component>
+    </DirectoryRef>
+  
+    <Feature Id="Core" Title="Core" Level="1" Absent="disallow" Display="expand">
+      <ComponentRef Id="Core"/>
+      <ComponentRef Id="Console"/>
+      <ComponentRef Id="ServiceServer"/>
+    </Feature>
+
+  </Product>
+</Wix>
