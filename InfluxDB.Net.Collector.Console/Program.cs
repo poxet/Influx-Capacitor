@@ -28,7 +28,10 @@ namespace InfluxDB.Net.Collector.Console
             var counterBusiness = new CounterBusiness();
             var counterGroups = counterBusiness.GetPerformanceCounterGroups(_config).ToArray();
 
-            RegisterCounterValues("Processor", counterGroups.First());
+            foreach (var counterGroup in counterGroups)
+            {
+                RegisterCounterValues(counterGroup.Name, counterGroup.PerformanceCounters);
+            }
 
             System.Console.WriteLine("Press enter to exit...");
             System.Console.ReadKey();
@@ -51,7 +54,7 @@ namespace InfluxDB.Net.Collector.Console
 
             var serie = new Serie.Builder(name)
                 .Columns(columnNames.Select(x => name + x).ToArray())
-                .Values(datas.ToArray()) //TODO: This is provided as one value, hot as a list as it should
+                .Values(datas.ToArray())
                 .Build();
             var result = _client.WriteAsync(_config.Database.Name, TimeUnit.Milliseconds, serie);
             return result.Result;

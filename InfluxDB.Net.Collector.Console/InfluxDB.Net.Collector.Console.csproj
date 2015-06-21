@@ -76,6 +76,7 @@
     <Compile Include="Entities\Counter.cs" />
     <Compile Include="Entities\CounterGroup.cs" />
     <Compile Include="Entities\DatabaseConfig.cs" />
+    <Compile Include="Entities\PerformanceCounterGroup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -7,9 +7,9 @@ namespace InfluxDB.Net.Collector.Console.Business
 {
     internal class CounterBusiness
     {
-        public List<List<PerformanceCounter>> GetPerformanceCounterGroups(Config config)
+        public List<PerformanceCounterGroup> GetPerformanceCounterGroups(Config config)
         {
-            var counterGroups = new List<List<PerformanceCounter>>();
+            var counterGroups = new List<PerformanceCounterGroup>();
 
             foreach (var group in config.Groups)
             {
@@ -18,7 +18,9 @@ namespace InfluxDB.Net.Collector.Console.Business
                 {
                     performanceCounters.Add(GetPerformanceCounter(counter.CategoryName, counter.CounterName, counter.InstanceName));
                 }
-                counterGroups.Add(performanceCounters);
+
+                var performanceCounterGroup = new PerformanceCounterGroup(group.Name, performanceCounters);
+                counterGroups.Add(performanceCounterGroup);
             }
 
             Thread.Sleep(100);

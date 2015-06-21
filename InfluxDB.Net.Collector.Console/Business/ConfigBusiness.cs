@@ -53,13 +53,17 @@ namespace InfluxDB.Net.Collector.Console.Business
 
         private CounterGroup GetCounterGroup(XmlElement counterGroup)
         {
+            var name = counterGroup.Attributes.GetNamedItem("Name").Value;
+            if (string.IsNullOrEmpty(name))
+                throw new InvalidOperationException("No name attribute specified for the CounterGroup.");
+
             var counters = counterGroup.GetElementsByTagName("Counter");
             var cts = new List<Counter>();
             foreach (XmlElement counter in counters)
             {
                 cts.Add(GetCounter(counter));
             }
-            return new CounterGroup(cts);
+            return new CounterGroup(name, cts);
         }
 
         private Counter GetCounter(XmlElement counter)

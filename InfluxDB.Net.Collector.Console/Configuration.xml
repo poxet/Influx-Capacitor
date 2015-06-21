@@ -1,6 +1,6 @@
 ﻿<InfluxDB.Net.Collector>
   <CounterGroups>
-    <CounterGroup>
+    <CounterGroup Name="Processor">
       <Counter>
         <CategoryName>Processor</CategoryName>
         <CounterName>% Processor Time</CounterName>
