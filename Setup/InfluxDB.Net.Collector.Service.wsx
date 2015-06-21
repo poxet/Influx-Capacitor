@@ -23,6 +23,8 @@
 		<File Name="InfluxDB.Net.dll" />
 		<File Name="Microsoft.Threading.Tasks.dll" />
 		<File Name="Newtonsoft.Json.dll" />
+		<File Name="ProcessorCounterConfiguration.xml" />
+		<File Name="MemoryCounterConfiguration.xml" />
       </Component>
     </DirectoryRef>
     
@@ -30,8 +32,6 @@
       <Component Id="ServiceServer" Guid="D341C6FB-5C67-47B7-B6AE-51ECAAE30703">
         <File Name="InfluxDB.Net.Collector.Service.exe" KeyPath="yes" />
 		<File Name="InfluxDB.Net.Collector.Service.exe.config" />
-		<File Name="ProcessorCounterConfiguration.xml" />
-		<File Name="MemoryCounterConfiguration.xml" />
         <ServiceInstall Name="InfluxDB.Net.Collector" DisplayName="InfluxDB.Net.Collector" Description="Collects performance and store it in InfluxDB." Type="ownProcess" Start="auto" ErrorControl="normal" Account="LocalSystem" />
         <ServiceControl Name="InfluxDB.Net.Collector" Id="StartService" Start="install" Stop="both" Remove="uninstall" Wait="no" />
       </Component>
@@ -41,8 +41,7 @@
       <Component Id="Console" Guid="011E4067-8813-4223-AF15-B3F97C460E03">
         <File Name="InfluxDB.Net.Collector.Console.exe" KeyPath="yes" />
         <File Name="InfluxDB.Net.Collector.Console.exe.config" />
-		<File Name="ProcessorCounterConfiguration.xml" />
-		<File Name="MemoryCounterConfiguration.xml" />
+		<File Name="Tharga.Toolkit.Console.dll" />
       </Component>
     </DirectoryRef>
   
@@ -51,6 +50,13 @@
       <ComponentRef Id="Console"/>
       <ComponentRef Id="ServiceServer"/>
     </Feature>
+
+	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand="[SystemFolder]cmd.exe /C InfluxDB.Net.Collector.Console.exe" />
+
+	<InstallExecuteSequence>
+      <RemoveExistingProducts Before="InstallInitialize" /> 
+      <Custom Action="LaunchApp" After="InstallFinalize" />
+    </InstallExecuteSequence>
 
   </Product>
 </Wix>
