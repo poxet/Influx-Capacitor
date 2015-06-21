@@ -1,0 +1,15 @@
+﻿<InfluxDB.Net.Collector>
+  <CounterGroups>
+    <CounterGroup Name="Memory">
+      <Counter>
+        <CategoryName>Paging File</CategoryName>
+        <CounterName>% Usage</CounterName>
+        <InstanceName>_Total</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>Available MBytes</CounterName>
+      </Counter>
+    </CounterGroup>
+  </CounterGroups>
+</InfluxDB.Net.Collector>
