@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Name='InfluxDB Net Collector Service' Id='C8738BAA-C035-4D68-9231-31E2A213BF67' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='1.0' Manufacturer='Thargelion AB'>
-    
-    <Package InstallerVersion="300" Compressed="yes"/>     
 
-    <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
-    <UIRef Id="WixUI_InstallDir" />
+    <Package InstallerVersion="300" Compressed="yes"/>     
+    
+    <UI Id="WixUI_SkipLicenseAgreement">
+      <UIRef Id="WixUI_InstallDir" />
+
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="3">1</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="3">1</Publish>
+
+      <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
+    </UI>
  
     <Media Id="1" Cabinet="InfluxDB.Net.Collector.Service.cab" EmbedCab="yes" />
 
