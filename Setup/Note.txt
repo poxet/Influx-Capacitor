@@ -1,0 +1,8 @@
+Steps to manually build the installation package
+
+1. Build a release version of the solution
+2. Run the BuildMsi.bat to create the msi package.
+3. Plave the msi to be downloaded from http://thargelion.net/resources/InfluxDB.Net.Collector.Service.msi
+4. Go to the folder "C:\Dev\Tharga\influxdb-collector\Setup" and type "cpack"
+5. Test the package by typing "choco install influxdb.collector -source %cd%"
+

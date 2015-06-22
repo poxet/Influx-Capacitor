@@ -93,4 +93,5 @@ _ReSharper.*
 *.msi
 *.wixobj
 *.wixpdb
+*.nupkg
 

@@ -79,6 +79,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
 
             if (!connectionConfirmed)
             {
+                OutputInformation("Enter the url to the InfluxDB to use.");
                 while (!connectionConfirmed)
                 {
                     try
@@ -124,6 +125,9 @@ namespace InfluxDB.Net.Collector.Console.Commands
             {
                 OutputError(exception.Message);
             }
+
+            if (response == null || !response.Success)
+                OutputInformation("Enter the database, username and password for the InfluxDB.");
 
             while (response == null || !response.Success)
             {

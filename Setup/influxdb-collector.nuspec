@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
+    <id>influxdb.collector</id>
+    <title>InfluxDB Collector</title>
+    <version>1.0.0.0</version>
+    <authors>Daniel Bohlin</authors>
+    <owners>Thargelion AB</owners>
+    <language>en-US</language>
+    <description>InfluxDB collector for windows. Uses performance counters to collect data from the machine and send them to InfluxDB to be viewable by grafana.</description>
+    <projectUrl>https://github.com/poxet/influxdb-collector</projectUrl>
+    <tags>influxdb grafana collect influx performance counters time series</tags>
+    <copyright></copyright>
+    <licenseUrl>https://github.com/poxet/influxdb-collector</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <iconUrl>http://www.thargelion.se/Images/Logotype/Thargelion-White-Icon-48.png</iconUrl>
+    <releaseNotes>Initial version</releaseNotes>
+  </metadata>
+  <files>
+    <file src="ChocolateyInstall.ps1" target="tools" />
+  </files>
+</package>
