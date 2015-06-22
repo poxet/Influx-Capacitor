@@ -4,8 +4,8 @@ namespace InfluxDB.Net.Collector.Interface
     {
         IConfig LoadFile(string configurationFilename);
         IConfig LoadFiles(string[] configurationFilenames);
-        IDatabaseConfig GetDatabaseFromRegistry();
-        void SetUrl(string url);
-        void SetDatabase(string databaseName, string username, string password);
+        IDatabaseConfig OpenDatabaseConfig();
+        void SaveDatabaseUrl(string url);
+        void SaveDatabaseConfig(string databaseName, string username, string password);
     }
 }

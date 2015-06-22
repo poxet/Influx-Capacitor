@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.ServiceProcess;
 using InfluxDB.Net.Collector.Agents;
 using InfluxDB.Net.Collector.Business;

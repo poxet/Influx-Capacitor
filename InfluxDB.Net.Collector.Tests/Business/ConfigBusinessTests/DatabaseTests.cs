@@ -33,29 +33,22 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
         }
 
         [Test]
-        public void Should_throw_if_there_is_no_database_configuration_information()
+        public void Should_not_throw_if_there_is_no_database_configuration_information()
         {
             //Arrange
+            var folderPath = "ABC";
             var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
+            fileLoaderMock.Setup(x => x.GetApplicationFolderPath()).Returns(folderPath);
+            fileLoaderMock.Setup(x => x.DoesDirectoryExist(folderPath)).Returns(true);
+            fileLoaderMock.Setup(x => x.DoesFileExist(It.IsAny<string>())).Returns(false);
             fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<A></A>"));
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
-            IConfig config = null;
-            Exception exception = null;
 
             //Act
-            try
-            {
-                config = configBusiness.LoadFile("myFile.xml");
-            }
-            catch (Exception exp)
-            {
-                exception = exp;
-            }
+            var config = configBusiness.LoadFile("myFile.xml");
 
-            //Assert            
-            Assert.That(config, Is.Null);
-            Assert.That(exception, Is.Not.Null);
-            Assert.That(exception.Message, Is.EqualTo("No url provided.\r\nParameter name: url"));
+            //Assert
+            Assert.That(config, Is.Not.Null);
         }
 
         [Test]

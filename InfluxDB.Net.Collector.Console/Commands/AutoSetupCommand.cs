@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using InfluxDB.Net.Collector.Entities;
@@ -61,7 +60,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
 
         private async Task<string> GetServerUrlAsync(string paramList, int index)
         {
-            var url = _configBusiness.GetDatabaseFromRegistry().Url;
+            var url = _configBusiness.OpenDatabaseConfig().Url;
 
             IInfluxDbAgent client = null;
             if (!string.IsNullOrEmpty(url))
@@ -99,7 +98,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
                     }
                 }
 
-                _configBusiness.SetUrl(url);
+                _configBusiness.SaveDatabaseUrl(url);
             }
             OutputInformation("Connection to server {0} confirmed.", url);
             return url;
@@ -109,7 +108,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
         {
             var serie = new Serie.Builder("InfluxDB.Net.Collector").Columns("Machine").Values(Environment.MachineName).Build();
 
-            var config = _configBusiness.GetDatabaseFromRegistry();
+            var config = _configBusiness.OpenDatabaseConfig();
 
             IInfluxDbAgent client;
             InfluxDbApiResponse response = null;
@@ -128,10 +127,9 @@ namespace InfluxDB.Net.Collector.Console.Commands
 
             while (response == null || !response.Success)
             {
-                var config1 = config;
-                var database = QueryParam("DatabaseName", GetParam(paramList, index++), () => new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>(config1.Name, config1.Name) });
-                var user = QueryParam("Username", GetParam(paramList, index++), () => new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>(config1.Username, config1.Username) });
-                var password = QueryParam("Password", GetParam(paramList, index++), () => new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>(config1.Password, config1.Password) });
+                var database = QueryParam<string>("DatabaseName", GetParam(paramList, index++));
+                var user = QueryParam<string>("Username", GetParam(paramList, index++));
+                var password = QueryParam<string>("Password", GetParam(paramList, index++));
                 config = new DatabaseConfig(url, user, password, database);
 
                 try
@@ -151,7 +149,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
 
             OutputInformation("Access to database {0} confirmed.", config.Name);
 
-            _configBusiness.SetDatabase(config.Name, config.Username, config.Password);
+            _configBusiness.SaveDatabaseConfig(config.Name, config.Username, config.Password);
 
             return config;
         }

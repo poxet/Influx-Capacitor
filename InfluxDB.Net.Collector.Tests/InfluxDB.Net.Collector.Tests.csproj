@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\ConfigBusinessTests\CounterTests.cs" />
+    <Compile Include="Business\ConfigBusinessTests\DatabaseConfitTests.cs" />
     <Compile Include="Business\ConfigBusinessTests\DatabaseTests.cs" />
     <Compile Include="Business\CounterBusinessTests\CounterTests.cs" />
     <Compile Include="CollectorEngineTests\RegisterCounterValuesTests.cs" />

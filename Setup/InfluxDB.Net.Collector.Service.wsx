@@ -6,7 +6,7 @@
 
     <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
     <UIRef Id="WixUI_InstallDir" />
-        
+ 
     <Media Id="1" Cabinet="InfluxDB.Net.Collector.Service.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
@@ -51,12 +51,12 @@
       <ComponentRef Id="ServiceServer"/>
     </Feature>
 
-	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand="[SystemFolder]cmd.exe /C InfluxDB.Net.Collector.Console.exe" />
-
 	<InstallExecuteSequence>
       <RemoveExistingProducts Before="InstallInitialize" /> 
-      <Custom Action="LaunchApp" After="InstallFinalize" />
+      <Custom Action="LaunchApp" Before="InstallFinalize">NOT Installed AND NOT PATCH</Custom>
     </InstallExecuteSequence>
+
+	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C InfluxDB.Net.Collector.Console.exe "setup auto"' Execute="deferred" Return="check" Impersonate="no" />
 
   </Product>
 </Wix>

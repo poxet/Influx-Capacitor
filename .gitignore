@@ -88,3 +88,9 @@ _ReSharper.*
 # Database
 *.mdf
 *.ldf
+
+# WIX
+*.msi
+*.wixobj
+*.wixpdb
+
