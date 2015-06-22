@@ -28,8 +28,15 @@ namespace InfluxDB.Net.Collector
             var pong = await client.PingAsync();
             InvokeNotificationEvent(string.Format("Ping: {0} ({1} ms)", pong.Status, pong.ResponseTime));
 
-            var version = await client.VersionAsync();
-            InvokeNotificationEvent(string.Format("Version: {0}", version));
+            try
+            {
+                var version = await client.VersionAsync();
+                InvokeNotificationEvent(string.Format("Version: {0}", version));
+            }
+            catch (Exception exception)
+            {
+                InvokeNotificationEvent(exception.Message);
+            }
 
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
 

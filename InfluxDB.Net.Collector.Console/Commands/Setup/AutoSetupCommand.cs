@@ -54,7 +54,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
             }
             finally
             {
-                OutputInformation("Service " + service.Status);
+                OutputInformation("Service is " + service.Status + ".");
             }
         }
 
@@ -108,6 +108,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
         private async Task<IDatabaseConfig> GetUsernameAsync(string url, string paramList, int index)
         {
             var serie = new Serie.Builder("InfluxDB.Net.Collector").Columns("Machine").Values(Environment.MachineName).Build();
+            var dataChanged = false;
 
             var config = _configBusiness.OpenDatabaseConfig();
 
@@ -140,6 +141,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
                 {
                     client = _influxDbAgentLoader.GetAgent(config); 
                     response = await client.WriteAsync(TimeUnit.Milliseconds, serie);
+                    dataChanged = true;
                 }
                 catch (CommandEscapeException)
                 {
@@ -153,7 +155,8 @@ namespace InfluxDB.Net.Collector.Console.Commands
 
             OutputInformation("Access to database {0} confirmed.", config.Name);
 
-            _configBusiness.SaveDatabaseConfig(config.Name, config.Username, config.Password);
+            if (dataChanged)
+                _configBusiness.SaveDatabaseConfig(config.Name, config.Username, config.Password);
 
             return config;
         }

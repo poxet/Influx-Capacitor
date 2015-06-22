@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using InfluxDB.Net.Collector.Console.Commands;
+using InfluxDB.Net.Collector.Console.Commands.Processor;
 using Tharga.Toolkit.Console;
 using Tharga.Toolkit.Console.Command;
 using Tharga.Toolkit.Console.Command.Base;
@@ -13,15 +14,13 @@ namespace InfluxDB.Net.Collector.Console
 
         private static void Main(string[] args)
         {
+            var compositeRoot = new CompositeRoot();
+
             _clientConsole = new ClientConsole();
             var command = new RootCommand(_clientConsole);
 
-            command.RegisterCommand(new SettupCommands());
-
-            ////TODO: Inject before this point
-            //var processor = new Processor(new ConfigBusiness(new FileLoaderAgent(), new RegistryRepository()), new CounterBusiness(), new InfluxDbAgentLoader());
-            //processor.NotificationEvent += NotificationEvent;
-            //Task.Factory.StartNew(() => processor.RunAsync(new string[]{}));
+            command.RegisterCommand(new SettupCommands(compositeRoot));
+            command.RegisterCommand(new ProcessorCommands(compositeRoot));
 
             new CommandEngine(command).Run(args);
         }

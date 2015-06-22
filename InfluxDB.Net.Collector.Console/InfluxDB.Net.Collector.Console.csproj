@@ -75,8 +75,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\AutoSetupCommand.cs" />
-    <Compile Include="Commands\SettupCommands.cs" />
+    <Compile Include="Commands\Processor\RunProcessorCommand.cs" />
+    <Compile Include="Commands\Processor\ProcessorCommands.cs" />
+    <Compile Include="Commands\Setup\AutoSetupCommand.cs" />
+    <Compile Include="Commands\Setup\SettupCommands.cs" />
+    <Compile Include="CompositeRoot.cs" />
+    <Compile Include="ICompositeRoot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
