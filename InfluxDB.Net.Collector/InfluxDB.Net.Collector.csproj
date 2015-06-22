@@ -71,6 +71,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tharga.Toolkit.Console">
+      <HintPath>..\packages\Tharga.Toolkit.Console.1.4.9.0\lib\net45\Tharga.Toolkit.Console.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agents\InfluxDbAgent.cs" />

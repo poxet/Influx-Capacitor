@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using InfluxDB.Net.Collector.Interface;
+using Tharga.Toolkit.Console.Command.Base;
 
 namespace InfluxDB.Net.Collector
 {
@@ -26,16 +27,16 @@ namespace InfluxDB.Net.Collector
             var client = _influxDbAgentLoader.GetAgent(config.Database);
 
             var pong = await client.PingAsync();
-            InvokeNotificationEvent(string.Format("Ping: {0} ({1} ms)", pong.Status, pong.ResponseTime));
+            InvokeNotificationEvent(string.Format("Ping: {0} ({1} ms)", pong.Status, pong.ResponseTime), OutputLevel.Information);
 
             try
             {
                 var version = await client.VersionAsync();
-                InvokeNotificationEvent(string.Format("Version: {0}", version));
+                InvokeNotificationEvent(string.Format("Version: {0}", version), OutputLevel.Information);
             }
             catch (Exception exception)
             {
-                InvokeNotificationEvent(exception.Message);
+                InvokeNotificationEvent(exception.Message, OutputLevel.Error);
             }
 
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
@@ -50,13 +51,13 @@ namespace InfluxDB.Net.Collector
 
         void Engine_NotificationEvent(object sender, NotificationEventArgs e)
         {
-            InvokeNotificationEvent(e.Message);
+            InvokeNotificationEvent(e.Message, e.OutputLevel);
         }
 
-        private void InvokeNotificationEvent(string message)
+        private void InvokeNotificationEvent(string message, OutputLevel outputLevel)
         {
             var handler = NotificationEvent;
-            if (handler != null) handler(this, new NotificationEventArgs(message));
+            if (handler != null) handler(this, new NotificationEventArgs(message, outputLevel));
         }
     }
 }

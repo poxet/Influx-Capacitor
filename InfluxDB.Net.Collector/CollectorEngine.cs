@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using InfluxDB.Net.Collector.Interface;
 using InfluxDB.Net.Models;
+using Tharga.Toolkit.Console.Command.Base;
 
 namespace InfluxDB.Net.Collector
 {
@@ -47,22 +48,20 @@ namespace InfluxDB.Net.Collector
 
                 columnNames.Add(processorCounter.InstanceName);
                 datas.Add(data);
-
-                //System.Console.WriteLine("{0} {1}: {2}", processorCounter.CounterName, processorCounter.InstanceName, data);
             }
 
             if (datas.Any())
             {
                 var serie = new Serie.Builder(_name).Columns(columnNames.Select(x => _name + x).ToArray()).Values(datas.ToArray()).Build();
                 var result = await _client.WriteAsync(TimeUnit.Milliseconds, serie);
-                InvokeNotificationEvent(new NotificationEventArgs(string.Format("Collector engine {0} executed: {1}", _name, result.StatusCode)));
+                InvokeNotificationEvent(new NotificationEventArgs(string.Format("Collector engine {0} executed: {1}", _name, result.StatusCode), OutputLevel.Information));
             }
         }
 
         public async Task StartAsync()
         {
             if (_timer == null) return;
-            InvokeNotificationEvent(new NotificationEventArgs(string.Format("Started collector engine {0}.", _name)));
+            InvokeNotificationEvent(new NotificationEventArgs(string.Format("Started collector engine {0}.", _name), OutputLevel.Information));
             await RegisterCounterValuesAsync();
             _timer.Start();
         }
