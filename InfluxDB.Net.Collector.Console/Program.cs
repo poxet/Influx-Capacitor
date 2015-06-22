@@ -18,7 +18,9 @@ namespace InfluxDB.Net.Collector.Console
             var command = new RootCommand(_clientConsole);
 
             command.RegisterCommand(new SettupCommands());
-            
+
+            System.IO.File.WriteAllText("a.txt", "MyData");
+
             ////TODO: Inject before this point
             //var processor = new Processor(new ConfigBusiness(new FileLoaderAgent(), new RegistryRepository()), new CounterBusiness(), new InfluxDbAgentLoader());
             //processor.NotificationEvent += NotificationEvent;

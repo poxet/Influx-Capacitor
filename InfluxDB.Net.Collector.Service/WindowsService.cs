@@ -19,7 +19,7 @@ namespace InfluxDB.Net.Collector.Service
                 EventLog.CreateEventSource(ServiceName, "Application");
 
             //TODO: Inject before this point
-            _processor = new Processor(new ConfigBusiness(new FileLoaderAgent(), new RegistryRepository()), new CounterBusiness(), new InfluxDbAgentLoader());
+            _processor = new Processor(new ConfigBusiness(new FileLoaderAgent()), new CounterBusiness(), new InfluxDbAgentLoader());
 
             // These Flags set whether or not to handle that specific
             //  type of event. Set to true if you need it, false otherwise.

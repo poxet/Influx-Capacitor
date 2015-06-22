@@ -10,7 +10,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
             : base("Setup")
         {
             //TODO: Inject before this point
-            RegisterCommand(new AutoSetupCommand(new InfluxDbAgentLoader(), new ConfigBusiness(new FileLoaderAgent(), new RegistryRepository())));
+            RegisterCommand(new AutoSetupCommand(new InfluxDbAgentLoader(), new ConfigBusiness(new FileLoaderAgent())));
         }
     }
 }
