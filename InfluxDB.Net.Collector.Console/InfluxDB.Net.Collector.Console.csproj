@@ -95,6 +95,9 @@
     <Content Include="ProcessorCounterConfiguration.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="WebServiceConfiguration.xm_l">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InfluxDB.Net.Collector\InfluxDB.Net.Collector.csproj">

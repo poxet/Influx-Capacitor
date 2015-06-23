@@ -210,7 +210,9 @@ namespace InfluxDB.Net.Collector.Business
                         break;
                 }
             }
-            return new Counter(categoryName, counterName, instanceName);
+            var namedItem = counter.Attributes.GetNamedItem("Name");
+            var name = namedItem != null ? namedItem.Value : null;
+            return new Counter(name, categoryName, counterName, instanceName);
         }
 
         private static DatabaseConfig GetDatabaseConfig(XmlDocument document)

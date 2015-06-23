@@ -7,6 +7,12 @@ namespace InfluxDB.Net.Collector.Interface
     {
         string Name { get; }
         int SecondsInterval { get; }
-        IEnumerable<PerformanceCounter> PerformanceCounters { get; }
+        IEnumerable<IPerformanceCounterInfo> PerformanceCounterInfos { get; }
+    }
+
+    public interface IPerformanceCounterInfo
+    {
+        string Name { get; }
+        PerformanceCounter PerformanceCounter { get; }
     }
 }

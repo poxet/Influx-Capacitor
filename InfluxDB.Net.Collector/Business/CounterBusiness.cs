@@ -17,10 +17,10 @@ namespace InfluxDB.Net.Collector.Business
 
             foreach (var group in config.Groups)
             {
-                var performanceCounters = new List<PerformanceCounter>();
+                var performanceCounters = new List<IPerformanceCounterInfo>();
                 foreach (var counter in group.Counters)
                 {
-                    performanceCounters.Add(GetPerformanceCounter(counter.CategoryName, counter.CounterName, counter.InstanceName));
+                    performanceCounters.Add(new PerformanceCounterInfo(counter.Name, GetPerformanceCounter(counter.CategoryName, counter.CounterName, counter.InstanceName)));
                 }
 
                 var performanceCounterGroup = new PerformanceCounterGroup(group.Name, group.SecondsInterval, performanceCounters);

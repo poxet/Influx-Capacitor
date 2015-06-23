@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using InfluxDB.Net.Collector.Entities;
 using InfluxDB.Net.Collector.Interface;
 using InfluxDB.Net.Models;
 using Moq;
@@ -21,7 +22,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             var performanceCounterGroup = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(0);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
-            performanceCounterGroup.SetupGet(x => x.PerformanceCounters).Returns(new List<PerformanceCounter> { });
+            performanceCounterGroup.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { });
             var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object);
 
             //Act
@@ -41,7 +42,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             var performanceCounterGroup = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
-            performanceCounterGroup.SetupGet(x => x.PerformanceCounters).Returns(new List<PerformanceCounter> { new PerformanceCounter("Processor", "% Processor Time", "_Total") });
+            performanceCounterGroup.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
             var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object);
 
             //Act
@@ -61,7 +62,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             var performanceCounterGroup = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
-            performanceCounterGroup.SetupGet(x => x.PerformanceCounters).Returns(new List<PerformanceCounter> { new PerformanceCounter("Processor", "% Processor Time", "_Total") });
+            performanceCounterGroup.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
             var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object);
 
             //Act

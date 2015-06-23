@@ -34,7 +34,14 @@ namespace InfluxDB.Net.Collector
 
         private async void Elapsed(object sender, ElapsedEventArgs e)
         {
-            await RegisterCounterValuesAsync();
+            try
+            {
+                await RegisterCounterValuesAsync();
+            }
+            catch (Exception exception)
+            {
+                InvokeNotificationEvent(new NotificationEventArgs(exception.Message, OutputLevel.Error));
+            }
         }
 
         internal async Task RegisterCounterValuesAsync()
@@ -43,11 +50,11 @@ namespace InfluxDB.Net.Collector
             var datas = new List<object>();
 
             //Counter data
-            foreach (var processorCounter in _performanceCounterGroup.PerformanceCounters)
+            foreach (var performanceCounterInfo in _performanceCounterGroup.PerformanceCounterInfos)
             {
-                var data = processorCounter.NextValue();
+                var data = performanceCounterInfo.PerformanceCounter.NextValue();
 
-                columnNames.Add(processorCounter.InstanceName);
+                columnNames.Add(performanceCounterInfo.Name);
                 datas.Add(data);
             }
 
@@ -58,7 +65,7 @@ namespace InfluxDB.Net.Collector
                 datas.Add(Environment.MachineName);
 
                 var serie = new Serie.Builder(_name)
-                    .Columns(columnNames.Select(x => _name + x).ToArray())
+                    .Columns(columnNames.ToArray())
                     .Values(datas.ToArray())
                     .Build();
                 var result = await _client.WriteAsync(TimeUnit.Milliseconds, serie);

@@ -1,0 +1,26 @@
+<InfluxDB.Net.Collector>
+  <CounterGroups>
+    <CounterGroup Name="WebService" SecondsInterval="10">
+      <Counter Name="BytesReceived">
+        <CategoryName>Web Service</CategoryName>
+        <CounterName>Bytes Received/sec</CounterName>
+        <InstanceName>_Total</InstanceName>
+      </Counter>
+      <Counter Name="BytesSent">
+        <CategoryName>Web Service</CategoryName>
+        <CounterName>Bytes Sent/sec</CounterName>
+        <InstanceName>_Total</InstanceName>
+      </Counter>
+      <Counter Name="ConnectionAttempts">
+        <CategoryName>Web Service</CategoryName>
+        <CounterName>Connection Attempts/sec</CounterName>
+        <InstanceName>_Total</InstanceName>
+      </Counter>
+      <Counter Name="GetRequests">
+        <CategoryName>Web Service</CategoryName>
+        <CounterName>Get Requests/sec</CounterName>
+        <InstanceName>_Total</InstanceName>
+      </Counter>
+    </CounterGroup>
+  </CounterGroups>
+</InfluxDB.Net.Collector>

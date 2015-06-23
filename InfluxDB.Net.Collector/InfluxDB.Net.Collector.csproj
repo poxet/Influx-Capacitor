@@ -81,6 +81,7 @@
     <Compile Include="Business\ConfigBusiness.cs" />
     <Compile Include="Business\CounterBusiness.cs" />
     <Compile Include="Agents\FileLoaderAgent.cs" />
+    <Compile Include="Entities\PerformanceCounterInfo.cs" />
     <Compile Include="Interface\IConfig.cs" />
     <Compile Include="Interface\IConfigBusiness.cs" />
     <Compile Include="Interface\ICounter.cs" />

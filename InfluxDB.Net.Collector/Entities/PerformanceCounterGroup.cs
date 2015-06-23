@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Entities
@@ -8,17 +7,17 @@ namespace InfluxDB.Net.Collector.Entities
     {
         private readonly string _name;
         private readonly int _secondsInterval;
-        private readonly IReadOnlyCollection<PerformanceCounter> _performanceCounters;
+        private readonly IReadOnlyCollection<IPerformanceCounterInfo> _performanceCounterInfos;
 
-        public PerformanceCounterGroup(string name, int secondsInterval, IReadOnlyCollection<PerformanceCounter> performanceCounters)
+        public PerformanceCounterGroup(string name, int secondsInterval, IReadOnlyCollection<IPerformanceCounterInfo> performanceCounterInfos)
         {
             _name = name;
             _secondsInterval = secondsInterval;
-            _performanceCounters = performanceCounters;
+            _performanceCounterInfos = performanceCounterInfos;
         }
 
         public string Name { get { return _name; } }
         public int SecondsInterval { get { return _secondsInterval; } }
-        public IEnumerable<PerformanceCounter> PerformanceCounters { get { return _performanceCounters; } }
+        public IEnumerable<IPerformanceCounterInfo> PerformanceCounterInfos { get { return _performanceCounterInfos; } }
     }
 }
