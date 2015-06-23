@@ -42,6 +42,7 @@ namespace InfluxDB.Net.Collector
             var columnNames = new List<string>();
             var datas = new List<object>();
 
+            //Counter data
             foreach (var processorCounter in _performanceCounterGroup.PerformanceCounters)
             {
                 var data = processorCounter.NextValue();
@@ -52,7 +53,14 @@ namespace InfluxDB.Net.Collector
 
             if (datas.Any())
             {
-                var serie = new Serie.Builder(_name).Columns(columnNames.Select(x => _name + x).ToArray()).Values(datas.ToArray()).Build();
+                //Append metadata
+                columnNames.Add("MachineName");
+                datas.Add(Environment.MachineName);
+
+                var serie = new Serie.Builder(_name)
+                    .Columns(columnNames.Select(x => _name + x).ToArray())
+                    .Values(datas.ToArray())
+                    .Build();
                 var result = await _client.WriteAsync(TimeUnit.Milliseconds, serie);
                 InvokeNotificationEvent(new NotificationEventArgs(string.Format("Collector engine {0} executed: {1}", _name, result.StatusCode), OutputLevel.Information));
             }
