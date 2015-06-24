@@ -1,6 +1,6 @@
 ﻿<InfluxDB.Net.Collector>
   <CounterGroups>
-    <CounterGroup Name="Processor" SecondsInterval="5">
+    <CounterGroup Name="Processor" SecondsInterval="1">
       <Counter>
         <CategoryName>Processor</CategoryName>
         <CounterName>% Processor Time</CounterName>
@@ -25,6 +25,26 @@
         <CategoryName>Processor</CategoryName>
         <CounterName>% Processor Time</CounterName>
         <InstanceName>3</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>4</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>5</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>6</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>7</InstanceName>
       </Counter>
     </CounterGroup>
   </CounterGroups>

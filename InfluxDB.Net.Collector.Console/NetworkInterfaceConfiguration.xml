@@ -1,0 +1,11 @@
+﻿<InfluxDB.Net.Collector>
+  <CounterGroups>
+    <CounterGroup Name="NetworkInterface" SecondsInterval="1">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Bytes Sent/sec</CounterName>
+        <InstanceName>Intel[R] 82574L Gigabit Network Connection</InstanceName>
+      </Counter>
+    </CounterGroup>
+  </CounterGroups>
+</InfluxDB.Net.Collector>
