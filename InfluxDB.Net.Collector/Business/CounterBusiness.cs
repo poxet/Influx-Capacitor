@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using InfluxDB.Net.Collector.Entities;
 using InfluxDB.Net.Collector.Interface;
@@ -38,6 +39,13 @@ namespace InfluxDB.Net.Collector.Business
         {
             try
             {
+                if (instanceName == "*")
+                {
+                    //TODO: Get all instances of the counter.
+                    var cats = PerformanceCounterCategory.GetCategories().Where(x => x.CategoryName == categoryName).ToArray();
+                    var cnts = cats.SelectMany(xx => xx.GetInstanceNames().Select(y => xx.GetCounters(y))).ToArray();
+                }
+
                 var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName);
                 processorCounter.NextValue();
                 return processorCounter;

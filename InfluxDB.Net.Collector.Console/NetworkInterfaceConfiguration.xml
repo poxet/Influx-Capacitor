@@ -4,7 +4,7 @@
       <Counter>
         <CategoryName>Network Interface</CategoryName>
         <CounterName>Bytes Sent/sec</CounterName>
-        <InstanceName>Intel[R] 82574L Gigabit Network Connection</InstanceName>
+        <InstanceName>*</InstanceName>
       </Counter>
     </CounterGroup>
   </CounterGroups>
