@@ -4,11 +4,17 @@ Preconditions
 Steps to manually build the installation package
 
 1. Build a release version of the solution
-2. Run the BuildMsi.bat to create the msi package.
-3. Plave the msi to be downloaded from http://thargelion.net/resources/InfluxDB.Net.Collector.Service.msi
-4. Go to the folder "C:\Dev\Tharga\influxdb-collector\Setup" and type "cpack"
-5. Test the package by typing "choco install influxdb.collector -source %cd%"
+2. Open a console as admin and go to the Setup folder
+3. Run the BuildMsi.bat to create the msi package.
+4. Rename and place the msi to be downloaded from http://thargelion.net/resources/InfluxDB.Net.Collector/InfluxDB.Net.Collector.Service.[Version].msi
+5. type "cpack" (While standing in the Setup folder)
+5. Test the package by typing "choco install influxdb.collector -source %cd% -yes"
+6. Go to https://chocolatey.org/packages/upload and upload the .nupkg file
 
 Steps to manually update the version
 1. Change the versions of all assemblies
 2. Update version in influxdb-collector.nuspec
+3. Change the path in file ChocolateyInstall.ps1 so that the version is reflected
+4. Change Version in the Product element of the InfluxDB.Net.Collector.Service.wsx file
+5. Change Maximum in the UpgradeVersion element of the InfluxDB.Net.Collector.Service.wsx file
+6. Generate a new Id in the Product element of the InfluxDB.Net.Collector.Service.wsx file

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Name='InfluxDB Net Collector Service' Id='C8738BAA-C035-4D68-9231-31E2A213BF67' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='1.0' Manufacturer='Thargelion AB'>
+  <Product Name='InfluxDB Net Collector Service' Id='26B0CADE-08DF-42E3-82F6-E4DA9771786A' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='1.0.2' Manufacturer='Thargelion AB'>
 
     <Package InstallerVersion="300" Compressed="yes"/>     
     
@@ -12,7 +12,11 @@
 
       <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
     </UI>
- 
+
+    <Upgrade Id="C742A659-5155-4BBA-8FCB-3068AAEBEE26">
+      <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum="1.0.2" IncludeMaximum="no" Property="PREVIOUSFOUND" />
+    </Upgrade>
+
     <Media Id="1" Cabinet="InfluxDB.Net.Collector.Service.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
@@ -26,12 +30,15 @@
     <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Service\bin\Release">
       <Component Id="Core" Guid="D1F1D596-A757-4B10-9C80-35184D3608CD">
         <File Name="InfluxDB.Net.Collector.dll" />
-		<File Name="InfluxDB.Net.dll" />
-		<File Name="Microsoft.Threading.Tasks.dll" />
-		<File Name="Newtonsoft.Json.dll" />
-		<File Name="ProcessorCounterConfiguration.xml" />
-		<File Name="MemoryCounterConfiguration.xml" />
-		<File Name="Tharga.Toolkit.Console.dll" />
+        <File Name="InfluxDB.Net.dll" />
+        <File Name="Microsoft.Threading.Tasks.dll" />
+        <File Name="Newtonsoft.Json.dll" />
+        <File Name="MemoryCounterConfiguration.xml" />
+        <File Name="NetworkInterfaceConfiguration.xml" />
+        <File Name="ProcessorCounterConfiguration.xml" />
+        <File Name="SqlConfiguration.xml" />
+        <File Name="WebServiceConfiguration.xml" />
+        <File Name="Tharga.Toolkit.Console.dll" />
       </Component>
     </DirectoryRef>
     
@@ -63,6 +70,6 @@
     </InstallExecuteSequence>
 
 	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C InfluxDB.Net.Collector.Console.exe "setup auto"' Execute="deferred" Return="check" Impersonate="no" />
-
+    
   </Product>
 </Wix>

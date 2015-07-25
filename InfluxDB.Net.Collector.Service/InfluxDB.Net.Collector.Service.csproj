@@ -66,8 +66,20 @@
       <Link>MemoryCounterConfiguration.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\InfluxDB.Net.Collector.Console\NetworkInterfaceConfiguration.xml">
+      <Link>NetworkInterfaceConfiguration.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\InfluxDB.Net.Collector.Console\ProcessorCounterConfiguration.xml">
       <Link>ProcessorCounterConfiguration.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\InfluxDB.Net.Collector.Console\SqlConfiguration.xml">
+      <Link>SqlConfiguration.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\InfluxDB.Net.Collector.Console\WebServiceConfiguration.xml">
+      <Link>WebServiceConfiguration.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
