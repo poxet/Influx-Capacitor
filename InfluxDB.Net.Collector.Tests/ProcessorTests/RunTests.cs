@@ -27,7 +27,7 @@ namespace InfluxDB.Net.Collector.Tests.ProcessorTests
             var configFiles = new string[] { };
 
             //Act
-            await processor.RunAsync(configFiles);
+            await processor.RunAsync(configFiles, false);
 
             //Assert
             counterBusinessMock.Verify(x => x.GetPerformanceCounterGroups(config), Times.Once);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Timers;
 using InfluxDB.Net.Collector.Interface;
@@ -18,11 +19,13 @@ namespace InfluxDB.Net.Collector
         private readonly IInfluxDbAgent _client;
         private readonly string _databaseName;
         private readonly string _name;
+        private readonly bool _showDetails;
 
-        public CollectorEngine(IInfluxDbAgent client, string databaseName, IPerformanceCounterGroup performanceCounterGroup)
+        public CollectorEngine(IInfluxDbAgent client, string databaseName, IPerformanceCounterGroup performanceCounterGroup, bool showDetails)
         {
             _client = client;
             _performanceCounterGroup = performanceCounterGroup;
+            _showDetails = showDetails;
             _databaseName = databaseName;
             if (performanceCounterGroup.SecondsInterval > 0)
             {
@@ -54,7 +57,7 @@ namespace InfluxDB.Net.Collector
             {
                 var data = performanceCounterInfo.PerformanceCounter.NextValue();
 
-                columnNames.Add(performanceCounterInfo.Name);
+                columnNames.Add(performanceCounterInfo.Name.Clean());
                 datas.Add(data);
             }
 
@@ -70,6 +73,15 @@ namespace InfluxDB.Net.Collector
                     .Build();
                 var result = await _client.WriteAsync(TimeUnit.Milliseconds, serie);
                 InvokeNotificationEvent(new NotificationEventArgs(string.Format("Collector engine {0} executed: {1}", _name, result.StatusCode), OutputLevel.Information));
+
+                //Output this only if running from console
+                if (_showDetails)
+                {
+                    for (var i = 0; i < columnNames.Count; i++)
+                    {
+                        InvokeNotificationEvent(new NotificationEventArgs("> " + columnNames[i] + ": " + datas[i], OutputLevel.Information));
+                    }
+                }
             }
         }
 

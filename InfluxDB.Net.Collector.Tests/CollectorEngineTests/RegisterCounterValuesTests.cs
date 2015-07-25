@@ -23,7 +23,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroup.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
-            var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object);
+            var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object, false);
 
             //Act
             collectorEngine.RegisterCounterValuesAsync().Wait();
@@ -43,7 +43,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroup.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { });
-            var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object);
+            var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object, false);
 
             //Act
             collectorEngine.RegisterCounterValuesAsync().Wait();

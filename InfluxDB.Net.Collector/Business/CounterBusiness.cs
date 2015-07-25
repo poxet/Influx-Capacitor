@@ -18,15 +18,26 @@ namespace InfluxDB.Net.Collector.Business
 
             foreach (var group in config.Groups)
             {
-                var performanceCounters = new List<IPerformanceCounterInfo>();
+                var performanceCounterInfos = new List<IPerformanceCounterInfo>();
                 foreach (var counter in group.Counters)
                 {
-                    var performanceCounter = GetPerformanceCounter(counter.CategoryName, counter.CounterName, counter.InstanceName);
-                    if (performanceCounter != null)
-                        performanceCounters.Add(new PerformanceCounterInfo(counter.Name, performanceCounter));
+                    var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName);
+                    if (performanceCounters != null)
+                    {
+                        foreach (var performanceCounter in performanceCounters)
+                        {
+                            var name = counter.Name;
+                            if (name == "*")
+                            {
+                                name = performanceCounter.InstanceName;
+                            }
+
+                            performanceCounterInfos.Add(new PerformanceCounterInfo(name, performanceCounter));
+                        }
+                    }
                 }
 
-                var performanceCounterGroup = new PerformanceCounterGroup(group.Name, group.SecondsInterval, performanceCounters);
+                var performanceCounterGroup = new PerformanceCounterGroup(group.Name, group.SecondsInterval, performanceCounterInfos);
                 counterGroups.Add(performanceCounterGroup);
             }
 
@@ -35,29 +46,32 @@ namespace InfluxDB.Net.Collector.Business
             return counterGroups;
         }
 
-        private PerformanceCounter GetPerformanceCounter(string categoryName, string counterName, string instanceName)
+        private IEnumerable<PerformanceCounter> GetPerformanceCounters(string categoryName, string counterName, string instanceName)
         {
+            var response = new List<PerformanceCounter>();
             try
             {
                 if (instanceName == "*")
                 {
-                    //TODO: Get all instances of the counter.
-                    var cats = PerformanceCounterCategory.GetCategories().Where(x => x.CategoryName == categoryName).ToArray();
-                    var cnts = cats.SelectMany(xx => xx.GetInstanceNames().Select(y => xx.GetCounters(y))).ToArray();
+                    var cat = new PerformanceCounterCategory(categoryName);
+                    var instances = cat.GetInstanceNames();
+                    response.AddRange(instances.Select(instance => cat.GetCounters(instance).Single(x => x.CounterName == counterName)));
                 }
-
-                var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName);
-                processorCounter.NextValue();
-                return processorCounter;
+                else
+                {
+                    var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName);
+                    processorCounter.NextValue();
+                    response.Add(processorCounter);
+                }
             }
             catch (InvalidOperationException exception)
             {
                 var message = exception.Message;
                 message += " categoryName=" + categoryName + ", counterName=" + counterName + ", instanceName=" + (instanceName ?? "N/A");
                 EventLog.WriteEntry("InfluxDB.Net.Collector", message, EventLogEntryType.Error);
-                //TODO: Log when there is a counter that cannot be created
-                return null;
             }
+
+            return response;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace InfluxDB.Net.Collector
             _influxDbAgentLoader = influxDbAgentLoader;
         }
 
-        public async Task RunAsync(string[] configFileNames)
+        public async Task RunAsync(string[] configFileNames, bool showDetails)
         {
             var config = _configBusiness.LoadFiles(configFileNames);
 
@@ -43,7 +43,7 @@ namespace InfluxDB.Net.Collector
 
             foreach (var counterGroup in counterGroups)
             {
-                var engine = new CollectorEngine(client, config.Database.Name, counterGroup);
+                var engine = new CollectorEngine(client, config.Database.Name, counterGroup, showDetails);
                 engine.NotificationEvent += Engine_NotificationEvent;
                 await engine.StartAsync();
             }
