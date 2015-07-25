@@ -40,6 +40,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
         private void StartService()
         {
             var service = new ServiceController("InfluxDB.Net.Collector");
+            var serviceControllerStatus = "not found";
             try
             {
                 if (service.Status != ServiceControllerStatus.Running)
@@ -47,14 +48,15 @@ namespace InfluxDB.Net.Collector.Console.Commands
                     service.Start();
                     service.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 15));
                 }
+                serviceControllerStatus = service.Status.ToString();
             }
             catch (Exception exception)
             {
                 OutputError(exception.Message);
             }
             finally
-            {
-                OutputInformation("Service is " + service.Status + ".");
+            {                
+                OutputInformation("Service is " + serviceControllerStatus + ".");
             }
         }
 
@@ -80,6 +82,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
             if (!connectionConfirmed)
             {
                 OutputInformation("Enter the url to the InfluxDB to use.");
+                OutputInformation("Provide the correct port, typically 8086. (Ex. http://tharga.net:8086)");
                 while (!connectionConfirmed)
                 {
                     try
@@ -95,7 +98,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
                     }
                     catch (Exception exception)
                     {
-                        OutputError(exception.Message);
+                        OutputError(exception.Message.Split('\n')[0]);
                     }
                 }
 
