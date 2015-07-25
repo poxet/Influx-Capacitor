@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Name='InfluxDB Net Collector Service' Id='26B0CADE-08DF-42E3-82F6-E4DA9771786A' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='1.0.2' Manufacturer='Thargelion AB'>
+  <Product Name='InfluxDB Net Collector Service' Id='4D39C9AF-064D-4101-A928-2033E54C8F44' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='1.0.3' Manufacturer='Thargelion AB'>
 
     <Package InstallerVersion="300" Compressed="yes"/>     
     
@@ -14,7 +14,7 @@
     </UI>
 
     <Upgrade Id="C742A659-5155-4BBA-8FCB-3068AAEBEE26">
-      <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum="1.0.2" IncludeMaximum="no" Property="PREVIOUSFOUND" />
+      <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum="1.0.3" IncludeMaximum="no" Property="PREVIOUSFOUND" />
     </Upgrade>
 
     <Media Id="1" Cabinet="InfluxDB.Net.Collector.Service.cab" EmbedCab="yes" />
