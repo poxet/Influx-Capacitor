@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxDB.Net.Collector.Console", "InfluxDB.Net.Collector.Console\InfluxDB.Net.Collector.Console.csproj", "{840B45F9-F50E-449A-B132-63B80FCF1337}"
 EndProject
@@ -17,6 +17,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxDB.Net.Collector.Tests", "InfluxDB.Net.Collector.Tests\InfluxDB.Net.Collector.Tests.csproj", "{93FB507A-A7DC-4809-82ED-3E67C45D79AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxDB.Net.Collector.Service", "InfluxDB.Net.Collector.Service\InfluxDB.Net.Collector.Service.csproj", "{AC63E1C0-867D-4E9C-96AA-A34045617B26}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{472514BE-9F45-4C27-AA9D-DC57C99D7292}"
+	ProjectSection(SolutionItems) = preProject
+		Setup\BuildMsi.bat = Setup\BuildMsi.bat
+		Setup\ChocolateyInstall.ps1 = Setup\ChocolateyInstall.ps1
+		Setup\influxdb-collector.nuspec = Setup\influxdb-collector.nuspec
+		Setup\InfluxDB.Net.Collector.Service.wsx = Setup\InfluxDB.Net.Collector.Service.wsx
+		Setup\Note.txt = Setup\Note.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

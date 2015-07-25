@@ -6,3 +6,6 @@ Steps to manually build the installation package
 4. Go to the folder "C:\Dev\Tharga\influxdb-collector\Setup" and type "cpack"
 5. Test the package by typing "choco install influxdb.collector -source %cd%"
 
+Steps to manually update the version
+1. Change the versions of all assemblies
+2. Update version in influxdb-collector.nuspec
