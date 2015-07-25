@@ -1,6 +1,6 @@
 ﻿<InfluxDB.Net.Collector>
   <CounterGroups>
-    <CounterGroup Name="WebService" SecondsInterval="1">
+    <CounterGroup Name="WebService" SecondsInterval="10">
       <Counter>
         <CategoryName>Web Service</CategoryName>
         <CounterName>Bytes Sent/sec</CounterName>

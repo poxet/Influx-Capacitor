@@ -1,6 +1,6 @@
 ﻿<InfluxDB.Net.Collector>
   <CounterGroups>
-    <CounterGroup Name="Memory" SecondsInterval="1">
+    <CounterGroup Name="Memory" SecondsInterval="10">
       <Counter Name="CommittedBytesInUse">
         <CategoryName>Memory</CategoryName>
         <CounterName>% Committed Bytes In Use</CounterName>

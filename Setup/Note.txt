@@ -1,3 +1,6 @@
+Preconditions
+- You need "WiX Toolset v3.9" to be able to create the installation package. Run "choco install wixtoolset" to have it installed.
+
 Steps to manually build the installation package
 
 1. Build a release version of the solution
