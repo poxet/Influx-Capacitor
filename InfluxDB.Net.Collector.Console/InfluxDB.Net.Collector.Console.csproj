@@ -76,10 +76,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Connection\CheckSetupCommand.cs" />
     <Compile Include="Commands\Processor\RunProcessorCommand.cs" />
     <Compile Include="Commands\Processor\ProcessorCommands.cs" />
     <Compile Include="Commands\Setup\AutoSetupCommand.cs" />
+    <Compile Include="Commands\Connection\ConnectionCommands.cs" />
+    <Compile Include="Commands\Setup\DatabaseSetupCommand.cs" />
     <Compile Include="Commands\Setup\SettupCommands.cs" />
+    <Compile Include="Commands\Setup\SetupCommandBase.cs" />
+    <Compile Include="Commands\Connection\ShowSetupCommand.cs" />
     <Compile Include="CompositeRoot.cs" />
     <Compile Include="ICompositeRoot.cs" />
     <Compile Include="Program.cs" />
@@ -95,6 +100,7 @@
     </Content>
     <Content Include="NetworkInterfaceConfiguration.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="ProcessorCounterConfiguration.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

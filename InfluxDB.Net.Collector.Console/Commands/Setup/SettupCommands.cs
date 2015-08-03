@@ -1,6 +1,6 @@
 ﻿using Tharga.Toolkit.Console.Command.Base;
 
-namespace InfluxDB.Net.Collector.Console.Commands
+namespace InfluxDB.Net.Collector.Console.Commands.Setup
 {
     internal class SettupCommands : ContainerCommandBase
     {
@@ -8,6 +8,7 @@ namespace InfluxDB.Net.Collector.Console.Commands
             : base("Setup")
         {
             RegisterCommand(new AutoSetupCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
+            RegisterCommand(new DatabaseSetupCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
         }
     }
 }
