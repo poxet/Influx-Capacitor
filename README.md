@@ -8,6 +8,10 @@ Data is collected and sent to a [InfluxDB](https://github.com/influxdb/influxdb)
 Install using chocolatey
 https://chocolatey.org/packages/influxdb.collector
 
+## Versions
+Version 1.0.0 - 1.0.3 (InfluxDB version 0.8)
+Version 1.0.4 (InfluxDB version 0.9)
+
 ## Performance Counters
 
 By default two performance counters are provided. Setup for counters are stored in xml-files in the same folder as the executables.

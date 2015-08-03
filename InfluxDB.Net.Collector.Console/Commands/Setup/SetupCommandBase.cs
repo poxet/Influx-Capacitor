@@ -31,12 +31,12 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                 client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert"));
             }
 
-            var connectionConfirmed = false;
+            Pong pong = null;
             try
             {
                 if (client != null)
                 {
-                    connectionConfirmed = (await client.PingAsync()).Success;
+                    pong = await client.PingAsync();
                 }
             }
             catch (Exception exception)
@@ -44,18 +44,18 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                 OutputError(exception.Message);
             }
 
-            if (!connectionConfirmed)
+            if (pong == null || !pong.Success)
             {
                 OutputInformation("Enter the url to the InfluxDB to use.");
                 OutputInformation("Provide the correct port, typically 8086. (Ex. http://tharga.net:8086)");
-                while (!connectionConfirmed)
+                while (pong == null || !pong.Success)
                 {
                     try
                     {
                         url = QueryParam<string>("Url", GetParam(paramList, index));
                         client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert"));
 
-                        connectionConfirmed = (await client.PingAsync()).Success;
+                        pong = await client.PingAsync();
                     }
                     catch (CommandEscapeException)
                     {
@@ -69,7 +69,8 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
 
                 _configBusiness.SaveDatabaseUrl(url);
             }
-            OutputInformation("Connection to server {0} confirmed.", url);
+
+            OutputInformation("Connection to server {0} confirmed. Version is {1}.", url, pong.Version);
             return url;
         }
 

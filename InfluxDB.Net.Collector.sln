@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxDB.Net.Collector.Console", "InfluxDB.Net.Collector.Console\InfluxDB.Net.Collector.Console.csproj", "{840B45F9-F50E-449A-B132-63B80FCF1337}"
 EndProject
@@ -25,6 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{472514BE
 		Setup\influxdb-collector.nuspec = Setup\influxdb-collector.nuspec
 		Setup\InfluxDB.Net.Collector.Service.wsx = Setup\InfluxDB.Net.Collector.Service.wsx
 		Setup\Note.txt = Setup\Note.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4CE409FF-8BE7-48B3-8CB1-9BB9AF28DA29}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
