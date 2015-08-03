@@ -7,7 +7,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Connection
         public ConnectionCommands(ICompositeRoot compositeRoot)
             : base("Connection")
         {
-            RegisterCommand(new ShowSetupCommand(compositeRoot.ConfigBusiness, compositeRoot.InfluxDbAgentLoader));
+            RegisterCommand(new ShowSetupCommand(compositeRoot.ConfigBusiness));
             RegisterCommand(new CheckSetupCommand(compositeRoot.ConfigBusiness, compositeRoot.InfluxDbAgentLoader));
         }
     }

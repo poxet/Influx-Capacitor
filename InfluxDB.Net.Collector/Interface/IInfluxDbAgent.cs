@@ -5,10 +5,7 @@ namespace InfluxDB.Net.Collector.Interface
 {
     public interface IInfluxDbAgent
     {
-        Task<bool> CanConnect();
         Task<Pong> PingAsync();
-        Task<string> VersionAsync();
-        Task<InfluxDbApiResponse> WriteAsync(TimeUnit milliseconds, Serie serie);
-        Task<InfluxDbApiResponse> AuthenticateDatabaseUserAsync();
+        Task<InfluxDbApiResponse> WriteAsync(Point[] points);
     }
 }

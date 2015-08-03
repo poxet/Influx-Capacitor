@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using InfluxDB.Net.Collector.Entities;
@@ -26,13 +27,17 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
 
             IInfluxDbAgent client = null;
             if (!string.IsNullOrEmpty(url))
-                client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty"));
+            {
+                client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert"));
+            }
 
             var connectionConfirmed = false;
             try
             {
                 if (client != null)
-                    connectionConfirmed = await client.CanConnect();
+                {
+                    connectionConfirmed = (await client.PingAsync()).Success;
+                }
             }
             catch (Exception exception)
             {
@@ -50,7 +55,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                         url = QueryParam<string>("Url", GetParam(paramList, index));
                         client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert"));
 
-                        connectionConfirmed = await client.CanConnect();
+                        connectionConfirmed = (await client.PingAsync()).Success;
                     }
                     catch (CommandEscapeException)
                     {
@@ -68,12 +73,12 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             return url;
         }
 
-        protected async Task<IDatabaseConfig> GetUsernameAsync(string url, string paramList, int index)
+        protected async Task<IDatabaseConfig> GetUsernameAsync(string paramList, int index, IDatabaseConfig config)
         {
-            var serie = new Serie.Builder("InfluxDB.Net.Collector").Columns("Machine").Values(Environment.MachineName).Build();
+            var points = new[] { new Point { Name = "InfluxDB.Net.Collector", Fields = new Dictionary<string, object> { { "Machine", Environment.MachineName } }, }, };
             var dataChanged = false;
 
-            var config = _configBusiness.OpenDatabaseConfig();
+            var url = config.Url;
 
             IInfluxDbAgent client;
             InfluxDbApiResponse response = null;
@@ -82,7 +87,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                 if (!string.IsNullOrEmpty(config.Name) && !string.IsNullOrEmpty(config.Username) && !string.IsNullOrEmpty(config.Password))
                 {
                     client = _influxDbAgentLoader.GetAgent(config);
-                    response = await client.WriteAsync(TimeUnit.Milliseconds, serie);
+                    response = await client.WriteAsync(points);
                 }
             }
             catch (Exception exception)
@@ -103,7 +108,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                 try
                 {
                     client = _influxDbAgentLoader.GetAgent(config);
-                    response = await client.WriteAsync(TimeUnit.Milliseconds, serie);
+                    response = await client.WriteAsync(points);
                     dataChanged = true;
                 }
                 catch (CommandEscapeException)
@@ -112,7 +117,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                 }
                 catch (Exception exception)
                 {
-                    OutputError(exception.Message);
+                    OutputError("{0}", exception.Message);
                 }
             }
 
@@ -135,6 +140,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                     service.Start();
                     service.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 15));
                 }
+
                 serviceControllerStatus = service.Status.ToString();
             }
             catch (Exception exception)
@@ -143,7 +149,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             }
             finally
             {
-                OutputInformation("Service is " + serviceControllerStatus + ".");
+                OutputInformation("Service is {0}.", serviceControllerStatus);
             }
         }
     }

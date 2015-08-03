@@ -16,14 +16,15 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
         public async override Task<bool> InvokeAsync(string paramList)
         {
             var index = 0;
-            
+
             var defaultUrl = _configBusiness.OpenDatabaseConfig().Url;
 
             var url = await GetServerUrlAsync(paramList, index++, defaultUrl);
-            if (string.IsNullOrEmpty(url)) 
+            if (string.IsNullOrEmpty(url))
                 return false;
 
-            var logonInfo = await GetUsernameAsync(url, paramList, index++);
+            var config = _configBusiness.OpenDatabaseConfig();
+            var logonInfo = await GetUsernameAsync(paramList, index++, config);
             if (logonInfo == null)
                 return false;
 

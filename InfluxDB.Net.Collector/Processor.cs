@@ -27,17 +27,8 @@ namespace InfluxDB.Net.Collector
             var client = _influxDbAgentLoader.GetAgent(config.Database);
 
             var pong = await client.PingAsync();
-            InvokeNotificationEvent(string.Format("Ping: {0} ({1} ms)", pong.Status, pong.ResponseTime), OutputLevel.Information);
-
-            try
-            {
-                var version = await client.VersionAsync();
-                InvokeNotificationEvent(string.Format("Version: {0}", version), OutputLevel.Information);
-            }
-            catch (Exception exception)
-            {
-                InvokeNotificationEvent(exception.Message, OutputLevel.Error);
-            }
+            InvokeNotificationEvent(string.Format("Ping: {0} (ver {1}, {2} ms)", pong.Success, pong.Version, pong.ResponseTime), OutputLevel.Information);
+            InvokeNotificationEvent(string.Format("Version: {0}", pong.Version), OutputLevel.Information);
 
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
 

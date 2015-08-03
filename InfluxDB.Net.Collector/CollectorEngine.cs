@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
@@ -48,37 +49,30 @@ namespace InfluxDB.Net.Collector
 
         internal async Task RegisterCounterValuesAsync()
         {
-            var columnNames = new List<string>();
-            var datas = new List<object>();
+            var points = new[] { new Point { Name = _name, Fields = new Dictionary<string, object>(), Precision = TimeUnit.Microseconds } };
 
             //Counter data
             foreach (var performanceCounterInfo in _performanceCounterGroup.PerformanceCounterInfos)
             {
-                var data = performanceCounterInfo.PerformanceCounter.NextValue();
-
-                columnNames.Add(performanceCounterInfo.Name.Clean());
-                datas.Add(data);
+                var data = performanceCounterInfo.PerformanceCounter.NextValue().ToString(CultureInfo.InvariantCulture);
+                points[0].Fields.Add(performanceCounterInfo.Name.Clean(), data);
             }
 
-            if (datas.Any())
+            if (points[0].Fields.Any())
             {
                 //Append metadata
-                columnNames.Add("MachineName");
-                datas.Add(Environment.MachineName);
+                points[0].Fields.Add("MachineName", Environment.MachineName);
 
-                var serie = new Serie.Builder(_name)
-                    .Columns(columnNames.ToArray())
-                    .Values(datas.ToArray())
-                    .Build();
-                var result = await _client.WriteAsync(TimeUnit.Milliseconds, serie);
+                //unable to parse
+                var result = await _client.WriteAsync(points);
                 InvokeNotificationEvent(new NotificationEventArgs(string.Format("Collector engine {0} executed: {1}", _name, result.StatusCode), OutputLevel.Information));
 
                 //Output this only if running from console
                 if (_showDetails)
                 {
-                    for (var i = 0; i < columnNames.Count; i++)
+                    foreach (var field in points[0].Fields)
                     {
-                        InvokeNotificationEvent(new NotificationEventArgs("> " + columnNames[i] + ": " + datas[i], OutputLevel.Information));
+                        InvokeNotificationEvent(new NotificationEventArgs("> " + field.Key + ": " + field.Value, OutputLevel.Information));
                     }
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using InfluxDB.Net.Collector.Entities;
 using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Console.Commands.Setup
@@ -18,7 +19,8 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             if (string.IsNullOrEmpty(url))
                 return false;
 
-            var logonInfo = await GetUsernameAsync(url, paramList, index++);
+            var config = new DatabaseConfig(url, string.Empty, string.Empty, string.Empty);
+            var logonInfo = await GetUsernameAsync(paramList, index++, config);
             if (logonInfo == null)
                 return false;
 

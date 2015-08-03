@@ -21,7 +21,6 @@ namespace InfluxDB.Net.Collector.Tests.ProcessorTests
             var influxDbAgentLoaderMock = new Mock<IInfluxDbAgentLoader>(MockBehavior.Strict);
             var influxDbAgentMock = new Mock<IInfluxDbAgent>(MockBehavior.Strict);
             influxDbAgentMock.Setup(x => x.PingAsync()).ReturnsAsync(new Pong());
-            influxDbAgentMock.Setup(x => x.VersionAsync()).ReturnsAsync(string.Empty);
             influxDbAgentLoaderMock.Setup(x => x.GetAgent(config.Database)).Returns(influxDbAgentMock.Object);
             var processor = new Processor(configBusinessMock.Object, counterBusinessMock.Object, influxDbAgentLoaderMock.Object);
             var configFiles = new string[] { };
@@ -32,7 +31,6 @@ namespace InfluxDB.Net.Collector.Tests.ProcessorTests
             //Assert
             counterBusinessMock.Verify(x => x.GetPerformanceCounterGroups(config), Times.Once);
             influxDbAgentMock.Verify(x => x.PingAsync(), Times.Once);
-            influxDbAgentMock.Verify(x => x.VersionAsync(), Times.Once);
         }
     }
 }

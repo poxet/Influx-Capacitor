@@ -21,11 +21,9 @@ namespace InfluxDB.Net.Collector.Console.Commands.Connection
             var connection = _configBusiness.OpenDatabaseConfig();
 
             var client = _influxDbAgentLoader.GetAgent(connection);
-            var canConnect = await client.CanConnect();
-            var version = await client.VersionAsync();
+            var pong = await client.PingAsync();
 
-            OutputInformation("Can Connect: {0}", canConnect);
-            OutputInformation("Version: {0}", version);
+            OutputInformation("Can Connect: {0}, version {1}", pong.Success, pong.Version);
 
             return true;
         }
