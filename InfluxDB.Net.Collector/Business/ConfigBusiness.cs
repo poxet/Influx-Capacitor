@@ -98,23 +98,26 @@ namespace InfluxDB.Net.Collector.Business
             var path = GetAppDataFolder();
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
-                return new DatabaseConfig(null, null, null, null);
+            {
+                //TODO: Set to unknown or AUTO (Not to InfluxDbVersion.Ver_0_8x)
+                return new DatabaseConfig(null, null, null, null, InfluxDbVersion.Ver_0_8x);
+            }
 
             var config = LoadFile(databaseConfigFilePath);
             return config.Database;
         }
 
-        public void SaveDatabaseUrl(string url)
+        public void SaveDatabaseUrl(string url, InfluxDbVersion influxDbVersion)
         {
             var config = OpenDatabaseConfig();
-            var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name);
+            var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name, influxDbVersion);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
         public void SaveDatabaseConfig(string databaseName, string username, string password)
         {
             var config = OpenDatabaseConfig();
-            var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName);
+            var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName, config.InfluxDbVersion);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
@@ -225,6 +228,7 @@ namespace InfluxDB.Net.Collector.Business
             string username = null;
             string password = null;
             string name = null;
+            var influxDbVersion = InfluxDbVersion.Ver_0_8x; //TODO: Set to unknown or AUTO (Not to InfluxDbVersion.Ver_0_8x)
             foreach (XmlElement item in databases[0].ChildNodes)
             {
                 switch (item.Name)
@@ -241,9 +245,18 @@ namespace InfluxDB.Net.Collector.Business
                     case "Name":
                         name = item.InnerText;
                         break;
+                    case "InfluxDbVersion":
+                        if (!Enum.TryParse(item.InnerText, true, out influxDbVersion))
+                        {
+                            influxDbVersion = InfluxDbVersion.Ver_0_8x; //TODO: Set to unknown or AUTO (Not to InfluxDbVersion.Ver_0_8x)
+                        }
+                        break;
+                    case "":
+                        break;
                 }
             }
-            var database = new DatabaseConfig(url, username, password, name);
+
+            var database = new DatabaseConfig(url, username, password, name, influxDbVersion);
             return database;
         }
 

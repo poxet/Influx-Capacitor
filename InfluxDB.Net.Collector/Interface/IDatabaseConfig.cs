@@ -6,5 +6,6 @@ namespace InfluxDB.Net.Collector.Interface
         string Username { get; }
         string Password { get; }
         string Name { get; }
+        InfluxDbVersion InfluxDbVersion { get; }
     }
 }

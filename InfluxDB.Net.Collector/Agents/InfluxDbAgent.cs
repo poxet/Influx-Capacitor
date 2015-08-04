@@ -14,7 +14,7 @@ namespace InfluxDB.Net.Collector.Agents
         public InfluxDbAgent(IDatabaseConfig databaseConfig)
         {
             _databaseConfig = databaseConfig;
-            _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password);
+            _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password, _databaseConfig.InfluxDbVersion);
         }
 
         public async Task<InfluxDbApiResponse> WriteAsync(TimeUnit milliseconds, Serie serie)

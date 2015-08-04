@@ -18,12 +18,13 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             var index = 0;
             
             var defaultUrl = _configBusiness.OpenDatabaseConfig().Url;
+            var influxDbVersion = _configBusiness.OpenDatabaseConfig().InfluxDbVersion;
 
-            var url = await GetServerUrlAsync(paramList, index++, defaultUrl);
-            if (string.IsNullOrEmpty(url)) 
+            var response = await GetServerUrlAsync(paramList, index++, defaultUrl, influxDbVersion);
+            if (string.IsNullOrEmpty(response.Item1)) 
                 return false;
 
-            var logonInfo = await GetUsernameAsync(url, paramList, index++);
+            var logonInfo = await GetUsernameAsync(response.Item1, response.Item2, paramList, index++);
             if (logonInfo == null)
                 return false;
 

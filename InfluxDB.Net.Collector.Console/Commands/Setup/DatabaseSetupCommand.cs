@@ -14,11 +14,12 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
         {
             var index = 0;
 
-            var url = await GetServerUrlAsync(paramList, index++, null);
-            if (string.IsNullOrEmpty(url))
+            //TODO: Set to unknown or AUTO (Not to InfluxDbVersion.Ver_0_8x)
+            var response = await GetServerUrlAsync(paramList, index++, null, InfluxDbVersion.Ver_0_8x);
+            if (string.IsNullOrEmpty(response.Item1))
                 return false;
 
-            var logonInfo = await GetUsernameAsync(url, paramList, index++);
+            var logonInfo = await GetUsernameAsync(response.Item1, response.Item2, paramList, index++);
             if (logonInfo == null)
                 return false;
 

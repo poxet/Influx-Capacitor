@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using InfluxDB.Net.Collector.Entities;
@@ -20,23 +22,27 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             _configBusiness = configBusiness;
         }
 
-        protected async Task<string> GetServerUrlAsync(string paramList, int index, string defaultUrl)
+        protected async Task<Tuple<string, InfluxDbVersion>> GetServerUrlAsync(string paramList, int index, string defaultUrl, InfluxDbVersion influxDbVersion)
         {
             var url = defaultUrl;
 
             IInfluxDbAgent client = null;
             if (!string.IsNullOrEmpty(url))
-                client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty"));
+            {                
+                client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty", influxDbVersion));
+            }
 
             var connectionConfirmed = false;
             try
             {
                 if (client != null)
+                {
                     connectionConfirmed = await client.CanConnect();
+                }
             }
             catch (Exception exception)
             {
-                OutputError(exception.Message);
+                OutputError("{0}", exception.Message);
             }
 
             if (!connectionConfirmed)
@@ -48,7 +54,9 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                     try
                     {
                         url = QueryParam<string>("Url", GetParam(paramList, index));
-                        client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert"));
+                        //TODO: Is there an unknown or auto version
+                        influxDbVersion = QueryParam("Version", GetParam(paramList, index), new Dictionary<InfluxDbVersion, string> { { InfluxDbVersion.Ver_0_8x, "0.8x" }, { InfluxDbVersion.Ver_0_9x, "0.9x" } });
+                        client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert", influxDbVersion));
 
                         connectionConfirmed = await client.CanConnect();
                     }
@@ -58,17 +66,17 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                     }
                     catch (Exception exception)
                     {
-                        OutputError(exception.Message.Split('\n')[0]);
+                        OutputError("{0}", exception.Message.Split('\n')[0]);
                     }
                 }
 
-                _configBusiness.SaveDatabaseUrl(url);
+                _configBusiness.SaveDatabaseUrl(url, influxDbVersion);
             }
             OutputInformation("Connection to server {0} confirmed.", url);
-            return url;
+            return new Tuple<string, InfluxDbVersion>(url, influxDbVersion);
         }
 
-        protected async Task<IDatabaseConfig> GetUsernameAsync(string url, string paramList, int index)
+        protected async Task<IDatabaseConfig> GetUsernameAsync(string url, InfluxDbVersion influxDbVersion, string paramList, int index)
         {
             var serie = new Serie.Builder("InfluxDB.Net.Collector").Columns("Machine").Values(Environment.MachineName).Build();
             var dataChanged = false;
@@ -87,7 +95,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             }
             catch (Exception exception)
             {
-                OutputError(exception.Message);
+                OutputError("{0}", exception.Message);
             }
 
             if (response == null || !response.Success)
@@ -98,7 +106,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                 var database = QueryParam<string>("DatabaseName", GetParam(paramList, index++));
                 var user = QueryParam<string>("Username", GetParam(paramList, index++));
                 var password = QueryParam<string>("Password", GetParam(paramList, index++));
-                config = new DatabaseConfig(url, user, password, database);
+                config = new DatabaseConfig(url, user, password, database, influxDbVersion);
 
                 try
                 {
@@ -112,7 +120,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                 }
                 catch (Exception exception)
                 {
-                    OutputError(exception.Message);
+                    OutputError("{0}", exception.Message);
                 }
             }
 
@@ -139,7 +147,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             }
             catch (Exception exception)
             {
-                OutputError(exception.Message);
+                OutputError("{0}", exception.Message);
             }
             finally
             {
