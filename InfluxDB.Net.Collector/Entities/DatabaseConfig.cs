@@ -1,3 +1,4 @@
+using System;
 using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Entities
@@ -12,6 +13,8 @@ namespace InfluxDB.Net.Collector.Entities
 
         public DatabaseConfig(string url, string username, string password, string name, InfluxDbVersion influxDbVersion)
         {
+            if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url", "No url to influxDB provided.");
+
             _url = url;
             _username = username;
             _password = password;

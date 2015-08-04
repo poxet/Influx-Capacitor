@@ -1,0 +1,31 @@
+<Project ToolsVersion="4.0" DefaultTargets="Go" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="..\Build\Build.tasks" />
+
+  <PropertyGroup>
+    <MajorVersion>1</MajorVersion>
+    <MinorVersion>0</MinorVersion>
+    <Build>0</Build>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <RegexTransform Include="AssemblyVersionInfo.cs">
+      <Find>(?&lt;major&gt;\d+)\.(?&lt;minor&gt;\d+)\.(?&lt;build&gt;\d+)\.(?&lt;revision&gt;\d+)</Find>
+      <ReplaceWith>$(MajorVersion).$(MinorVersion).$(Build).$(Version)</ReplaceWith>
+    </RegexTransform>
+  </ItemGroup>
+
+  <Target Name="Go" DependsOnTargets="UpdateAssemblyVersion; Build">
+  </Target>
+
+  <Target Name="UpdateAssemblyVersion" Condition="'$(Version)' != ''">
+    <Message Text="##teamcity[buildNumber '$(MajorVersion).$(MinorVersion).$(Build).$(Version)']" />
+    <RegexTransform Items="@(RegexTransform)" />
+  </Target>
+
+  <Target Name="Build">
+    <MSBuild Projects="..\Quilt4.sln" Targets="Build" Properties="Configuration=CI">
+    </MSBuild>
+  </Target>
+
+</Project>

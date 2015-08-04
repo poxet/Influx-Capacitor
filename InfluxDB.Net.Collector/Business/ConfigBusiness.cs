@@ -100,7 +100,7 @@ namespace InfluxDB.Net.Collector.Business
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
                 //TODO: Set to unknown or AUTO (Not to InfluxDbVersion.Ver_0_8x)
-                return new DatabaseConfig(null, null, null, null, InfluxDbVersion.Ver_0_8x);
+                return new DatabaseConfig("dummy", null, null, null, InfluxDbVersion.Ver_0_8x);
             }
 
             var config = LoadFile(databaseConfigFilePath);
