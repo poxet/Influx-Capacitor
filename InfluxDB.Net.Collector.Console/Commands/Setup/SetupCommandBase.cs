@@ -54,8 +54,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                     try
                     {
                         url = QueryParam<string>("Url", GetParam(paramList, index));
-                        //TODO: Is there an unknown or auto version
-                        influxDbVersion = QueryParam("Version", GetParam(paramList, index), new Dictionary<InfluxDbVersion, string> { { InfluxDbVersion.Ver_0_8x, "0.8x" }, { InfluxDbVersion.Ver_0_9x, "0.9x" } });
+                        influxDbVersion = QueryParam("Version", GetParam(paramList, index), new Dictionary<InfluxDbVersion, string> { { InfluxDbVersion.Ver0_8X, "0.8x" }, { InfluxDbVersion.Ver0_9X, "0.9x" }, { InfluxDbVersion.Auto, "Auto" } });
                         client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert", influxDbVersion));
 
                         connectionConfirmed = await client.CanConnect();

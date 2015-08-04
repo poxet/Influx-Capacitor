@@ -99,8 +99,7 @@ namespace InfluxDB.Net.Collector.Business
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
-                //TODO: Set to unknown or AUTO (Not to InfluxDbVersion.Ver_0_8x)
-                return new DatabaseConfig("dummy", null, null, null, InfluxDbVersion.Ver_0_8x);
+                return new DatabaseConfig("dummy", null, null, null, InfluxDbVersion.Auto);
             }
 
             var config = LoadFile(databaseConfigFilePath);
@@ -228,7 +227,7 @@ namespace InfluxDB.Net.Collector.Business
             string username = null;
             string password = null;
             string name = null;
-            var influxDbVersion = InfluxDbVersion.Ver_0_8x; //TODO: Set to unknown or AUTO (Not to InfluxDbVersion.Ver_0_8x)
+            var influxDbVersion = InfluxDbVersion.Auto;
             foreach (XmlElement item in databases[0].ChildNodes)
             {
                 switch (item.Name)
@@ -248,7 +247,7 @@ namespace InfluxDB.Net.Collector.Business
                     case "InfluxDbVersion":
                         if (!Enum.TryParse(item.InnerText, true, out influxDbVersion))
                         {
-                            influxDbVersion = InfluxDbVersion.Ver_0_8x; //TODO: Set to unknown or AUTO (Not to InfluxDbVersion.Ver_0_8x)
+                            influxDbVersion = InfluxDbVersion.Auto;
                         }
                         break;
                     case "":

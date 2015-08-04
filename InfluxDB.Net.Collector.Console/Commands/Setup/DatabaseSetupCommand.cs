@@ -14,8 +14,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
         {
             var index = 0;
 
-            //TODO: Set to unknown or AUTO (Not to InfluxDbVersion.Ver_0_8x)
-            var response = await GetServerUrlAsync(paramList, index++, null, InfluxDbVersion.Ver_0_8x);
+            var response = await GetServerUrlAsync(paramList, index++, null, InfluxDbVersion.Auto);
             if (string.IsNullOrEmpty(response.Item1))
                 return false;
 
