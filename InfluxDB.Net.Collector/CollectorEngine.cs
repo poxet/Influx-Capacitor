@@ -49,7 +49,7 @@ namespace InfluxDB.Net.Collector
 
         internal async Task RegisterCounterValuesAsync()
         {
-            var points = new[] { new Point { Name = _name, Fields = new Dictionary<string, object>(), Precision = TimeUnit.Microseconds, Tags = new Dictionary<string, object>(), Timestamp = DateTime.Now } };
+            var points = new[] { new Point { Name = _name, Fields = new Dictionary<string, object>(), Precision = TimeUnit.Microseconds, Tags = new Dictionary<string, object>(), Timestamp = DateTime.UtcNow } };
 
             //Counter data
             foreach (var performanceCounterInfo in _performanceCounterGroup.PerformanceCounterInfos)
