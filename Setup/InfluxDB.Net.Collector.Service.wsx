@@ -14,7 +14,7 @@
     </UI>
 
     <Upgrade Id="C742A659-5155-4BBA-8FCB-3068AAEBEE26">
-      <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum='$(var.Version)' IncludeMaximum="no" Property="PREVIOUSFOUND" />
+      <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum='$(var.Version)' IncludeMaximum="yes" Property="PREVIOUSFOUND" />
     </Upgrade>
 
     <Media Id="1" Cabinet="InfluxDB.Net.Collector.Service.cab" EmbedCab="yes" />
