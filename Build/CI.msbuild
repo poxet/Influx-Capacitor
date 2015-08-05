@@ -24,7 +24,7 @@
   </Target>
 
   <Target Name="Build">
-    <MSBuild Projects="..\Quilt4.sln" Targets="Build" Properties="Configuration=CI">
+    <MSBuild Projects="..\Solutions\InfluxDB.Net.Collector.sln" Targets="Build" Properties="Configuration=CI">
     </MSBuild>
   </Target>
 
