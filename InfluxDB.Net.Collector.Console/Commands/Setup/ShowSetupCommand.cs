@@ -2,7 +2,7 @@
 using InfluxDB.Net.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
-namespace InfluxDB.Net.Collector.Console.Commands.Connection
+namespace InfluxDB.Net.Collector.Console.Commands.Setup
 {
     internal class ShowSetupCommand : ActionCommandBase
     {
@@ -20,6 +20,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Connection
         {
             var config = _configBusiness.OpenDatabaseConfig();
             OutputInformation("Url:      {0}", config.Url);
+            OutputInformation("Version:  {0}", config.InfluxDbVersion);
             OutputInformation("Name:     {0}", config.Name);
             OutputInformation("Username: {0}", config.Username);
 

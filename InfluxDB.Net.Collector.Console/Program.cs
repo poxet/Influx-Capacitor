@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using InfluxDB.Net.Collector.Console.Commands.Connection;
 using InfluxDB.Net.Collector.Console.Commands.Processor;
 using InfluxDB.Net.Collector.Console.Commands.Setup;
 using Tharga.Toolkit.Console;

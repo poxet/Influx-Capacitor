@@ -1,5 +1,4 @@
-﻿using InfluxDB.Net.Collector.Console.Commands.Connection;
-using Tharga.Toolkit.Console.Command.Base;
+﻿using Tharga.Toolkit.Console.Command.Base;
 
 namespace InfluxDB.Net.Collector.Console.Commands.Setup
 {
