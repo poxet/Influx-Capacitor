@@ -15,6 +15,5 @@ Steps to manually update the version
 1. Change the versions of AssemblyVersionInfo.cs
 2. Update version in influxdb-collector.nuspec
 3. Change the path in file ChocolateyInstall.ps1 so that the version is reflected
-4. Change Version in the Product element of the InfluxDB.Net.Collector.Service.wsx file
-5. Change Maximum in the UpgradeVersion element of the InfluxDB.Net.Collector.Service.wsx file
-6. Generate a new Id in the Product element of the InfluxDB.Net.Collector.Service.wsx file
+4. Change Version in BuildMsi.bat
+5. Generate a new Id in BuildMsi.bat

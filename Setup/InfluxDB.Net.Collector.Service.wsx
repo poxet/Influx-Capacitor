@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Name='InfluxDB Net Collector Service' Id='3A7CE66D-C72D-427B-8C9A-56748FD0ACEC' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='1.0.5' Manufacturer='Thargelion AB'>
-
+  <Product Name='InfluxDB Net Collector Service' Id='$(var.Id)' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='Thargelion AB'>
+    
     <Package InstallerVersion="300" Compressed="yes"/>     
     
     <UI Id="WixUI_SkipLicenseAgreement">
@@ -14,7 +14,7 @@
     </UI>
 
     <Upgrade Id="C742A659-5155-4BBA-8FCB-3068AAEBEE26">
-      <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum="1.0.5" IncludeMaximum="no" Property="PREVIOUSFOUND" />
+      <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum='$(var.Version)' IncludeMaximum="no" Property="PREVIOUSFOUND" />
     </Upgrade>
 
     <Media Id="1" Cabinet="InfluxDB.Net.Collector.Service.cab" EmbedCab="yes" />
@@ -27,7 +27,7 @@
       </Directory>
     </Directory>
 
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Service\bin\CI">
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\InfluxDB.Net.Collector.Service\bin\$(var.Environment)'>
       <Component Id="Core" Guid="D1F1D596-A757-4B10-9C80-35184D3608CD">
         <File Name="InfluxDB.Net.Collector.dll" />
         <File Name="InfluxDB.Net.dll" />
@@ -42,7 +42,7 @@
       </Component>
     </DirectoryRef>
     
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Service\bin\CI">
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\InfluxDB.Net.Collector.Service\bin\$(var.Environment)'>
       <Component Id="ServiceServer" Guid="D341C6FB-5C67-47B7-B6AE-51ECAAE30703">
         <File Name="InfluxDB.Net.Collector.Service.exe" KeyPath="yes" />
 		<File Name="InfluxDB.Net.Collector.Service.exe.config" />
@@ -51,7 +51,7 @@
       </Component>
     </DirectoryRef>
     
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Console\bin\CI">
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\InfluxDB.Net.Collector.Console\bin\$(var.Environment)'>
       <Component Id="Console" Guid="011E4067-8813-4223-AF15-B3F97C460E03">
         <File Name="InfluxDB.Net.Collector.Console.exe" KeyPath="yes" />
         <File Name="InfluxDB.Net.Collector.Console.exe.config" />
