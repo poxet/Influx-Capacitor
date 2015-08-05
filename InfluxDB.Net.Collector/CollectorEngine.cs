@@ -54,7 +54,7 @@ namespace InfluxDB.Net.Collector
             //Counter data
             foreach (var performanceCounterInfo in _performanceCounterGroup.PerformanceCounterInfos)
             {
-                var data = performanceCounterInfo.PerformanceCounter.NextValue().ToString(CultureInfo.InvariantCulture);
+                var data = performanceCounterInfo.PerformanceCounter.NextValue();
                 points[0].Fields.Add(performanceCounterInfo.Name.Clean(), data);
             }
 
