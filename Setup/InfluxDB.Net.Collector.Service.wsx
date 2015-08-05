@@ -42,7 +42,7 @@
       </Component>
     </DirectoryRef>
     
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Service\bin\Release">
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Service\bin\CI">
       <Component Id="ServiceServer" Guid="D341C6FB-5C67-47B7-B6AE-51ECAAE30703">
         <File Name="InfluxDB.Net.Collector.Service.exe" KeyPath="yes" />
 		<File Name="InfluxDB.Net.Collector.Service.exe.config" />
@@ -51,7 +51,7 @@
       </Component>
     </DirectoryRef>
     
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Console\bin\Release">
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Console\bin\CI">
       <Component Id="Console" Guid="011E4067-8813-4223-AF15-B3F97C460E03">
         <File Name="InfluxDB.Net.Collector.Console.exe" KeyPath="yes" />
         <File Name="InfluxDB.Net.Collector.Console.exe.config" />
