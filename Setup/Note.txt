@@ -12,7 +12,7 @@ Steps to manually build the installation package
 6. Go to https://chocolatey.org/packages/upload and upload the .nupkg file
 
 Steps to manually update the version
-1. Change the versions of all assemblies
+1. Change the versions of AssemblyVersionInfo.cs
 2. Update version in influxdb-collector.nuspec
 3. Change the path in file ChocolateyInstall.ps1 so that the version is reflected
 4. Change Version in the Product element of the InfluxDB.Net.Collector.Service.wsx file

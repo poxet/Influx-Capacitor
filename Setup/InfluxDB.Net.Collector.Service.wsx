@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Name='InfluxDB Net Collector Service' Id='EB837071-3442-4031-99F1-7813274B041B' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='1.0.4' Manufacturer='Thargelion AB'>
+  <Product Name='InfluxDB Net Collector Service' Id='3A7CE66D-C72D-427B-8C9A-56748FD0ACEC' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='1.0.5' Manufacturer='Thargelion AB'>
 
     <Package InstallerVersion="300" Compressed="yes"/>     
     
@@ -14,7 +14,7 @@
     </UI>
 
     <Upgrade Id="C742A659-5155-4BBA-8FCB-3068AAEBEE26">
-      <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum="1.0.4" IncludeMaximum="no" Property="PREVIOUSFOUND" />
+      <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum="1.0.5" IncludeMaximum="no" Property="PREVIOUSFOUND" />
     </Upgrade>
 
     <Media Id="1" Cabinet="InfluxDB.Net.Collector.Service.cab" EmbedCab="yes" />
@@ -27,7 +27,7 @@
       </Directory>
     </Directory>
 
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Service\bin\Release">
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource="..\InfluxDB.Net.Collector.Service\bin\CI">
       <Component Id="Core" Guid="D1F1D596-A757-4B10-9C80-35184D3608CD">
         <File Name="InfluxDB.Net.Collector.dll" />
         <File Name="InfluxDB.Net.dll" />

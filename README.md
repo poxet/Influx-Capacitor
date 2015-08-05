@@ -9,8 +9,8 @@ Install using chocolatey
 https://chocolatey.org/packages/influxdb.collector
 
 ## Versions
-Version 1.0.0 - 1.0.3 (InfluxDB version 0.8)
-Version 1.0.4 (InfluxDB version 0.9)
+- Version 1.0.0 - 1.0.3 (InfluxDB version 0.8)
+- Version 1.0.5 (InfluxDB version 0.9)
 
 ## Performance Counters
 
