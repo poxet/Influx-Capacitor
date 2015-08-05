@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using InfluxDB.Net.Collector.Entities;
@@ -75,12 +74,13 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             return new Tuple<string, InfluxDbVersion>(url, influxDbVersion);
         }
 
-        protected async Task<IDatabaseConfig> GetUsernameAsync(string url, InfluxDbVersion influxDbVersion, string paramList, int index)
+        protected async Task<IDatabaseConfig> GetUsernameAsync(string paramList, int index, IDatabaseConfig config)
         {
-            var serie = new Serie.Builder("InfluxDB.Net.Collector").Columns("Machine").Values(Environment.MachineName).Build();
+            var points = new[] { new Point { Name = "InfluxDB.Net.Collector", Fields = new Dictionary<string, object> { { "Machine", Environment.MachineName } }, }, };
             var dataChanged = false;
 
-            var config = _configBusiness.OpenDatabaseConfig();
+            var url = config.Url;
+            var influxDbVersion = config.InfluxDbVersion;
 
             IInfluxDbAgent client;
             InfluxDbApiResponse response = null;
@@ -89,12 +89,12 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                 if (!string.IsNullOrEmpty(config.Name) && !string.IsNullOrEmpty(config.Username) && !string.IsNullOrEmpty(config.Password))
                 {
                     client = _influxDbAgentLoader.GetAgent(config);
-                    response = await client.WriteAsync(TimeUnit.Milliseconds, serie);
+                    response = await client.WriteAsync(points);
                 }
             }
             catch (Exception exception)
             {
-                OutputError("{0}", exception.Message);
+                OutputError(exception.Message);
             }
 
             if (response == null || !response.Success)
@@ -110,7 +110,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
                 try
                 {
                     client = _influxDbAgentLoader.GetAgent(config);
-                    response = await client.WriteAsync(TimeUnit.Milliseconds, serie);
+                    response = await client.WriteAsync(points);
                     dataChanged = true;
                 }
                 catch (CommandEscapeException)

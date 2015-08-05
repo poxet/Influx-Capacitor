@@ -17,9 +17,9 @@ namespace InfluxDB.Net.Collector.Agents
             _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password, _databaseConfig.InfluxDbVersion);
         }
 
-        public async Task<InfluxDbApiResponse> WriteAsync(TimeUnit milliseconds, Serie serie)
+        public async Task<InfluxDbApiResponse> WriteAsync(Point[] points)
         {
-            return await _influxDb.WriteAsync(_databaseConfig.Name, milliseconds, serie);
+            return await _influxDb.WriteAsync(_databaseConfig.Name, points);
         }
 
         public async Task<InfluxDbApiResponse> AuthenticateDatabaseUserAsync()
@@ -30,9 +30,7 @@ namespace InfluxDB.Net.Collector.Agents
         public async Task<bool> CanConnect()
         {
             var pong = await _influxDb.PingAsync();
-            if (pong.Status == "ok")
-                return true;
-            return false;
+            return pong.Success;
         }
 
         public async Task<Pong> PingAsync()
@@ -42,7 +40,8 @@ namespace InfluxDB.Net.Collector.Agents
 
         public async Task<string> VersionAsync()
         {
-            return await _influxDb.VersionAsync();
+            var pong = await _influxDb.PingAsync();
+            return pong.Version;
         }
     }
 }

@@ -24,7 +24,8 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             if (string.IsNullOrEmpty(response.Item1)) 
                 return false;
 
-            var logonInfo = await GetUsernameAsync(response.Item1, response.Item2, paramList, index++);
+            var config = _configBusiness.OpenDatabaseConfig();
+            var logonInfo = await GetUsernameAsync(paramList, index++, config);
             if (logonInfo == null)
                 return false;
 

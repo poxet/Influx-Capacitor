@@ -98,6 +98,7 @@
     <Compile Include="Interface\IInfluxDbAgent.cs" />
     <Compile Include="Interface\IInfluxDbAgentLoader.cs" />
     <Compile Include="Interface\IPerformanceCounterGroup.cs" />
+    <Compile Include="Interface\IPerformanceCounterInfo.cs" />
     <Compile Include="Interface\RegistryHKey.cs" />
     <Compile Include="NotificationEventArgs.cs" />
     <Compile Include="Processor.cs" />

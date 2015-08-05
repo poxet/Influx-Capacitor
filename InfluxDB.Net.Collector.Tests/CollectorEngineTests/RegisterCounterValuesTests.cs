@@ -18,7 +18,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             //Arrange
             string databaseName = "AA";
             var client = new Mock<IInfluxDbAgent>(MockBehavior.Strict);
-            client.Setup(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
+            client.Setup(x => x.WriteAsync(It.IsAny<Point[]>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
             var performanceCounterGroup = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
@@ -29,7 +29,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             collectorEngine.RegisterCounterValuesAsync().Wait();
 
             //Assert
-            client.Verify(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>()), Times.Once);
+            client.Verify(x => x.WriteAsync(It.IsAny<Point[]>()), Times.Once);
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             //Arrange
             string databaseName = "AA";
             var client = new Mock<IInfluxDbAgent>(MockBehavior.Strict);
-            client.Setup(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
+            client.Setup(x => x.WriteAsync(It.IsAny<Point[]>())).ReturnsAsync(new InfluxDbApiResponse(HttpStatusCode.Accepted, string.Empty));
             var performanceCounterGroup = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
@@ -49,7 +49,7 @@ namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
             collectorEngine.RegisterCounterValuesAsync().Wait();
 
             //Assert
-            client.Verify(x => x.WriteAsync(It.IsAny<TimeUnit>(), It.IsAny<Serie>()), Times.Never);
+            client.Verify(x => x.WriteAsync(It.IsAny<Point[]>()), Times.Never);
         }
     }
 }

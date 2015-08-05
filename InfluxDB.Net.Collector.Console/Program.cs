@@ -17,7 +17,6 @@ namespace InfluxDB.Net.Collector.Console
             var command = new RootCommand(compositeRoot.ClientConsole);
 
             command.RegisterCommand(new SettupCommands(compositeRoot));
-            command.RegisterCommand(new ConnectionCommands(compositeRoot));
             command.RegisterCommand(new ProcessorCommands(compositeRoot));
 
             new CommandEngine(command).Run(args);
