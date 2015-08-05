@@ -41,3 +41,21 @@ It is easy to configure new counters to be monitored. Just do so by creating a n
 - InstanceName - Name of the instance (Ex. _Total)
 
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
+
+## Database connection settings
+The settings are stored in the file database.xml located in hte ProgramData-folder. Propably here "C:\ProgramData\Thargelion\InfluxDB.Net.Collector". You can change settings directly in that file.
+You will have to manually restart the service when the settings have been changed.
+
+Another way of changing settings are to run the console version of the probram.
+
+## Running the console application
+The console version is named *InfluxDB.Net.Collector.Console.exe* and provided together with the installation. The program can be started with command parameters, or you can type the commands you want in the program.
+
+### setup
+- Auto - Will check if the connection works, if it does not then the user will be queried parameters needed for the setup.
+- change - This is the command to use if you want to change configuration settings.
+- show - Will show and test the connection.
+
+### processor
+- run - Will run just like the service does, and collect data from the performance counters and send the result to influxDB.
+

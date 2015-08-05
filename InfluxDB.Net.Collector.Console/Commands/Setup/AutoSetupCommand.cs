@@ -29,7 +29,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             if (logonInfo == null)
                 return false;
 
-            StartService();
+            StartService(true);
 
             return true;
         }

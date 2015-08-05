@@ -8,7 +8,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
             : base("Setup")
         {
             RegisterCommand(new AutoSetupCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
-            RegisterCommand(new DatabaseSetupCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
+            RegisterCommand(new SetupChangeCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
             RegisterCommand(new ShowSetupCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
         }
     }
