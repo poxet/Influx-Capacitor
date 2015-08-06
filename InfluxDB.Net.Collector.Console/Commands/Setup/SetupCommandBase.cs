@@ -133,6 +133,8 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
 
         protected void StartService(bool restartIfAlreadyRunning)
         {
+            OutputInformation("Trying to restart service...");
+
             var service = new ServiceController("InfluxDB.Net.Collector");
             var serviceControllerStatus = "not found";
             try

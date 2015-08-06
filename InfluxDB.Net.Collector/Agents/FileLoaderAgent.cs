@@ -1,6 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using InfluxDB.Net.Collector.Interface;
 
 namespace InfluxDB.Net.Collector.Agents
@@ -15,6 +18,11 @@ namespace InfluxDB.Net.Collector.Agents
 
         public void WriteAllText(string path, string data)
         {
+            if (DoesFileExist(path))
+            {
+                DeleteFile(path);
+            }
+
             File.WriteAllText(path, data);
         }
 
