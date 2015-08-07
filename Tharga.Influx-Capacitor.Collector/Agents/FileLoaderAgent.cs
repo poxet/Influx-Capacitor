@@ -45,6 +45,11 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
 
         public string[] GetFiles(string path, string searchPattern)
         {
+            if (!Directory.Exists(path))
+            {
+                return new string[] { };
+            }
+
             return Directory.GetFiles(path, searchPattern);
         }
 

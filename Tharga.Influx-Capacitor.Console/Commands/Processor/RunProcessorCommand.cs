@@ -16,7 +16,6 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Processor
         public async override Task<bool> InvokeAsync(string paramList)
         {
             await _compositeRoot.Processor.RunAsync(new string[] { }, true);
-
             return true;
         }
     }

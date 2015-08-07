@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Xml;
 using InfluxDB.Net;
 using Tharga.InfluxCapacitor.Collector.Entities;
@@ -28,7 +28,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         public IConfig LoadFiles(string[] configurationFilenames)
         {
             if (!configurationFilenames.Any())
-                configurationFilenames = GetConfigFiles();
+            {
+                configurationFilenames = GetConfigFiles().ToArray();
+            }
 
             IDatabaseConfig database = null;
             var groups = new List<ICounterGroup>();
@@ -47,17 +49,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 {
                     if (database != null)
                     {
-                        throw new InvalidOperationException("There are database configuration sections in more than one file.");
+                        throw new InvalidOperationException("There are database configuration sections in more than one config file.");
                     }
+
                     database = db;
                 }
                 groups.AddRange(grp);
-            }
-
-            //TODO: This is used by the service to automatically try to load the configuration if there is one.
-            if (database == null)
-            {
-                database = OpenDatabaseConfig();
             }
 
             var config = new Config(database, groups);
@@ -74,13 +71,13 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 if (!_fileLoaderAgent.DoesDirectoryExist(path))
                     throw new InvalidOperationException(string.Format("Unable to create directory {0}.", path));
 
-                TestWriteDeleteAccess(path);
+                TestWriteAndDeleteAccess(path);
             }
 
             return path;
         }
 
-        private void TestWriteDeleteAccess(string path)
+        private void TestWriteAndDeleteAccess(string path)
         {
             var sampleFileName = path + "\\test.txt";
             _fileLoaderAgent.WriteAllText(sampleFileName, "ABC");
@@ -260,22 +257,28 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return database;
         }
 
-        private string[] GetConfigFiles()
+        private IEnumerable<string> GetConfigFiles()
         {
-            var configFile = ConfigurationManager.AppSettings["ConfigFile"];
+            var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var configFilesInCurrentDirectory = _fileLoaderAgent.GetFiles(currentDirectory, "*.xml");
 
-            string[] configFiles;
-            if (!string.IsNullOrEmpty(configFile))
-            {
-                configFiles = configFile.Split(';');
-            }
-            else
-            {
-                var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                configFiles = _fileLoaderAgent.GetFiles(currentDirectory, "*.xml");
-            }
+            var configFilesInProgramData = _fileLoaderAgent.GetFiles(_fileLoaderAgent.GetApplicationFolderPath(), "*.xml");
 
-            return configFiles;
+            foreach (var configFile in configFilesInCurrentDirectory.Union(configFilesInProgramData))
+            {
+                var fileData = _fileLoaderAgent.ReadAllText(configFile);
+
+                var document = new XmlDocument();
+                document.LoadXml(fileData);
+
+                var db = GetDatabaseConfig(document);
+                var grp = GetCounterGroups(document).ToList();
+
+                if (db != null || grp.Any())
+                {
+                    yield return configFile;
+                }
+            }
         }
     }
 }
