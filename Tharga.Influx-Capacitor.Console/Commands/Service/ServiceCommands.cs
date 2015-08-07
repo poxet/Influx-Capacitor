@@ -11,7 +11,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
         public ServiceCommands()
             : base("Service")
         {
-            RegisterCommand(new ServiceCheckCommand());
+            RegisterCommand(new ServiceStatusCommand());
             RegisterCommand(new ServiceStopCommand());
             RegisterCommand(new ServiceStartCommand());
             RegisterCommand(new ServiceRestartCommand());

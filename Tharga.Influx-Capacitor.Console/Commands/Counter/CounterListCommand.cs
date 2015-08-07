@@ -4,12 +4,12 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 {
-    internal class ListCountersCommand : ActionCommandBase
+    internal class CounterListCommand : ActionCommandBase
     {
         private readonly IConfigBusiness _configBusiness;
         private readonly ICounterBusiness _counterBusiness;
 
-        public ListCountersCommand(IConfigBusiness configBusiness, ICounterBusiness counterBusiness)
+        public CounterListCommand(IConfigBusiness configBusiness, ICounterBusiness counterBusiness)
             : base("List", "List performance counters.")
         {
             _configBusiness = configBusiness;

@@ -3,10 +3,10 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Service
 {
-    class ServiceCheckCommand : ActionCommandBase
+    class ServiceStatusCommand : ActionCommandBase
     {
-        public ServiceCheckCommand()
-            : base("Check", "Check the state of the service.")
+        public ServiceStatusCommand()
+            : base("Status", "Check the state of the service.")
         {
         }
 

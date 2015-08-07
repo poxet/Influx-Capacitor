@@ -41,7 +41,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
             fileLoaderMock.Setup(x => x.GetApplicationFolderPath()).Returns(folderPath);
             fileLoaderMock.Setup(x => x.DoesDirectoryExist(folderPath)).Returns(true);
             fileLoaderMock.Setup(x => x.DoesFileExist(It.IsAny<string>())).Returns(false);
-            fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<A></A>"));
+            fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => "<A></A>");
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
 
             //Act
@@ -75,7 +75,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
             //Assert            
             Assert.That(config, Is.Null);
             Assert.That(exception, Is.Not.Null);
-            Assert.That(exception.Message, Is.EqualTo("There are database configuration sections in more than one file."));
+            Assert.That(exception.Message, Is.EqualTo("There are database configuration sections in more than one config file."));
         }
     }
 }

@@ -55,11 +55,58 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var response = new List<PerformanceCounter>();
             try
             {
-                if (instanceName == "*")
+                if (string.IsNullOrEmpty(instanceName))
+                {
+                    string[] counterNames;
+                    if (counterName.Contains("*"))
+                    {
+                        var cat = new PerformanceCounterCategory(categoryName);
+                        counterNames = cat.GetCounters().Select(x => x.CounterName).ToArray();
+                    }
+                    else
+                    {
+                        counterNames = new[] { counterName };
+                    }
+
+                    foreach (var counter in counterNames)
+                    {
+                        var processorCounter = new PerformanceCounter(categoryName, counter);
+                        processorCounter.NextValue();
+                        response.Add(processorCounter);
+                    }
+                }
+                else if ((counterName.Contains("*") || instanceName.Contains("*")))
                 {
                     var cat = new PerformanceCounterCategory(categoryName);
-                    var instances = cat.GetInstanceNames();
-                    response.AddRange(instances.Select(instance => cat.GetCounters(instance).Single(x => x.CounterName == counterName)));
+
+                    string[] instances;
+                    if (instanceName.Contains("*"))
+                    {
+                        instances = cat.GetInstanceNames().ToArray();
+                    }
+                    else
+                    {
+                        instances = new[] { instanceName };
+                    }
+
+                    var counterNames = new[] { counterName };
+                    if (counterName.Contains("*"))
+                    {
+                        foreach (var instance in instances)
+                        {
+                            counterNames = cat.GetCounters(instance).Select(x => x.CounterName).ToArray();
+                        }
+                    }
+
+                    foreach(var counter in counterNames)
+                    {
+                        foreach (var instance in instances)
+                        {
+                            var processorCounter = new PerformanceCounter(categoryName, counter, instance);
+                            processorCounter.NextValue();
+                            response.Add(processorCounter);
+                        }
+                    }
                 }
                 else
                 {

@@ -26,9 +26,9 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 
                 if (_instanceName != null)
                 {
-                    int tmp;
-                    if (int.TryParse(_instanceName, out tmp))
-                        return CategoryName + _instanceName;
+                    //int tmp;
+                    //if (int.TryParse(_instanceName, out tmp))
+                    //    return CategoryName + _instanceName;
                     return _instanceName;
                 }
 

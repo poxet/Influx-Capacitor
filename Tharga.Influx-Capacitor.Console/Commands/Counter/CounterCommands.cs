@@ -7,7 +7,9 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
         public CounterCommands(ICompositeRoot compositeRoot)
             : base("Counter")
         {
-            RegisterCommand(new ListCountersCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
+            RegisterCommand(new CounterListCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
+            //RegisterCommand(new CounterDisableCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
+            RegisterCommand(new CounterReadCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
         }
     }
 }

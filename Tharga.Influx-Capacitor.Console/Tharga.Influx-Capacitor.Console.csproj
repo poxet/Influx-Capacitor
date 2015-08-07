@@ -82,10 +82,12 @@
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
     <Compile Include="Commands\Counter\CounterCommands.cs" />
-    <Compile Include="Commands\Counter\ListCountersCommand.cs" />
+    <Compile Include="Commands\Counter\CounterDisableCommand.cs" />
+    <Compile Include="Commands\Counter\CounterListCommand.cs" />
+    <Compile Include="Commands\Counter\CounterReadCommand.cs" />
     <Compile Include="Commands\Processor\RunProcessorCommand.cs" />
     <Compile Include="Commands\Processor\ProcessorCommands.cs" />
-    <Compile Include="Commands\Service\ServiceCheckCommand.cs" />
+    <Compile Include="Commands\Service\ServiceStatusCommand.cs" />
     <Compile Include="Commands\Service\ServiceCommands.cs" />
     <Compile Include="Commands\Service\ServiceRestartCommand.cs" />
     <Compile Include="Commands\Service\ServiceStartCommand.cs" />
