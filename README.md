@@ -31,8 +31,8 @@ You can configure any Performance Counter available to be monitored. When you ha
 - YourCounterGroupName - You own common name for the group of counters (This will be the table name in InfluxDB)
 - SecondsInterval - The interval in seconds that the group of counters will be collected.
 - CategoryName - Category name of the performance counter (Ex. Processor)
-- CounterName - Name of the counter (Ex. % Processor Time). Wild cards such as * can be used heres.
-- InstanceName - Name of the instance (Ex. _Total). Wild cards such as * can be used heres. For counters that does not have any instances, this element can be left out or left empty.
+- CounterName - Name of the counter (Ex. % Processor Time). Wild cards such as * and ? can be used heres. Using * will use all counters.
+- InstanceName - Name of the instance (Ex. _Total). Wild cards such as * and ? can be used heres. For counters that does not have any instances, this element can be left out or left empty. Using * will give all instances.
 
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
 

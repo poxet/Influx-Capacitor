@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
@@ -50,6 +52,17 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return counterGroups;
         }
 
+        private bool Match(string data, string pattern)
+        {
+            if (pattern == "*")
+            {
+                return true;
+            }
+
+            var reg = new Regex("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
+            return reg.IsMatch(data);
+        }
+
         private IEnumerable<PerformanceCounter> GetPerformanceCounters(string categoryName, string counterName, string instanceName)
         {
             var response = new List<PerformanceCounter>();
@@ -61,7 +74,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     if (counterName.Contains("*"))
                     {
                         var cat = new PerformanceCounterCategory(categoryName);
-                        counterNames = cat.GetCounters().Select(x => x.CounterName).ToArray();
+                        counterNames = cat.GetCounters().Where(x => Match(x.CounterName, counterName)).Select(x => x.CounterName).ToArray();
                     }
                     else
                     {
@@ -82,7 +95,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     string[] instances;
                     if (instanceName.Contains("*"))
                     {
-                        instances = cat.GetInstanceNames().ToArray();
+                        instances = cat.GetInstanceNames().Where(x => Match(x, instanceName)).ToArray();
                     }
                     else
                     {
@@ -94,7 +107,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     {
                         foreach (var instance in instances)
                         {
-                            counterNames = cat.GetCounters(instance).Select(x => x.CounterName).ToArray();
+                            counterNames = cat.GetCounters(instance).Where(x => Match(x.CounterName, counterName)).Select(x => x.CounterName).ToArray();
                         }
                     }
 
