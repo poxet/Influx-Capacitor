@@ -3,6 +3,7 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Processor
 {
+    //TODO: Cleanup
     internal class RunProcessorCommand : ActionCommandBase
     {
         private readonly ICompositeRoot _compositeRoot;
