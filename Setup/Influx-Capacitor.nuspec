@@ -3,20 +3,20 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
-    <id>influxdb.collector</id>
-    <title>InfluxDB Collector</title>
-    <version>1.0.5.0</version>
+    <id>Influx-Capacitor</id>
+    <title>Influx Capacitor</title>
+    <version>$version$</version>
     <authors>Daniel Bohlin</authors>
     <owners>Thargelion AB</owners>
     <language>en-US</language>
-    <description>InfluxDB collector for windows. Uses performance counters to collect data from the machine and send them to InfluxDB to be viewable by grafana. Supports version 0.9x of influxDB</description>
-    <projectUrl>https://github.com/poxet/influxdb-collector</projectUrl>
-    <tags>influxdb grafana collect influx performance counters performancecounters time series</tags>
+    <description>Influx Capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana.</description>
+    <projectUrl>http://influx-capacitor.com</projectUrl>
+    <tags>Influx Capacitor collect metrics influx influxdb performance counter grafana time series tharga</tags>
     <copyright></copyright>
-    <licenseUrl>https://github.com/poxet/influxdb-collector</licenseUrl>
+    <licenseUrl>https://github.com/poxet/influxdb-collector/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <iconUrl>http://www.thargelion.se/Images/Logotype/Thargelion-White-Icon-48.png</iconUrl>
-    <releaseNotes>Initial version</releaseNotes>
+    <iconUrl>http://influx-capacitor.com/resources/images/Logotype/icon-48.png</iconUrl>
+    <releaseNotes></releaseNotes>
   </metadata>
   <files>
     <file src="ChocolateyInstall.ps1" target="tools" />

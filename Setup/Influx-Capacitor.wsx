@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Name='InfluxDB Net Collector Service' Id='$(var.Id)' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='Thargelion AB'>
+  <Product Name='Influx Capacitor' Id='$(var.Id)' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='Thargelion AB'>
     
     <Package InstallerVersion="300" Compressed="yes"/>     
     
@@ -17,19 +17,19 @@
       <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum='$(var.Version)' IncludeMaximum="yes" Property="PREVIOUSFOUND" />
     </Upgrade>
 
-    <Media Id="1" Cabinet="InfluxDB.Net.Collector.Service.cab" EmbedCab="yes" />
+    <Media Id="1" Cabinet="Influx-Capacitor.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="CompanyDir" Name="Thargelion">
-          <Directory Id="APPLICATIONROOTDIRECTORY" Name="InfluxDB.Net.Collector.Service" />
+          <Directory Id="APPLICATIONROOTDIRECTORY" Name="Influx-Capacitor.Service" />
         </Directory>
       </Directory>
     </Directory>
 
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\InfluxDB.Net.Collector.Service\bin\$(var.Environment)'>
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\Influx-Capacitor.Service\bin\$(var.Environment)'>
       <Component Id="Core" Guid="D1F1D596-A757-4B10-9C80-35184D3608CD">
-        <File Name="InfluxDB.Net.Collector.dll" />
+        <File Name="Tharga.Influx-Capacitor.Collector.dll" />
         <File Name="InfluxDB.Net.dll" />
         <File Name="Microsoft.Threading.Tasks.dll" />
         <File Name="Newtonsoft.Json.dll" />
@@ -42,19 +42,19 @@
       </Component>
     </DirectoryRef>
     
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\InfluxDB.Net.Collector.Service\bin\$(var.Environment)'>
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\Influx-Capacitor.Service\bin\$(var.Environment)'>
       <Component Id="ServiceServer" Guid="D341C6FB-5C67-47B7-B6AE-51ECAAE30703">
-        <File Name="InfluxDB.Net.Collector.Service.exe" KeyPath="yes" />
-		<File Name="InfluxDB.Net.Collector.Service.exe.config" />
-        <ServiceInstall Name="InfluxDB.Net.Collector" DisplayName="InfluxDB.Net.Collector" Description="Collects performance and store it in InfluxDB." Type="ownProcess" Start="auto" ErrorControl="normal" Account="LocalSystem" />
-        <ServiceControl Name="InfluxDB.Net.Collector" Id="StartService" Start="install" Stop="both" Remove="uninstall" Wait="no" />
+        <File Name="Tharga.Influx-Capacitor.Service.exe" KeyPath="yes" />
+		<File Name="Tharga.Influx-Capacitor.Service.exe.config" />
+        <ServiceInstall Name="Influx-Capacitor" DisplayName="Influx-Capacitor" Description="Influx Capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana." Type="ownProcess" Start="auto" ErrorControl="normal" Account="LocalSystem" />
+        <ServiceControl Name="Influx-Capacitor" Id="StartService" Start="install" Stop="both" Remove="uninstall" Wait="no" />
       </Component>
     </DirectoryRef>
     
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\InfluxDB.Net.Collector.Console\bin\$(var.Environment)'>
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\Influx-Capacitor.Console\bin\$(var.Environment)'>
       <Component Id="Console" Guid="011E4067-8813-4223-AF15-B3F97C460E03">
-        <File Name="InfluxDB.Net.Collector.Console.exe" KeyPath="yes" />
-        <File Name="InfluxDB.Net.Collector.Console.exe.config" />
+        <File Name="Tharga.Influx-Capacitor.Console.exe" KeyPath="yes" />
+        <File Name="Tharga.Influx-Capacitor.Console.exe.config" />
       </Component>
     </DirectoryRef>
   
@@ -69,7 +69,7 @@
       <Custom Action="LaunchApp" Before="InstallFinalize">NOT Installed AND NOT PATCH</Custom>
     </InstallExecuteSequence>
 
-	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C InfluxDB.Net.Collector.Console.exe "setup auto"' Execute="deferred" Return="check" Impersonate="no" />
+	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Influx-Capacitor.Console.exe "setting auto"' Execute="deferred" Return="check" Impersonate="no" />
     
   </Product>
 </Wix>

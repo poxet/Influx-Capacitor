@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{93FB507A-A7DC-4809-82ED-3E67C45D79AB}</ProjectGuid>
+    <ProjectGuid>{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InfluxDB.Net.Collector.Tests</RootNamespace>
-    <AssemblyName>InfluxDB.Net.Collector.Tests</AssemblyName>
+    <RootNamespace>Tharga.InfluxCapacitor.Collector</RootNamespace>
+    <AssemblyName>Tharga.Influx-Capacitor.Collector</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -54,45 +54,56 @@
     <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop">
       <HintPath>..\Solutions\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\Solutions\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Solutions\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\Solutions\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.WebRequest" />
-    <Reference Include="System.Net.Primitives" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tharga.Toolkit.Console">
+      <HintPath>..\Solutions\packages\Tharga.Toolkit.Console.1.5.10.0\lib\net45\Tharga.Toolkit.Console.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Build\AssemblyVersionInfo.cs">
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Business\ConfigBusinessTests\CounterTests.cs" />
-    <Compile Include="Business\ConfigBusinessTests\DatabaseConfitTests.cs" />
-    <Compile Include="Business\ConfigBusinessTests\DatabaseTests.cs" />
-    <Compile Include="Business\CounterBusinessTests\CounterTests.cs" />
-    <Compile Include="CollectorEngineTests\RegisterCounterValuesTests.cs" />
-    <Compile Include="CollectorEngineTests\StartTests.cs" />
-    <Compile Include="ProcessorTests\RunTests.cs" />
+    <Compile Include="Agents\InfluxDbAgent.cs" />
+    <Compile Include="Agents\InfluxDbAgentLoader.cs" />
+    <Compile Include="Business\ConfigBusiness.cs" />
+    <Compile Include="Business\CounterBusiness.cs" />
+    <Compile Include="Agents\FileLoaderAgent.cs" />
+    <Compile Include="Entities\PerformanceCounterInfo.cs" />
+    <Compile Include="Interface\IConfig.cs" />
+    <Compile Include="Interface\IConfigBusiness.cs" />
+    <Compile Include="Interface\ICounter.cs" />
+    <Compile Include="Interface\ICounterBusiness.cs" />
+    <Compile Include="Interface\ICounterGroup.cs" />
+    <Compile Include="Interface\IDatabaseConfig.cs" />
+    <Compile Include="Interface\IFileLoaderAgent.cs" />
+    <Compile Include="CollectorEngine.cs" />
+    <Compile Include="Entities\Config.cs" />
+    <Compile Include="Entities\Counter.cs" />
+    <Compile Include="Entities\CounterGroup.cs" />
+    <Compile Include="Entities\DatabaseConfig.cs" />
+    <Compile Include="Entities\PerformanceCounterGroup.cs" />
+    <Compile Include="Interface\IInfluxDbAgent.cs" />
+    <Compile Include="Interface\IInfluxDbAgentLoader.cs" />
+    <Compile Include="Interface\IPerformanceCounterGroup.cs" />
+    <Compile Include="Interface\IPerformanceCounterInfo.cs" />
+    <Compile Include="Interface\RegistryHKey.cs" />
+    <Compile Include="NotificationEventArgs.cs" />
+    <Compile Include="Processor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\InfluxDB.Net.Collector\InfluxDB.Net.Collector.csproj">
-      <Project>{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}</Project>
-      <Name>InfluxDB.Net.Collector</Name>
-    </ProjectReference>
+    <Compile Include="StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

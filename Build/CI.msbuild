@@ -24,7 +24,7 @@
   </Target>
 
   <Target Name="Build">
-    <MSBuild Projects="..\Solutions\InfluxDB.Net.Collector.sln" Targets="Build" Properties="Configuration=CI">
+    <MSBuild Projects="..\Solutions\Tharga.Influx-Capacitor.sln" Targets="Build" Properties="Configuration=CI">
     </MSBuild>
   </Target>
 

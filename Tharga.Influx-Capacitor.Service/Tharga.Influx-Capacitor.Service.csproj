@@ -7,8 +7,8 @@
     <ProjectGuid>{AC63E1C0-867D-4E9C-96AA-A34045617B26}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InfluxDB.Net.Collector.Service</RootNamespace>
-    <AssemblyName>InfluxDB.Net.Collector.Service</AssemblyName>
+    <RootNamespace>Tharga.InfluxCapacitor.Service</RootNamespace>
+    <AssemblyName>Tharga.Influx-Capacitor.Service</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\Solutions\</SolutionDir>
@@ -68,9 +68,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InfluxDB.Net.Collector\InfluxDB.Net.Collector.csproj">
+    <ProjectReference Include="..\Tharga.Influx-Capacitor.Collector\Tharga.Influx-Capacitor.Collector.csproj">
       <Project>{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}</Project>
-      <Name>InfluxDB.Net.Collector</Name>
+      <Name>Tharga.Influx-Capacitor.Collector</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

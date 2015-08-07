@@ -1,27 +1,21 @@
-# influxdb-collector
-InfluxDB collector for windows. Uses performance counters to collect data from the machine and send them to InfluxDB to be viewable by grafana.
+# influx-capacitor
+Influx-capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana.
 
-It is installed as a windows service named *InfluxDB.Net.Collector*. There is also a console application called *InfluxDB.Net.Collector.Console* that can be used for configuration, to check status and run commands manually.
+It is installed as a windows service named *Influx-Capacitor*. There is also a console application called *Influx-Capacitor.Console* that can be used for configuration, to check status and run commands manually.
 
-Data is collected and sent to a [InfluxDB](https://github.com/influxdb/influxdb) database of your choice. This is great for viewing with [Grafana](https://github.com/grafana/grafana).
+Data is collected and sent to a [InfluxDB](https://github.com/influxdb/influxdb) database of your choice. [Grafana](https://github.com/grafana/grafana) is a great way of looking at the data.
 
 Install using chocolatey
-https://chocolatey.org/packages/influxdb.collector
-
-## Versions
-- Version 1.0.0 - 1.0.3 (InfluxDB version 0.8)
-- Version 1.0.5 (InfluxDB version 0.9)
+https://chocolatey.org/packages/Influx-capacitor
 
 ## Performance Counters
 
-By default two performance counters are provided. Setup for counters are stored in xml-files in the same folder as the executables.
-- ProcessorCounterConfiguration.xml
-- MemoryCounterConfiguration.xml
+By default configurations for a few Performance Counters are provided. Setup for counters are stored in xml-files in the same folder as the executables, or in the ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor) and are named with the file extension xml.
 
-It is easy to configure new counters to be monitored. Just do so by creating a new xml-file using the following format, and restart the service.
+You can configure any Performance Counter available to be monitored. When you have added or changed a configuration file you need to restart the service for it to take effect. You can test and run manually using the console application.
 
 ```
-<InfluxDB.Net.Collector>
+<Influx-Capacitor>
   <CounterGroups>
     <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]">
       <Counter>
@@ -31,31 +25,44 @@ It is easy to configure new counters to be monitored. Just do so by creating a n
       </Counter>
     </CounterGroup>
   </CounterGroups>
-</InfluxDB.Net.Collector>
+</Influx-Capacitor>
 ```
 
-- YourCounterGroupName - You own common name for the group of counters
-- SecondsInterval - The interval that the group of counters is collected and sent to *InfluxDB*
+- YourCounterGroupName - You own common name for the group of counters (This will be the table name in InfluxDB)
+- SecondsInterval - The interval in seconds that the group of counters will be collected.
 - CategoryName - Category name of the performance counter (Ex. Processor)
-- CounterName - Name of the counter (Ex. % Processor Time)
-- InstanceName - Name of the instance (Ex. _Total)
+- CounterName - Name of the counter (Ex. % Processor Time). Wild cards such as * can be used heres.
+- InstanceName - Name of the instance (Ex. _Total). Wild cards such as * can be used heres. For counters that does not have any instances, this element can be left out or left empty.
 
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
 
 ## Database connection settings
-The settings are stored in the file database.xml located in hte ProgramData-folder. Propably here "C:\ProgramData\Thargelion\InfluxDB.Net.Collector". You can change settings directly in that file.
-You will have to manually restart the service when the settings have been changed.
-
-Another way of changing settings are to run the console version of the probram.
+The settings are stored in the file database.xml located in hte ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). You can change settings directly in that file and restert the service, or you can use the command "setup change" in the console application, and the service will be restarted for you.
 
 ## Running the console application
-The console version is named *InfluxDB.Net.Collector.Console.exe* and provided together with the installation. The program can be started with command parameters, or you can type the commands you want in the program.
+The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided together with the installation. The program can be started with command parameters, or you can type the commands you want in the program.
 
-### setup
-- Auto - Will check if the connection works, if it does not then the user will be queried parameters needed for the setup.
-- change - This is the command to use if you want to change configuration settings.
-- show - Will show and test the connection.
+### Setting
+- Auto - Will check if the connection works, if it does not then the user will be queried parameters needed for the setup. This command will start (or restart) the service if installed on the machine.
+- change - This is the command to use if you want to change configuration settings. This command will start (or restart) the service if installed on the machine.
+- show - Will show and test the connection. You will also get the version number of the influxDB database connected.
 
-### processor
-- run - Will run just like the service does, and collect data from the performance counters and send the result to influxDB.
+### Service
+- Check
+- Stop
+- Start
+- Restart
 
+### Counter
+- List - Lists all performance counter configurations that exists.
+- Create - Will create a configuration for new performance counter.
+- Delete - Deletes a configuration for a specific performance counter.
+- Run - Runs a specific performance counter and shows the values.
+- Collect - Runs, collects and sends performance counter data to InfluxDB.
+
+## Versions
+The currently supported version of InfluxDB is 0.9x.
+
+## Thanks to
+[ziyasal/InfluxDB.Net](https://github.com/ziyasal/InfluxDB.Net/network)
+[discoduck2x](https://github.com/discoduck2x)
