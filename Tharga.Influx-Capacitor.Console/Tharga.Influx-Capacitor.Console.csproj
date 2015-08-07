@@ -83,6 +83,11 @@
     </Compile>
     <Compile Include="Commands\Processor\RunProcessorCommand.cs" />
     <Compile Include="Commands\Processor\ProcessorCommands.cs" />
+    <Compile Include="Commands\Service\ServiceCheckCommand.cs" />
+    <Compile Include="Commands\Service\ServiceCommands.cs" />
+    <Compile Include="Commands\Service\ServiceRestartCommand.cs" />
+    <Compile Include="Commands\Service\ServiceStartCommand.cs" />
+    <Compile Include="Commands\Service\ServiceStopCommand.cs" />
     <Compile Include="Commands\Setting\SettingAutoCommand.cs" />
     <Compile Include="Commands\Setting\SettingChangeCommand.cs" />
     <Compile Include="Commands\Setting\SettingCommands.cs" />

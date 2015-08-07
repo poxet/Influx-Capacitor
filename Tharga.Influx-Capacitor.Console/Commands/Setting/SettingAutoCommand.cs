@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Console.Commands.Service;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Setting
 {
@@ -29,7 +30,11 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Setting
             if (logonInfo == null)
                 return false;
 
-            StartService(true);
+            var result = await ServiceCommands.GetServiceStatusAsync();
+            if (result != null)
+            {
+                await ServiceCommands.RestartServiceAsync();
+            }
 
             return true;
         }

@@ -132,42 +132,5 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Setting
 
             return config;
         }
-
-        protected void StartService(bool restartIfAlreadyRunning)
-        {
-            OutputInformation("Trying to restart service...");
-
-            var service = new ServiceController(Constants.ServiceName);
-            var serviceControllerStatus = "not found";
-            try
-            {
-                if (service.Status == ServiceControllerStatus.Running && restartIfAlreadyRunning)
-                {
-                    if (!service.CanStop)
-                    {
-                        OutputWarning("The service cannot be stopped.");
-                    }
-
-                    service.Stop();
-                    service.WaitForStatus(ServiceControllerStatus.Stopped, new TimeSpan(0, 0, 15));
-                }
-
-                if (service.Status != ServiceControllerStatus.Running)
-                {
-                    service.Start();
-                    service.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 15));
-                }
-
-                serviceControllerStatus = service.Status.ToString();
-            }
-            catch (Exception exception)
-            {
-                OutputError("{0}", exception.Message);
-            }
-            finally
-            {
-                OutputInformation("Service is " + serviceControllerStatus + ".");
-            }
-        }
     }
 }
