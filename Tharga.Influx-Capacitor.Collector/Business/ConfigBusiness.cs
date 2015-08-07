@@ -97,7 +97,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
-                return new DatabaseConfig("dummy", null, null, null, InfluxDbVersion.Auto);
+                return new DatabaseConfig(Constants.NoConfigUrl, null, null, null, InfluxDbVersion.Auto);
             }
 
             var config = LoadFile(databaseConfigFilePath);
@@ -257,7 +257,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return database;
         }
 
-        private IEnumerable<string> GetConfigFiles()
+        public IEnumerable<string> GetConfigFiles()
         {
             var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var configFilesInCurrentDirectory = _fileLoaderAgent.GetFiles(currentDirectory, "*.xml");

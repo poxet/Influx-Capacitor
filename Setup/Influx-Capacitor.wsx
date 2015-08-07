@@ -69,7 +69,7 @@
       <Custom Action="LaunchApp" Before="InstallFinalize">NOT Installed AND NOT PATCH</Custom>
     </InstallExecuteSequence>
 
-	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Influx-Capacitor.Console.exe "setting auto"' Execute="deferred" Return="check" Impersonate="no" />
+	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Influx-Capacitor.Console.exe "config auto"' Execute="deferred" Return="check" Impersonate="no" />
     
   </Product>
 </Wix>

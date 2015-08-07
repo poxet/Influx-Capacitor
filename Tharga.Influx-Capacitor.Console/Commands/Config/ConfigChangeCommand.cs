@@ -4,11 +4,11 @@ using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
 
-namespace Tharga.InfluxCapacitor.Console.Commands.Setting
+namespace Tharga.InfluxCapacitor.Console.Commands.Config
 {
-    internal class SettingChangeCommand : SettingCommandBase
+    internal class ConfigChangeCommand : ConfigCommandBase
     {
-        public SettingChangeCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
+        public ConfigChangeCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
             : base("Change", "Change setup.", influxDbAgentLoader, configBusiness)
         {
         }

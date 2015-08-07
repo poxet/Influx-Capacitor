@@ -21,8 +21,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 var performanceCounterInfos = new List<IPerformanceCounterInfo>();
                 foreach (var counter in group.Counters)
                 {
-                    var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName);
-                    if (performanceCounters != null)
+                    var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName).ToArray();
+                    if (performanceCounters.Any())
                     {
                         foreach (var performanceCounter in performanceCounters)
                         {
@@ -34,6 +34,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
                             performanceCounterInfos.Add(new PerformanceCounterInfo(name, performanceCounter));
                         }
+                    }
+                    else
+                    {
+                        performanceCounterInfos.Add(new PerformanceCounterInfo(counter.Name, null));
                     }
                 }
 

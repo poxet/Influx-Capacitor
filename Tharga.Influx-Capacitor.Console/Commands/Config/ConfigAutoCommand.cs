@@ -2,13 +2,13 @@
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
 
-namespace Tharga.InfluxCapacitor.Console.Commands.Setting
+namespace Tharga.InfluxCapacitor.Console.Commands.Config
 {
-    internal class SettingAutoCommand : SettingCommandBase
+    internal class ConfigAutoCommand : ConfigCommandBase
     {
         private readonly IConfigBusiness _configBusiness;
 
-        public SettingAutoCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
+        public ConfigAutoCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
             : base("Auto", "Automatically run full setup.", influxDbAgentLoader, configBusiness)
         {
             _configBusiness = configBusiness;

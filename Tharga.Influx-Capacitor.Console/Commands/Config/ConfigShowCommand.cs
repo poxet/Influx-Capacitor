@@ -1,15 +1,16 @@
 ﻿using System.Threading.Tasks;
+using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
-namespace Tharga.InfluxCapacitor.Console.Commands.Setting
+namespace Tharga.InfluxCapacitor.Console.Commands.Config
 {
-    internal class SettingShowCommand : ActionCommandBase
+    internal class ConfigShowCommand : ActionCommandBase
     {
         private readonly IInfluxDbAgentLoader _influxDbAgentLoader;
         private readonly IConfigBusiness _configBusiness;
 
-        public SettingShowCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
+        public ConfigShowCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
             : base("Show", "Show setup.")
         {
             _influxDbAgentLoader = influxDbAgentLoader;
@@ -19,6 +20,13 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Setting
         public async override Task<bool> InvokeAsync(string paramList)
         {
             var config = _configBusiness.OpenDatabaseConfig();
+
+            if (config.Url == Constants.NoConfigUrl)
+            {
+                OutputWarning("No database configuration exists.");
+                return false;
+            }
+
             OutputInformation("Url:      {0}", config.Url);
             OutputInformation("Version:  {0}", config.InfluxDbVersion);
             OutputInformation("Name:     {0}", config.Name);

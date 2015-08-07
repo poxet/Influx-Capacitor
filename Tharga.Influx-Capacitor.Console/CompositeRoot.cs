@@ -16,12 +16,14 @@ namespace Tharga.InfluxCapacitor.Console
             InfluxDbAgentLoader = new InfluxDbAgentLoader();
             FileLoaderAgent = new FileLoaderAgent();
             ConfigBusiness = new ConfigBusiness(FileLoaderAgent);
+            CounterBusiness = new CounterBusiness();
         }
 
         public IConsole ClientConsole { get; private set; }
         public IInfluxDbAgentLoader InfluxDbAgentLoader { get; private set; }
         public IFileLoaderAgent FileLoaderAgent { get; private set; }
         public IConfigBusiness ConfigBusiness { get; private set; }
+        public ICounterBusiness CounterBusiness { get; private set; }
 
         public Processor Processor
         {

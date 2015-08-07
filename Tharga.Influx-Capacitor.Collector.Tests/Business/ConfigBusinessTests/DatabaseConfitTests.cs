@@ -31,7 +31,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
 
             //Assert
             Assert.That(config, Is.Not.Null);
-            Assert.That(config.Url, Is.EqualTo("dummy"));
+            Assert.That(config.Url, Is.EqualTo(Constants.NoConfigUrl));
             Assert.That(config.Username, Is.EqualTo(null));
             Assert.That(config.Password, Is.EqualTo(null));
             Assert.That(config.Name, Is.EqualTo(null));

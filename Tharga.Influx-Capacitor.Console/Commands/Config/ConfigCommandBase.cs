@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ServiceProcess;
 using System.Threading.Tasks;
 using InfluxDB.Net;
 using InfluxDB.Net.Models;
@@ -9,14 +8,14 @@ using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
-namespace Tharga.InfluxCapacitor.Console.Commands.Setting
+namespace Tharga.InfluxCapacitor.Console.Commands.Config
 {
-    abstract class SettingCommandBase : ActionCommandBase
+    abstract class ConfigCommandBase : ActionCommandBase
     {
         private readonly IInfluxDbAgentLoader _influxDbAgentLoader;
         private readonly IConfigBusiness _configBusiness;
 
-        protected SettingCommandBase(string name, string description, IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
+        protected ConfigCommandBase(string name, string description, IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
             : base(name, description)
         {
             _influxDbAgentLoader = influxDbAgentLoader;

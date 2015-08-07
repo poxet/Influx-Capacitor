@@ -81,6 +81,8 @@
     <Compile Include="..\Build\AssemblyVersionInfo.cs">
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Commands\Counter\CounterCommands.cs" />
+    <Compile Include="Commands\Counter\ListCountersCommand.cs" />
     <Compile Include="Commands\Processor\RunProcessorCommand.cs" />
     <Compile Include="Commands\Processor\ProcessorCommands.cs" />
     <Compile Include="Commands\Service\ServiceCheckCommand.cs" />
@@ -88,11 +90,12 @@
     <Compile Include="Commands\Service\ServiceRestartCommand.cs" />
     <Compile Include="Commands\Service\ServiceStartCommand.cs" />
     <Compile Include="Commands\Service\ServiceStopCommand.cs" />
-    <Compile Include="Commands\Setting\SettingAutoCommand.cs" />
-    <Compile Include="Commands\Setting\SettingChangeCommand.cs" />
-    <Compile Include="Commands\Setting\SettingCommands.cs" />
-    <Compile Include="Commands\Setting\SettingCommandBase.cs" />
-    <Compile Include="Commands\Setting\SettingShowCommand.cs" />
+    <Compile Include="Commands\Config\ConfigAutoCommand.cs" />
+    <Compile Include="Commands\Config\ConfigChangeCommand.cs" />
+    <Compile Include="Commands\Config\ConfigCommands.cs" />
+    <Compile Include="Commands\Config\ConfigCommandBase.cs" />
+    <Compile Include="Commands\Config\ConfigListCommand.cs" />
+    <Compile Include="Commands\Config\ConfigShowCommand.cs" />
     <Compile Include="CompositeRoot.cs" />
     <Compile Include="ICompositeRoot.cs" />
     <Compile Include="Program.cs" />

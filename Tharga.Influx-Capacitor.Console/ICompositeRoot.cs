@@ -8,5 +8,6 @@ namespace Tharga.InfluxCapacitor.Console
         IInfluxDbAgentLoader InfluxDbAgentLoader { get; }
         IConfigBusiness ConfigBusiness { get; }
         Processor Processor { get; }
+        ICounterBusiness CounterBusiness { get; }
     }
 }

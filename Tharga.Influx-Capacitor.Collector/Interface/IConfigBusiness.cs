@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using InfluxDB.Net;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
@@ -9,5 +10,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         IDatabaseConfig OpenDatabaseConfig();
         void SaveDatabaseUrl(string url, InfluxDbVersion influxDbVersion);
         void SaveDatabaseConfig(string databaseName, string username, string password);
+        IEnumerable<string> GetConfigFiles();
     }
 }
