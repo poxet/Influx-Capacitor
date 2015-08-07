@@ -83,11 +83,11 @@
     </Compile>
     <Compile Include="Commands\Processor\RunProcessorCommand.cs" />
     <Compile Include="Commands\Processor\ProcessorCommands.cs" />
-    <Compile Include="Commands\Setup\AutoSetupCommand.cs" />
-    <Compile Include="Commands\Setup\SetupChangeCommand.cs" />
-    <Compile Include="Commands\Setup\SettupCommands.cs" />
-    <Compile Include="Commands\Setup\SetupCommandBase.cs" />
-    <Compile Include="Commands\Setup\ShowSetupCommand.cs" />
+    <Compile Include="Commands\Setting\SettingAutoCommand.cs" />
+    <Compile Include="Commands\Setting\SettingChangeCommand.cs" />
+    <Compile Include="Commands\Setting\SettingCommands.cs" />
+    <Compile Include="Commands\Setting\SettingCommandBase.cs" />
+    <Compile Include="Commands\Setting\SettingShowCommand.cs" />
     <Compile Include="CompositeRoot.cs" />
     <Compile Include="ICompositeRoot.cs" />
     <Compile Include="Program.cs" />

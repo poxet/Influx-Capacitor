@@ -3,12 +3,12 @@ using InfluxDB.Net;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace Tharga.InfluxCapacitor.Console.Commands.Setup
+namespace Tharga.InfluxCapacitor.Console.Commands.Setting
 {
-    internal class SetupChangeCommand : SetupCommandBase
+    internal class SettingChangeCommand : SettingCommandBase
     {
-        public SetupChangeCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
-            : base("change", "Change setup.", influxDbAgentLoader, configBusiness)
+        public SettingChangeCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
+            : base("Change", "Change setup.", influxDbAgentLoader, configBusiness)
         {
         }
 

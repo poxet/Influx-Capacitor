@@ -2,14 +2,14 @@
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
-namespace Tharga.InfluxCapacitor.Console.Commands.Setup
+namespace Tharga.InfluxCapacitor.Console.Commands.Setting
 {
-    internal class ShowSetupCommand : ActionCommandBase
+    internal class SettingShowCommand : ActionCommandBase
     {
         private readonly IInfluxDbAgentLoader _influxDbAgentLoader;
         private readonly IConfigBusiness _configBusiness;
 
-        public ShowSetupCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
+        public SettingShowCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
             : base("Show", "Show setup.")
         {
             _influxDbAgentLoader = influxDbAgentLoader;

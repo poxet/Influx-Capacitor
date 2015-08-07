@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Tharga.InfluxCapacitor.Console.Commands.Processor;
-using Tharga.InfluxCapacitor.Console.Commands.Setup;
+using Tharga.InfluxCapacitor.Console.Commands.Setting;
 using Tharga.Toolkit.Console;
 using Tharga.Toolkit.Console.Command;
 
@@ -15,7 +15,7 @@ namespace Tharga.InfluxCapacitor.Console
             
             var command = new RootCommand(compositeRoot.ClientConsole);
 
-            command.RegisterCommand(new SettupCommands(compositeRoot));
+            command.RegisterCommand(new SettingCommands(compositeRoot));
             command.RegisterCommand(new ProcessorCommands(compositeRoot));
 
             new CommandEngine(command).Run(args);

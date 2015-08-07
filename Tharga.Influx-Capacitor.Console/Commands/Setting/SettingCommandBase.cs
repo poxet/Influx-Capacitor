@@ -9,14 +9,14 @@ using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
-namespace Tharga.InfluxCapacitor.Console.Commands.Setup
+namespace Tharga.InfluxCapacitor.Console.Commands.Setting
 {
-    abstract class SetupCommandBase : ActionCommandBase
+    abstract class SettingCommandBase : ActionCommandBase
     {
         private readonly IInfluxDbAgentLoader _influxDbAgentLoader;
         private readonly IConfigBusiness _configBusiness;
 
-        protected SetupCommandBase(string name, string description, IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
+        protected SettingCommandBase(string name, string description, IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
             : base(name, description)
         {
             _influxDbAgentLoader = influxDbAgentLoader;

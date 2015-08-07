@@ -44,8 +44,8 @@ The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided 
 
 ### Setting
 - Auto - Will check if the connection works, if it does not then the user will be queried parameters needed for the setup. This command will start (or restart) the service if installed on the machine.
-- change - This is the command to use if you want to change configuration settings. This command will start (or restart) the service if installed on the machine.
-- show - Will show and test the connection. You will also get the version number of the influxDB database connected.
+- Change - This is the command to use if you want to change configuration settings. This command will start (or restart) the service if installed on the machine.
+- Show - Will show and test the connection. You will also get the version number of the influxDB database connected.
 
 ### Service
 - Check
