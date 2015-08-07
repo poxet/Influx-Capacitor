@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Xml;
 using InfluxDB.Net;
 using Tharga.InfluxCapacitor.Collector.Entities;
@@ -43,7 +42,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 document.LoadXml(fileData);
 
                 var db = GetDatabaseConfig(document);
-                var grp = GetCounterGroups(document).ToList();
+                var grps = GetCounterGroups(document).ToList();
 
                 if (db != null)
                 {
@@ -54,7 +53,18 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
                     database = db;
                 }
-                groups.AddRange(grp);
+
+                foreach (var grp in grps)
+                {
+                    if (groups.Any(x => x.Name == grp.Name))
+                    {
+                        var ex = new InvalidOperationException("There are more than one counter group in the config files.");
+                        ex.Data.Add("GroupName", grp.Name);
+                        throw ex;
+                    }
+
+                    groups.Add(grp);
+                }
             }
 
             var config = new Config(database, groups);
@@ -145,7 +155,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             xmeName.InnerText = newDbConfig.Name;
             dme.AppendChild(xmeName);
 
-            var xmlData = xml.OuterXml;
+            var xmlData = xml.ToFormattedString();
 
             _fileLoaderAgent.WriteAllText(databaseConfigFilePath, xmlData);
         }
@@ -210,9 +220,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         break;
                 }
             }
-            var namedItem = counter.Attributes.GetNamedItem("Name");
-            var name = namedItem != null ? namedItem.Value : null;
-            return new Counter(name, categoryName, counterName, instanceName);
+            //var namedItem = counter.Attributes.GetNamedItem("Name");
+            //var name = namedItem != null ? namedItem.Value : null;
+            return new Counter(categoryName, counterName, instanceName);
         }
 
         private static DatabaseConfig GetDatabaseConfig(XmlDocument document)
@@ -262,7 +272,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var configFilesInCurrentDirectory = _fileLoaderAgent.GetFiles(currentDirectory, "*.xml");
 
-            var configFilesInProgramData = _fileLoaderAgent.GetFiles(_fileLoaderAgent.GetApplicationFolderPath(), "*.xml");
+            var applicationFolderPath = _fileLoaderAgent.GetApplicationFolderPath();
+            var configFilesInProgramData = _fileLoaderAgent.GetFiles(applicationFolderPath, "*.xml");
 
             foreach (var configFile in configFilesInCurrentDirectory.Union(configFilesInProgramData))
             {
@@ -279,6 +290,50 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     yield return configFile;
                 }
             }
+        }
+
+        public bool CreateConfig(string fileName, List<ICounterGroup> counterGroups)
+        {
+            var document = new XmlDocument();
+            var xme = document.CreateElement(Constants.ServiceName);
+            document.AppendChild(xme);
+            var groupElements = document.CreateElement("CounterGroups");
+            xme.AppendChild(groupElements);
+            foreach (var group in counterGroups)
+            {
+                var groupElement = document.CreateElement("CounterGroup");
+                groupElement.SetAttribute("Name", group.Name);
+                groupElement.SetAttribute("SecondsInterval", group.SecondsInterval.ToString());
+
+                foreach (var counter in group.Counters)
+                {
+                    groupElements.AppendChild(groupElement);
+                    var counterElement = document.CreateElement("Counter");
+                    groupElement.AppendChild(counterElement);
+
+                    var categoryName = document.CreateElement("CategoryName");
+                    categoryName.InnerText = counter.CategoryName;
+                    counterElement.AppendChild(categoryName);
+
+                    var counterName = document.CreateElement("CounterName");
+                    counterName.InnerText = counter.CounterName;
+                    counterElement.AppendChild(counterName);
+
+                    var instanceName = document.CreateElement("InstanceName");
+                    instanceName.InnerText = counter.InstanceName;
+                    counterElement.AppendChild(instanceName);
+                }
+            }
+
+            var applicationFolderPath = _fileLoaderAgent.GetApplicationFolderPath();
+            if (File.Exists(applicationFolderPath + "\\" + fileName))
+                return false;
+
+            var contents = document.ToFormattedString();
+
+            File.WriteAllText(applicationFolderPath + "\\" + fileName, contents);
+
+            return true;
         }
     }
 }

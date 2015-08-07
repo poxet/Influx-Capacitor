@@ -11,5 +11,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         void SaveDatabaseUrl(string url, InfluxDbVersion influxDbVersion);
         void SaveDatabaseConfig(string databaseName, string username, string password);
         IEnumerable<string> GetConfigFiles();
+        bool CreateConfig(string fileName, List<ICounterGroup> counterGroups);
     }
 }
