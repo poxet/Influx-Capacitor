@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
-using InfluxDB.Net.Collector.Business;
-using InfluxDB.Net.Collector.Interface;
 using Moq;
 using NUnit.Framework;
+using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
+namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
 {
     [TestFixture]
     public class CounterTests
@@ -98,7 +98,7 @@ namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
             var categoryName = "B";
             var instanceName = "C";
             var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
-            fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<InfluxDB.Net.Collector><Database><Url>X</Url><Username>X</Username><Password>X</Password><Name>X</Name></Database><CounterGroup Name=\"{0}\" SecondsInterval=\"{1}\"><Counter><CounterName>{2}</CounterName><CategoryName>{3}</CategoryName><InstanceName>{4}</InstanceName></Counter></CounterGroup></InfluxDB.Net.Collector>", counterGroupName, secondsInterval, counterName, categoryName, instanceName));
+            fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<{0}><Database><Url>X</Url><Username>X</Username><Password>X</Password><Name>X</Name></Database><CounterGroup Name=\"{1}\" SecondsInterval=\"{2}\"><Counter><CounterName>{3}</CounterName><CategoryName>{4}</CategoryName><InstanceName>{5}</InstanceName></Counter></CounterGroup></{0}>", Constants.ServiceName, counterGroupName, secondsInterval, counterName, categoryName, instanceName));
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
             Exception exception = null;
 

@@ -1,9 +1,10 @@
-using InfluxDB.Net.Collector.Agents;
-using InfluxDB.Net.Collector.Business;
-using InfluxDB.Net.Collector.Interface;
+using Tharga.InfluxCapacitor.Collector;
+using Tharga.InfluxCapacitor.Collector.Agents;
+using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
-namespace InfluxDB.Net.Collector.Console
+namespace Tharga.InfluxCapacitor.Console
 {
     public class CompositeRoot : ICompositeRoot
     {

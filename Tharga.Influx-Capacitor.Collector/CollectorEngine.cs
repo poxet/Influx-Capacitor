@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
-using InfluxDB.Net.Collector.Interface;
+using InfluxDB.Net;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
-namespace InfluxDB.Net.Collector
+namespace Tharga.InfluxCapacitor.Collector
 {
     internal class CollectorEngine
     {

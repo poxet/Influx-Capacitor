@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
-using InfluxDB.Net.Collector.Entities;
-using InfluxDB.Net.Collector.Interface;
+using InfluxDB.Net;
 using InfluxDB.Net.Models;
 using Moq;
 using NUnit.Framework;
+using Tharga.InfluxCapacitor.Collector.Entities;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Tests.CollectorEngineTests
+namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
 {
     [TestFixture]
     public class StartTests

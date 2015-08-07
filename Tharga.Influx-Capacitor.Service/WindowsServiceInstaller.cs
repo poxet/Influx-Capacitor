@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Configuration.Install;
 using System.ServiceProcess;
+using Tharga.InfluxCapacitor.Collector;
 
-namespace InfluxDB.Net.Collector.Service
+namespace Tharga.InfluxCapacitor.Service
 {
     [RunInstaller(true)]
     public class WindowsServiceInstaller : Installer
@@ -18,13 +19,13 @@ namespace InfluxDB.Net.Collector.Service
             serviceProcessInstaller.Password = null;
 
             //# Service Information
-            serviceInstaller.DisplayName = "InfluxDB.Net.Collector";
+            serviceInstaller.DisplayName = Constants.ServiceName;
             serviceInstaller.StartType = ServiceStartMode.Automatic;
 
             //# This must be identical to the WindowsService.ServiceBase name
             //# set in the constructor of WindowsService.cs
-            serviceInstaller.ServiceName = "InfluxDB.Net.Collector";
-            serviceInstaller.Description = "Collects performance and store it in InfluxDB.";
+            serviceInstaller.ServiceName = Constants.ServiceName;
+            serviceInstaller.Description = "Influx Capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana.";
 
             Installers.Add(serviceProcessInstaller);
             Installers.Add(serviceInstaller);

@@ -5,10 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using InfluxDB.Net.Collector.Entities;
-using InfluxDB.Net.Collector.Interface;
+using InfluxDB.Net;
+using Tharga.InfluxCapacitor.Collector.Entities;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Business
+namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class ConfigBusiness : IConfigBusiness
     {
@@ -126,7 +127,7 @@ namespace InfluxDB.Net.Collector.Business
             var databaseConfigFilePath = path + "\\database.xml";
 
             var xml = new XmlDocument();
-            var xme = xml.CreateElement("InfluxDB.Net.Collector");
+            var xme = xml.CreateElement(Constants.ServiceName);
             xml.AppendChild(xme);
             var dme = xml.CreateElement("Database");
             xme.AppendChild(dme);

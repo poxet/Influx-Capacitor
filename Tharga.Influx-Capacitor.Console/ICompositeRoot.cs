@@ -1,6 +1,7 @@
-﻿using InfluxDB.Net.Collector.Interface;
+﻿using Tharga.InfluxCapacitor.Collector;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Console
+namespace Tharga.InfluxCapacitor.Console
 {
     public interface ICompositeRoot
     {

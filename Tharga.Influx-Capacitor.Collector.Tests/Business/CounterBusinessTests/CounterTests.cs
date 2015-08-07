@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using InfluxDB.Net.Collector.Business;
-using InfluxDB.Net.Collector.Interface;
 using Moq;
 using NUnit.Framework;
+using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Tests.Business.CounterBusinessTests
+namespace Tharga.InfluxCapacitor.Collector.Tests.Business.CounterBusinessTests
 {
     [TestFixture]
     public class CounterTests

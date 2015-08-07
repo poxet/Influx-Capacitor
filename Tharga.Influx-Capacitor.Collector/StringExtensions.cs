@@ -1,4 +1,4 @@
-﻿namespace InfluxDB.Net.Collector
+﻿namespace Tharga.InfluxCapacitor.Collector
 {
     internal static class StringExtensions
     {

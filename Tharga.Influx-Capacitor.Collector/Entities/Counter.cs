@@ -1,6 +1,6 @@
-using InfluxDB.Net.Collector.Interface;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Entities
+namespace Tharga.InfluxCapacitor.Collector.Entities
 {
     public class Counter : ICounter
     {

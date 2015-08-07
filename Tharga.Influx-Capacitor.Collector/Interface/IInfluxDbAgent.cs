@@ -1,7 +1,8 @@
 using System.Threading.Tasks;
+using InfluxDB.Net;
 using InfluxDB.Net.Models;
 
-namespace InfluxDB.Net.Collector.Interface
+namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface IInfluxDbAgent
     {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using InfluxDB.Net.Collector.Entities;
-using InfluxDB.Net.Collector.Interface;
+using Tharga.InfluxCapacitor.Collector.Entities;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Business
+namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class CounterBusiness : ICounterBusiness
     {
@@ -68,7 +68,7 @@ namespace InfluxDB.Net.Collector.Business
             {
                 var message = exception.Message;
                 message += " categoryName=" + categoryName + ", counterName=" + counterName + ", instanceName=" + (instanceName ?? "N/A");
-                EventLog.WriteEntry("InfluxDB.Net.Collector", message, EventLogEntryType.Error);
+                EventLog.WriteEntry(Constants.ServiceName, message, EventLogEntryType.Error);
             }
 
             return response;

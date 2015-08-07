@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.ServiceProcess;
 using System.Threading.Tasks;
-using InfluxDB.Net.Collector.Entities;
-using InfluxDB.Net.Collector.Interface;
+using InfluxDB.Net;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector;
+using Tharga.InfluxCapacitor.Collector.Entities;
+using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
-namespace InfluxDB.Net.Collector.Console.Commands.Setup
+namespace Tharga.InfluxCapacitor.Console.Commands.Setup
 {
     abstract class SetupCommandBase : ActionCommandBase
     {
@@ -76,7 +78,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
 
         protected async Task<IDatabaseConfig> GetUsernameAsync(string paramList, int index, IDatabaseConfig config)
         {
-            var points = new[] { new Point { Name = "InfluxDB.Net.Collector", Fields = new Dictionary<string, object> { { "Machine", Environment.MachineName } }, }, };
+            var points = new[] { new Point { Name = Constants.ServiceName, Fields = new Dictionary<string, object> { { "Machine", Environment.MachineName } }, }, };
             var dataChanged = false;
 
             var url = config.Url;
@@ -135,7 +137,7 @@ namespace InfluxDB.Net.Collector.Console.Commands.Setup
         {
             OutputInformation("Trying to restart service...");
 
-            var service = new ServiceController("InfluxDB.Net.Collector");
+            var service = new ServiceController(Constants.ServiceName);
             var serviceControllerStatus = "not found";
             try
             {

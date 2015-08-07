@@ -1,12 +1,9 @@
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using InfluxDB.Net.Collector.Interface;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Agents
+namespace Tharga.InfluxCapacitor.Collector.Agents
 {
     [ExcludeFromCodeCoverage]
     public class FileLoaderAgent : IFileLoaderAgent
@@ -53,7 +50,7 @@ namespace InfluxDB.Net.Collector.Agents
 
         public string GetApplicationFolderPath()
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\Thargelion\\InfluxDB.Net.Collector";
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\Thargelion\\" + Constants.ServiceName;
             return path;
         }
     }

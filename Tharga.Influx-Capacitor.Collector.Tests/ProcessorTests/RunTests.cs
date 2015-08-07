@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using InfluxDB.Net.Collector.Interface;
 using InfluxDB.Net.Models;
 using Moq;
 using NUnit.Framework;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Tests.ProcessorTests
+namespace Tharga.InfluxCapacitor.Collector.Tests.ProcessorTests
 {
     [TestFixture]
     public class RunTests

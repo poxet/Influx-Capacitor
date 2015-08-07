@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using InfluxDB.Net.Collector.Interface;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Agents
+namespace Tharga.InfluxCapacitor.Collector.Agents
 {
     [ExcludeFromCodeCoverage]
     public class InfluxDbAgentLoader : IInfluxDbAgentLoader

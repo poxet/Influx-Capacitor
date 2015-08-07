@@ -1,10 +1,10 @@
 ﻿using System;
-using InfluxDB.Net.Collector.Business;
-using InfluxDB.Net.Collector.Interface;
 using Moq;
 using NUnit.Framework;
+using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Tests.Business.ConfigBusinessTests
+namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
 {
     [TestFixture]
     public class DatabaseTests

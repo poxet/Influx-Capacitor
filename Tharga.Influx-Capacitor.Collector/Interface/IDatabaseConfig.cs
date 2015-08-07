@@ -1,4 +1,6 @@
-namespace InfluxDB.Net.Collector.Interface
+using InfluxDB.Net;
+
+namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface IDatabaseConfig
     {

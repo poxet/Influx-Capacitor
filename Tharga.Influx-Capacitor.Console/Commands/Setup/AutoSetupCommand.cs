@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using InfluxDB.Net.Collector.Interface;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Console.Commands.Setup
+namespace Tharga.InfluxCapacitor.Console.Commands.Setup
 {
     internal class AutoSetupCommand : SetupCommandBase
     {

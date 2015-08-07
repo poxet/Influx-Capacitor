@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace InfluxDB.Net.Collector.Interface
+namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface IConfig
     {

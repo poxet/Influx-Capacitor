@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
-using InfluxDB.Net.Collector.Entities;
-using InfluxDB.Net.Collector.Interface;
+using InfluxDB.Net;
+using Tharga.InfluxCapacitor.Collector.Entities;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Console.Commands.Setup
+namespace Tharga.InfluxCapacitor.Console.Commands.Setup
 {
     internal class SetupChangeCommand : SetupCommandBase
     {

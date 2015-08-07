@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using InfluxDB.Net.Collector.Console.Commands.Processor;
-using InfluxDB.Net.Collector.Console.Commands.Setup;
+using Tharga.InfluxCapacitor.Console.Commands.Processor;
+using Tharga.InfluxCapacitor.Console.Commands.Setup;
 using Tharga.Toolkit.Console;
 using Tharga.Toolkit.Console.Command;
 
-namespace InfluxDB.Net.Collector.Console
+namespace Tharga.InfluxCapacitor.Console
 {
     [ExcludeFromCodeCoverage]
     static class Program

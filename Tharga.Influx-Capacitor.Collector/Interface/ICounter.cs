@@ -1,4 +1,4 @@
-namespace InfluxDB.Net.Collector.Interface
+namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface ICounter
     {

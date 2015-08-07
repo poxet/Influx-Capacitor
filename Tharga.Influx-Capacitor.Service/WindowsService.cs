@@ -1,10 +1,11 @@
 using System;
 using System.Diagnostics;
 using System.ServiceProcess;
-using InfluxDB.Net.Collector.Agents;
-using InfluxDB.Net.Collector.Business;
+using Tharga.InfluxCapacitor.Collector;
+using Tharga.InfluxCapacitor.Collector.Agents;
+using Tharga.InfluxCapacitor.Collector.Business;
 
-namespace InfluxDB.Net.Collector.Service
+namespace Tharga.InfluxCapacitor.Service
 {
     public class WindowsService : ServiceBase
     {
@@ -12,7 +13,7 @@ namespace InfluxDB.Net.Collector.Service
 
         public WindowsService()
         {
-            ServiceName = "InfluxDB.Net.Collector";
+            ServiceName = Constants.ServiceName;
 
             if (!EventLog.SourceExists(ServiceName))
                 EventLog.CreateEventSource(ServiceName, "Application");

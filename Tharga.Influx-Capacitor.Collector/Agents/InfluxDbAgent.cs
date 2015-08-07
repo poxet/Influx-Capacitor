@@ -1,9 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using InfluxDB.Net.Collector.Interface;
+using InfluxDB.Net;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace InfluxDB.Net.Collector.Agents
+namespace Tharga.InfluxCapacitor.Collector.Agents
 {
     [ExcludeFromCodeCoverage]
     public class InfluxDbAgent : IInfluxDbAgent

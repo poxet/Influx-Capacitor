@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using InfluxDB.Net.Collector.Interface;
+using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
-namespace InfluxDB.Net.Collector
+namespace Tharga.InfluxCapacitor.Collector
 {
     public class Processor
     {

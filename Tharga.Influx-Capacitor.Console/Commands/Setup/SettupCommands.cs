@@ -1,6 +1,6 @@
 ﻿using Tharga.Toolkit.Console.Command.Base;
 
-namespace InfluxDB.Net.Collector.Console.Commands.Setup
+namespace Tharga.InfluxCapacitor.Console.Commands.Setup
 {
     internal class SettupCommands : ContainerCommandBase
     {
