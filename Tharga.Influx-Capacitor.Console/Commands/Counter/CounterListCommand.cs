@@ -23,10 +23,16 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             foreach (var counterGroup in counterGroups)
             {
                 OutputInformation("{0}", counterGroup.Name);
-                foreach (var info in counterGroup.PerformanceCounterInfos)
+                foreach (var counter in counterGroup.PerformanceCounterInfos)
                 {
-                    var status = info.PerformanceCounter == null ? "-" : "OK";
-                    OutputInformation("   {0}\t{1}", status, info.Name);
+                    if (counter.PerformanceCounter != null)
+                    {
+                        OutputInformation("   OK\t{0}.{1}.{2} {3}", counter.PerformanceCounter.CategoryName, counter.PerformanceCounter.CounterName, counter.PerformanceCounter.InstanceName, counter.Name);
+                    }
+                    else
+                    {
+                        OutputInformation("   -\t{1}", counter.Name);
+                    }                    
                 }
             }
 

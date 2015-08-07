@@ -31,7 +31,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
                 if (counter.PerformanceCounter != null)
                 {
                     var nextValue = counter.PerformanceCounter.NextValue();
-                    OutputInformation("{0}.{1}.{2}:\t{3}", counter.PerformanceCounter.CategoryName, counter.PerformanceCounter.CounterName, counter.PerformanceCounter.InstanceName, nextValue);
+                    OutputInformation("{0}.{1}.{2} {3}:\t{4}", counter.PerformanceCounter.CategoryName, counter.PerformanceCounter.CounterName, counter.PerformanceCounter.InstanceName, counter.Name, nextValue);
                     count++;
                 }
                 else
