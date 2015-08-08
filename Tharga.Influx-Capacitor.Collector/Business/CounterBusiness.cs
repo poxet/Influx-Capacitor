@@ -11,6 +11,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class CounterBusiness : ICounterBusiness
     {
+        public CounterBusiness()
+        {
+            if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
+            {
+                Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+            }
+        }
+
         public List<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
         {
             if (config.Groups == null) throw new NullReferenceException("No groups in config.");
@@ -53,18 +61,20 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public IEnumerable<string> GetCategoryNames()
         {
-            return PerformanceCounterCategory.GetCategories().Select(x => x.CategoryName);
+            var performanceCounterCategories = PerformanceCounterCategory.GetCategories();
+            return performanceCounterCategories.Select(x => x.CategoryName);
         }
 
         public IEnumerable<string> GetCounterNames(string category)
         {
             var cat = new PerformanceCounterCategory(category);
-            var instances = cat.GetInstanceNames();
+            var instances = cat.CategoryType == PerformanceCounterCategoryType.SingleInstance ? new string[] { null } : cat.GetInstanceNames();
             foreach (var instance in instances)
             {
-                foreach (var ins in cat.GetCounters(instance).Select(x => x.CounterName))
+                var coutners = string.IsNullOrEmpty(instance) ? cat.GetCounters().Select(x => x.CounterName) : cat.GetCounters(instance).Select(x => x.CounterName);
+                foreach (var counter in coutners)
                 {
-                    yield return ins;
+                    yield return counter;
                 }
             }
         }

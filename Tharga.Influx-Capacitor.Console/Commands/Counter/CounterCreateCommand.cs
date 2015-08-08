@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Business;
@@ -33,10 +34,15 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
                 var counterNames = _counterBusiness.GetCounterNames(categoryName);
                 var counterName = QueryParam("Counter", GetParam(paramList, index++), counterNames.Select(x => new KeyValuePair<string, string>(x, x)));
 
-                var instanceNames = _counterBusiness.GetInstances(categoryName, counterName);
-                var instanceName = QueryParam("Instance", GetParam(paramList, index++), instanceNames.Select(x => new KeyValuePair<string, string>(x, x)));
+                string instanceName = null;
+                var cat = new PerformanceCounterCategory(categoryName);
+                if (cat.CategoryType == PerformanceCounterCategoryType.MultiInstance)
+                {
+                    var instanceNames = _counterBusiness.GetInstances(categoryName, counterName);
+                    instanceName = QueryParam("Instance", GetParam(paramList, index++), instanceNames.Select(x => new KeyValuePair<string, string>(x, x)));
+                }
 
-                addAnother = QueryParam("Add another?", GetParam(paramList, index++), new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } });
+                addAnother = QueryParam("Add another counter?", GetParam(paramList, index++), new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } });
 
                 var collector = new Collector.Entities.Counter(categoryName, counterName, instanceName);
                 collectors.Add(collector);
