@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -50,6 +49,30 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             Thread.Sleep(100);
 
             return counterGroups;
+        }
+
+        public IEnumerable<string> GetCategoryNames()
+        {
+            return PerformanceCounterCategory.GetCategories().Select(x => x.CategoryName);
+        }
+
+        public IEnumerable<string> GetCounterNames(string category)
+        {
+            var cat = new PerformanceCounterCategory(category);
+            var instances = cat.GetInstanceNames();
+            foreach (var instance in instances)
+            {
+                foreach (var ins in cat.GetCounters(instance).Select(x => x.CounterName))
+                {
+                    yield return ins;
+                }
+            }
+        }
+
+        public IEnumerable<string> GetInstances(string category, string counterName)
+        {
+            var cat = new PerformanceCounterCategory(category);
+            return cat.GetInstanceNames();
         }
 
         private bool Match(string data, string pattern)

@@ -2,8 +2,8 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Name='Influx Capacitor' Id='$(var.Id)' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='Thargelion AB'>
     
-    <Package InstallerVersion="300" Compressed="yes"/>     
-    
+    <Package InstallerVersion="300" Compressed="yes"/>
+
     <UI Id="WixUI_SkipLicenseAgreement">
       <UIRef Id="WixUI_InstallDir" />
 
@@ -17,7 +17,7 @@
       <UpgradeVersion Minimum="1.0.0" IncludeMinimum="yes" OnlyDetect="no" Maximum='$(var.Version)' IncludeMaximum="no" Property="PREVIOUSFOUND" />
     </Upgrade>
 
-    <Media Id="1" Cabinet="Influx-Capacitor.cab" EmbedCab="yes" />
+    <Media Id="1" Cabinet="InfluxCapacitor.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
@@ -44,20 +44,33 @@
     
     <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\Tharga.Influx-Capacitor.Service\bin\$(var.Environment)'>
       <Component Id="ServiceServer" Guid="D341C6FB-5C67-47B7-B6AE-51ECAAE30703">
-        <File Name="Tharga.Influx-Capacitor.Service.exe" KeyPath="yes" />
-		<File Name="Tharga.Influx-Capacitor.Service.exe.config" />
+        <File Name="Tharga.Influx-Capacitor.Service.exe" KeyPath="yes" />        
+		    <File Name="Tharga.Influx-Capacitor.Service.exe.config" />
         <ServiceInstall Name="Influx-Capacitor" DisplayName="Influx-Capacitor" Description="Influx Capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana." Type="ownProcess" Start="auto" ErrorControl="normal" Account="LocalSystem" />
         <ServiceControl Name="Influx-Capacitor" Id="StartService" Start="install" Stop="both" Remove="uninstall" Wait="no" />
       </Component>
     </DirectoryRef>
-    
+
     <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\Tharga.Influx-Capacitor.Console\bin\$(var.Environment)'>
       <Component Id="Console" Guid="011E4067-8813-4223-AF15-B3F97C460E03">
-        <File Name="Tharga.Influx-Capacitor.Console.exe" KeyPath="yes" />
-        <File Name="Tharga.Influx-Capacitor.Console.exe.config" />
+        <File Name="Tharga.Influx-Capacitor.Console.exe" KeyPath="yes" >
+          <!--<Shortcut Id="startmenuAdv"
+                    Directory="ProgramMenuDir"
+                    Advertise="yes"
+                    Name="Advertis"
+                    WorkingDirectory="INSTALLDIR"
+                    Icon="Icon.exe">
+            <Icon Id="Icon.exe" SourceFile="Tharga.Influx-Capacitor.Console.exe" />
+          </Shortcut>-->
+        </File>
+        <File Name="Tharga.Influx-Capacitor.Console.exe.config" />        
       </Component>
     </DirectoryRef>
-  
+
+    <!--<Directory Id="ProgramMenuFolder" Name="PMenu" LongName="Programs">
+      <Directory Id="ProgramMenuDir" Name="Nonadver" LongName="Nonadvertised Shortcut" />
+    </Directory>-->
+    
     <Feature Id="Core" Title="Core" Level="1" Absent="disallow" Display="expand">
       <ComponentRef Id="Core"/>
       <ComponentRef Id="Console"/>

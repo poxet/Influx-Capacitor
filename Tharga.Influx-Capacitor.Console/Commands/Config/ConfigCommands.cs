@@ -8,7 +8,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             : base("Config")
         {
             RegisterCommand(new ConfigListCommand(compositeRoot.ConfigBusiness));
-            RegisterCommand(new ConfigAutoCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
+            RegisterCommand(new ConfigAutoCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
             RegisterCommand(new ConfigChangeCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
             RegisterCommand(new ConfigShowCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));            
         }
