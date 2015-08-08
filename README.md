@@ -47,6 +47,7 @@ The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided 
 - Auto - Will check if the connection works, if it does not then the user will be queried parameters needed for the setup. This command will start (or restart) the service if installed on the machine.
 - Change - This is the command to use if you want to change configuration settings. This command will start (or restart) the service if installed on the machine.
 - Show - Will show and test the connection. You will also get the version number of the influxDB database connected.
+- Database - Change what database is used but keep the same server.
 
 ### Service
 - Status - Shows the status of the windows service.
@@ -57,6 +58,9 @@ The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided 
 ### Counter
 - List - Lists all performance counter configurations that exists.
 - Read - Reads the value from the performance counter to be displayed on screen.
+- Collect - Reads the value from the performance counter once and send it to the database.
+- Initiate - Initiates some default counters (If the files and counter group does not already exist).
+- Create - Create a new performance counter config file for a counter.
 
 ## Versions
 The currently supported version of InfluxDB is 0.9x.

@@ -5,12 +5,12 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 {
-    internal class InitiateDefaultCommand : ActionCommandBase
+    internal class CounterInitiateCommand : ActionCommandBase
     {
         private readonly IConfigBusiness _configBusiness;
         private readonly ICounterBusiness _counterBusiness;
 
-        public InitiateDefaultCommand(IConfigBusiness configBusiness, ICounterBusiness counterBusiness)
+        public CounterInitiateCommand(IConfigBusiness configBusiness, ICounterBusiness counterBusiness)
             : base("Initiate", "Create counter configurations to get started.")
         {
             _configBusiness = configBusiness;

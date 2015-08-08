@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Name='Influx Capacitor' Id='$(var.Id)' UpgradeCode='C742A659-5155-4BBA-8FCB-3068AAEBEE26' Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='Thargelion AB'>
+  <Product Name='Influx Capacitor' Id='$(var.Id)' UpgradeCode='BE4E9B64-AC3B-4A25-8AAA-179EAF00EE38' Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='Thargelion AB'>
     
     <Package InstallerVersion="300" Compressed="yes"/>
 

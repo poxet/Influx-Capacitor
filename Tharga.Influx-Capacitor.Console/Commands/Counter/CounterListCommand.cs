@@ -20,6 +20,8 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
         {
             var config = _configBusiness.LoadFiles(new string[] { });
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
+
+            var cnt = 0;
             foreach (var counterGroup in counterGroups)
             {
                 OutputInformation("{0}", counterGroup.Name);
@@ -28,13 +30,16 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
                     if (counter.PerformanceCounter != null)
                     {
                         OutputInformation("   OK\t{0}.{1}.{2} {3}", counter.PerformanceCounter.CategoryName, counter.PerformanceCounter.CounterName, counter.PerformanceCounter.InstanceName, counter.Name);
+                        cnt++;
                     }
                     else
                     {
-                        OutputInformation("   -\t{1}", counter.Name);
+                        OutputInformation("   -\t{0}", counter.Name);
                     }                    
                 }
             }
+
+            OutputInformation("Totally {0} counters that will be executed by the service.", cnt);
 
             return true;
         }

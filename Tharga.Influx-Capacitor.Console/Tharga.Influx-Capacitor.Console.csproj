@@ -82,8 +82,10 @@
     <Compile Include="..\Build\AssemblyVersionInfo.cs">
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Commands\Counter\ConfigCreateCommand.cs" />
-    <Compile Include="Commands\Counter\InitiateDefaultCommand.cs" />
+    <Compile Include="Commands\Config\ConfigDatabaseCommand.cs" />
+    <Compile Include="Commands\Counter\CounterCollectCommand.cs" />
+    <Compile Include="Commands\Counter\CounterCreateCommand.cs" />
+    <Compile Include="Commands\Counter\CounterInitiateCommand.cs" />
     <Compile Include="Commands\Counter\CounterCommands.cs" />
     <Compile Include="Commands\Counter\CounterDisableCommand.cs" />
     <Compile Include="Commands\Counter\CounterListCommand.cs" />
@@ -96,7 +98,7 @@
     <Compile Include="Commands\Service\ServiceStartCommand.cs" />
     <Compile Include="Commands\Service\ServiceStopCommand.cs" />
     <Compile Include="Commands\Config\ConfigAutoCommand.cs" />
-    <Compile Include="Commands\Config\ConfigChangeCommand.cs" />
+    <Compile Include="Commands\Config\ConfigServerCommand.cs" />
     <Compile Include="Commands\Config\ConfigCommands.cs" />
     <Compile Include="Commands\Config\ConfigCommandBase.cs" />
     <Compile Include="Commands\Config\ConfigListCommand.cs" />
@@ -115,6 +117,9 @@
       <Project>{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}</Project>
       <Name>Tharga.Influx-Capacitor.Collector</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\Config\Change\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

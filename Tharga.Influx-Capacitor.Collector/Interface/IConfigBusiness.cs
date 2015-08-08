@@ -6,6 +6,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
     public interface IConfigBusiness
     {
         IConfig LoadFile(string configurationFilename);
+        IConfig LoadFiles();
         IConfig LoadFiles(string[] configurationFilenames);
         IDatabaseConfig OpenDatabaseConfig();
         void SaveDatabaseUrl(string url, InfluxDbVersion influxDbVersion);

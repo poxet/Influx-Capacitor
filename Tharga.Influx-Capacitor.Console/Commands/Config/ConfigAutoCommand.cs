@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.InfluxCapacitor.Console.Commands.Counter;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Config

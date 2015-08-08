@@ -24,7 +24,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(0);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroup.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { });
-            var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object, false);
+            var collectorEngine = new CollectorEngine(client.Object, performanceCounterGroup.Object);
 
             //Act
             await collectorEngine.StartAsync();
@@ -44,7 +44,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroup.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
-            var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object, false);
+            var collectorEngine = new CollectorEngine(client.Object, performanceCounterGroup.Object);
 
             //Act
             await collectorEngine.StartAsync();
@@ -64,7 +64,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroup.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroup.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroup.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
-            var collectorEngine = new CollectorEngine(client.Object, databaseName, performanceCounterGroup.Object, false);
+            var collectorEngine = new CollectorEngine(client.Object, performanceCounterGroup.Object);
 
             //Act
             await collectorEngine.StartAsync();

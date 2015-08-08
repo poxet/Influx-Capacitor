@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using InfluxDB.Net;
 using InfluxDB.Net.Models;
@@ -77,13 +78,29 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
 
         protected async Task<IDatabaseConfig> GetUsernameAsync(string paramList, int index, IDatabaseConfig config)
         {
-            var points = new[] { new Point { Name = Constants.ServiceName, Fields = new Dictionary<string, object> { { "Machine", Environment.MachineName } }, }, };
+            var points = new[]
+            {
+                new Point
+                {
+                    Name = Constants.ServiceName, 
+                    Tags = new Dictionary<string, object>
+                    {
+                        { "hostname", Environment.MachineName }
+                    },
+                    Fields = new Dictionary<string, object>
+                    {
+                        { "value", 1 }
+                    },
+                    Precision = TimeUnit.Microseconds,
+                    Timestamp = DateTime.UtcNow
+                },
+            };
             var dataChanged = false;
 
             var url = config.Url;
             var influxDbVersion = config.InfluxDbVersion;
 
-            IInfluxDbAgent client;
+            IInfluxDbAgent client = null;
             InfluxDbApiResponse response = null;
             try
             {
@@ -117,6 +134,19 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 catch (CommandEscapeException)
                 {
                     return null;
+                }
+                catch (InfluxDbApiException exception)
+                {
+                    if (exception.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        var create = QueryParam("Database does not exist, create?", GetParam(paramList, index++), new Dictionary<bool, string>() { { true, "Yes" }, { false, "No" } });
+                        if (create)
+                        {
+                            client.CreateDatabaseAsync(database);
+                            response = client.WriteAsync(points).Result;
+                            dataChanged = true;
+                        }
+                    }
                 }
                 catch (Exception exception)
                 {

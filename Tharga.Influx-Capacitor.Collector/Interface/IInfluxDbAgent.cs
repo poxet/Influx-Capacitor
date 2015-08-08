@@ -10,5 +10,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         Task<Pong> PingAsync();
         Task<string> VersionAsync();
         Task<InfluxDbApiResponse> WriteAsync(Point[] points);
+        Task CreateDatabaseAsync(string databaseName);
     }
 }

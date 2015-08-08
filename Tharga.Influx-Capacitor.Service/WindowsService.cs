@@ -44,7 +44,7 @@ namespace Tharga.InfluxCapacitor.Service
         {
             try
             {
-                if (!_processor.RunAsync(new string[]{}, false).Wait(5000))
+                if (!_processor.RunAsync(new string[]{}).Wait(5000))
                     throw new InvalidOperationException("Cannot start service.");
 
                 base.OnStart(args);

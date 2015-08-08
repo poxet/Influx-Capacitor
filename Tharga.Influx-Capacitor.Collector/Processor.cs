@@ -20,7 +20,7 @@ namespace Tharga.InfluxCapacitor.Collector
             _influxDbAgentLoader = influxDbAgentLoader;
         }
 
-        public async Task RunAsync(string[] configFileNames, bool showDetails)
+        public async Task RunAsync(string[] configFileNames)
         {
             var config = _configBusiness.LoadFiles(configFileNames);
 
@@ -33,10 +33,19 @@ namespace Tharga.InfluxCapacitor.Collector
 
             foreach (var counterGroup in counterGroups)
             {
-                var engine = new CollectorEngine(client, config.Database.Name, counterGroup, showDetails);
+                var engine = new CollectorEngine(client, counterGroup);
                 engine.NotificationEvent += Engine_NotificationEvent;
                 await engine.StartAsync();
             }
+        }
+
+        public async Task<int> CollectAssync(IPerformanceCounterGroup counterGroup)
+        {
+            var config = _configBusiness.LoadFiles();
+            var client = _influxDbAgentLoader.GetAgent(config.Database);
+            var engine = new CollectorEngine(client, counterGroup);
+
+            return await engine.RegisterCounterValuesAsync();
         }
 
         void Engine_NotificationEvent(object sender, NotificationEventArgs e)

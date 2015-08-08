@@ -26,7 +26,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.ProcessorTests
             var configFiles = new string[] { };
 
             //Act
-            await processor.RunAsync(configFiles, false);
+            await processor.RunAsync(configFiles);
 
             //Assert
             counterBusinessMock.Verify(x => x.GetPerformanceCounterGroups(config), Times.Once);

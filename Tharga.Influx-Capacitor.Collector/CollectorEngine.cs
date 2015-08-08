@@ -17,16 +17,12 @@ namespace Tharga.InfluxCapacitor.Collector
         private readonly IPerformanceCounterGroup _performanceCounterGroup;
         private readonly Timer _timer;
         private readonly IInfluxDbAgent _client;
-        private readonly string _databaseName;
         private readonly string _name;
-        private readonly bool _showDetails;
 
-        public CollectorEngine(IInfluxDbAgent client, string databaseName, IPerformanceCounterGroup performanceCounterGroup, bool showDetails)
+        public CollectorEngine(IInfluxDbAgent client, IPerformanceCounterGroup performanceCounterGroup)
         {
             _client = client;
             _performanceCounterGroup = performanceCounterGroup;
-            _showDetails = showDetails;
-            _databaseName = databaseName;
             if (performanceCounterGroup.SecondsInterval > 0)
             {
                 _timer = new Timer(1000 * performanceCounterGroup.SecondsInterval);
@@ -47,36 +43,45 @@ namespace Tharga.InfluxCapacitor.Collector
             }
         }
 
-        internal async Task RegisterCounterValuesAsync()
+        public async Task<int> RegisterCounterValuesAsync()
         {
-            var points = new[] { new Point { Name = _name, Fields = new Dictionary<string, object>(), Precision = TimeUnit.Microseconds, Tags = new Dictionary<string, object>(), Timestamp = DateTime.UtcNow } };
+            var points = new List<Point>();
 
-            //Counter data
-            foreach (var performanceCounterInfo in _performanceCounterGroup.PerformanceCounterInfos)
+            foreach (var performanceCounterInfo in _performanceCounterGroup.PerformanceCounterInfos.Where(x => x.PerformanceCounter != null))
             {
                 var value = performanceCounterInfo.PerformanceCounter.NextValue();
+                var categoryName = performanceCounterInfo.PerformanceCounter.CategoryName;
+                var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
                 var key = performanceCounterInfo.Name.Clean();
-                points[0].Fields.Add(key, value);
-            }
 
-            if (points[0].Fields.Any())
-            {
-                //Append metadata
-                points[0].Tags.Add("MachineName", Environment.MachineName);
-
-                //unable to parse
-                var result = await _client.WriteAsync(points);
-                InvokeNotificationEvent(new NotificationEventArgs(string.Format("Collector engine {0} executed: {1}", _name, result.StatusCode), OutputLevel.Information));
-
-                //Output this only if running from console
-                if (_showDetails)
+                var point = new Point
                 {
-                    foreach (var field in points[0].Fields)
+                    Name = _name,
+                    Tags = new Dictionary<string, object>
                     {
-                        InvokeNotificationEvent(new NotificationEventArgs("> " + field.Key + ": " + field.Value, OutputLevel.Information));
-                    }
+                        { "hostname", Environment.MachineName },
+                        { "category", categoryName },
+                        { "counter", counterName },
+                    },
+                    Fields = new Dictionary<string, object>
+                    {
+                        { "value", value }
+                    },
+                    Precision = TimeUnit.Microseconds,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                if (!string.IsNullOrEmpty(key))
+                {
+                    point.Tags.Add("instance", key);
                 }
+
+                points.Add(point);
             }
+
+            await _client.WriteAsync(points.ToArray());
+
+            return points.Count;
         }
 
         public async Task StartAsync()

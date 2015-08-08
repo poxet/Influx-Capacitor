@@ -24,6 +24,11 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return LoadFiles(new[] { configurationFilename });
         }
 
+        public IConfig LoadFiles()
+        {
+            return LoadFiles(new string[] { });
+        }
+
         public IConfig LoadFiles(string[] configurationFilenames)
         {
             if (!configurationFilenames.Any())

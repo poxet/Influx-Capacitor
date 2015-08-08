@@ -7,12 +7,12 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 {
-    internal class ConfigCreateCommand : ActionCommandBase
+    internal class CounterCreateCommand : ActionCommandBase
     {
         private readonly IConfigBusiness _configBusiness;
         private readonly ICounterBusiness _counterBusiness;
 
-        public ConfigCreateCommand(IConfigBusiness configBusiness, ICounterBusiness counterBusiness)
+        public CounterCreateCommand(IConfigBusiness configBusiness, ICounterBusiness counterBusiness)
             : base("Create", "Create a new performance counter config file.")
         {
             _configBusiness = configBusiness;
