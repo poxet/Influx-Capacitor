@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using InfluxDB.Net;
@@ -15,6 +16,15 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
         public InfluxDbAgent(IDatabaseConfig databaseConfig)
         {
             _databaseConfig = databaseConfig;
+
+            Uri result;
+            if (!Uri.TryCreate(_databaseConfig.Url, UriKind.Absolute, out result))
+            {
+                var exp = new InvalidOperationException("Unable to parse provided connection as url.");
+                exp.Data.Add("Url", databaseConfig.Url);
+                throw exp;
+            }
+
             _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password, _databaseConfig.InfluxDbVersion);
         }
 

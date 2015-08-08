@@ -25,10 +25,13 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
 
         protected async Task<Tuple<string, InfluxDbVersion>> GetServerUrlAsync(string paramList, int index, string defaultUrl, InfluxDbVersion influxDbVersion)
         {
+            var urlParam = GetParam(paramList, index++);
+            //var versionParam = GetParam(paramList, index++);
+
             var url = defaultUrl;
 
             IInfluxDbAgent client = null;
-            if (!string.IsNullOrEmpty(url))
+            if (!string.IsNullOrEmpty(url) && url != Constants.NoConfigUrl)
             {                
                 client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty", influxDbVersion));
             }
@@ -54,8 +57,11 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 {
                     try
                     {
-                        url = QueryParam<string>("Url", GetParam(paramList, index));
-                        influxDbVersion = QueryParam("Version", GetParam(paramList, index), new Dictionary<InfluxDbVersion, string> { { InfluxDbVersion.Ver0_8X, "0.8x" }, { InfluxDbVersion.Ver0_9X, "0.9x" }, { InfluxDbVersion.Auto, "Auto" } });
+                        url = QueryParam<string>("Url", urlParam);
+                        urlParam = null;
+                        //influxDbVersion = QueryParam("Version", versionParam, new Dictionary<InfluxDbVersion, string> { { InfluxDbVersion.Ver0_8X, "0.8x" }, { InfluxDbVersion.Ver0_9X, "0.9x" }, { InfluxDbVersion.Auto, "Auto" } });
+                        //versionParam = null;
+                        influxDbVersion = InfluxDbVersion.Auto;
                         client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert", influxDbVersion));
 
                         connectionConfirmed = await client.CanConnect();
@@ -120,13 +126,14 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
 
             while (response == null || !response.Success)
             {
-                var database = QueryParam<string>("DatabaseName", GetParam(paramList, index++));
-                var user = QueryParam<string>("Username", GetParam(paramList, index++));
-                var password = QueryParam<string>("Password", GetParam(paramList, index++));
-                config = new DatabaseConfig(url, user, password, database, influxDbVersion);
-
+                var database = string.Empty;
                 try
                 {
+                    database = QueryParam<string>("DatabaseName", GetParam(paramList, index++));
+                    var user = QueryParam<string>("Username", GetParam(paramList, index++));
+                    var password = QueryParam<string>("Password", GetParam(paramList, index++));
+                    config = new DatabaseConfig(url, user, password, database, influxDbVersion);
+
                     client = _influxDbAgentLoader.GetAgent(config);
                     response = await client.WriteAsync(points);
                     dataChanged = true;

@@ -33,6 +33,10 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
         public static async Task StartServiceAsync()
         {
             var service = new ServiceController(Constants.ServiceName);
+
+            if (service.Status == ServiceControllerStatus.Running)
+                return;
+
             if (service.Status != ServiceControllerStatus.Stopped && service.Status != ServiceControllerStatus.Paused)
             {
                 var exp = new InvalidOperationException("Cannot start service because of current state.");
@@ -42,25 +46,23 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
 
             service.Start();
             await WaitForStatusAsync(service, ServiceControllerStatus.Running);
-            //service.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 15));
-
-            //if (service.Status != ServiceControllerStatus.Running)
-            //{
-            //    throw new InvalidOperationException("Cannot start service.");
-            //}
         }
 
         public static async Task StopServiceAsync()
         {
             var service = new ServiceController(Constants.ServiceName);
+
+            if (service.Status == ServiceControllerStatus.Stopped)
+                return;
+
             if (service.Status != ServiceControllerStatus.Running && service.Status != ServiceControllerStatus.Paused)
             {
-                var exp = new InvalidOperationException("Cannot start service because of current state.");
+                var exp = new InvalidOperationException("Cannot stop service because of current state.");
                 exp.Data.Add("service.Status", service.Status);
                 throw exp;
             }
 
-            service.Start();
+            service.Stop();
             await WaitForStatusAsync(service, ServiceControllerStatus.Stopped);
         }
 
@@ -71,23 +73,15 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
                 service.WaitForStatus(status, new TimeSpan(0, 0, 15));
                 if (service.Status != status)
                 {
-                    throw new InvalidOperationException("Waiting for the service state to change to " + status + " timed out.");
+                    throw new InvalidOperationException(string.Format("Waiting for the service state to change to {0} timed out.", status));
                 }
             });
         }
 
         public static async Task RestartServiceAsync()
         {
-            var service = new ServiceController(Constants.ServiceName);
-            if (service.Status == ServiceControllerStatus.Running || service.Status != ServiceControllerStatus.Paused)
-            {
-                await StopServiceAsync();
-            }
-
-            if (service.Status == ServiceControllerStatus.Stopped)
-            {
-                await StartServiceAsync();
-            }
+            await StopServiceAsync();
+            await StartServiceAsync();
         }
     }
 }

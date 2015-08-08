@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Business;
@@ -48,18 +47,19 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 
             var initaiteBusiness = new InitaiteBusiness(_configBusiness, _counterBusiness);
             var response = initaiteBusiness.CreateCounter(groupName, secondsInterval, collectors);
-            OutputInformation(response.Item2);
 
-            TestNewCounterGroup(response);
+            OutputLine(response.Item2.Item1, response.Item2.Item2);
+
+            TestNewCounterGroup(response.Item1);
 
             return false;
         }
 
-        private void TestNewCounterGroup(Tuple<string, string> response)
+        private void TestNewCounterGroup(string counterGroupName)
         {
             var config = _configBusiness.LoadFiles(new string[] { });
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
-            var counterGroup = counterGroups.Single(x => x.Name == response.Item1);
+            var counterGroup = counterGroups.Single(x => x.Name == counterGroupName);
 
             ReadCounterGroup(counterGroup);
         }

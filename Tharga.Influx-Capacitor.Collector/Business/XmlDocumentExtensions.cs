@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
@@ -19,57 +20,58 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _counterBusiness = counterBusiness;
         }
 
-        public IEnumerable<string> CreateAll()
+        public IEnumerable<Tuple<string,OutputLevel>> CreateAll()
         {
             yield return CreateProcessorCounter();
             yield return CreateMemoryCounter();
         }
 
-        public Tuple<string, string> CreateCounter(string groupName, int secondsInterval, List<ICounter> counters)
+        public Tuple<string, Tuple<string, OutputLevel>> CreateCounter(string groupName, int secondsInterval, List<ICounter> counters)
         {
             var response = new CounterGroup(groupName, secondsInterval, counters);
             var message = CreateFile(groupName, response);
-            return new Tuple<string, string>(groupName, message);
+            return new Tuple<string, Tuple<string, OutputLevel>>(groupName, message);
         }
 
-        private string CreateProcessorCounter()
+        private Tuple<string, OutputLevel> CreateProcessorCounter()
         {
             var name = "processor";
 
             var counters = new List<ICounter> { new Counter("Processor", "% Processor Time", "*") };
             var response = new CounterGroup(name, 10, counters);
-            return CreateFile(name, response);
+            return ConvertErrorsToWarnings(CreateFile(name, response));
         }
 
-        private string CreateMemoryCounter()
+        private Tuple<string, OutputLevel> CreateMemoryCounter()
         {
             var name = "memory";
 
             var counters = new List<ICounter> { new Counter("Memory", "*") };
             var response = new CounterGroup(name, 10, counters);
-            return CreateFile(name, response);
+            return ConvertErrorsToWarnings(CreateFile(name, response));
         }
 
-        private string CreateFile(string name, CounterGroup response)
+        private static Tuple<string, OutputLevel> ConvertErrorsToWarnings(Tuple<string, OutputLevel> result)
         {
-            //Check if there is a counter with this name already
+            return result.Item2 == OutputLevel.Error ? new Tuple<string, OutputLevel>(result.Item1, OutputLevel.Warning) : result;
+        }
+
+        private Tuple<string,OutputLevel> CreateFile(string name, CounterGroup response)
+        {
             var config = _configBusiness.LoadFiles(new string[] { });
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
+
             if (counterGroups.Any(x => x.Name == response.Name))
             {
-                return string.Format("There is already a counter group named {0}.", response.Name);
-                //OutputWarning("There is already a counter group named {0}.", response.Name);
+                return new Tuple<string, OutputLevel>(string.Format("There is already a counter group named {0}.", response.Name), OutputLevel.Error);
             }
-            else if (_configBusiness.CreateConfig(name + ".xml", new List<ICounterGroup> { response }))
+
+            if (!_configBusiness.CreateConfig(name + ".xml", new List<ICounterGroup> { response }))
             {
-                return string.Format("Created counter config {0}.", name);
-                //OutputInformation("Created counter config {0}.", name);
+                return new Tuple<string, OutputLevel>(string.Format("Did not create {0}, the file {0}.xml" + " already exists.", name), OutputLevel.Error);
             }
-            else
-            {
-                return string.Format("Did not create {0}, the file {0}.xml" + " already exists.", name);
-                //OutputWarning("Did not create {0}, the file {0}.xml" + " already exists.", name);
-            }
+
+            return new Tuple<string, OutputLevel>(string.Format("Created counter config {0}.", name), OutputLevel.Information);
         }
     }
 

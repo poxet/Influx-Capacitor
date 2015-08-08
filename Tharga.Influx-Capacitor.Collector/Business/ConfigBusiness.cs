@@ -170,6 +170,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         private static string Encrypt(string password)
         {
+            if (string.IsNullOrEmpty(password)) return password;
+
             var crypto = new Crypto(Environment.OSVersion.VersionString);
             var result = crypto.EncryptStringAes(password, Environment.MachineName);
             return result;
@@ -177,13 +179,15 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         private static string Decrypt(string password)
         {
+            if (string.IsNullOrEmpty(password)) return password;
+
             var crypto = new Crypto(Environment.OSVersion.VersionString);
             try
             {
                 var result = crypto.DecryptStringAes(password, Environment.MachineName);
                 return result;
             }
-            catch (FormatException exception)
+            catch (FormatException)
             {
                 return password;
             }

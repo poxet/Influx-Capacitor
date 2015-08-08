@@ -22,7 +22,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="CompanyDir" Name="Thargelion">
-          <Directory Id="APPLICATIONROOTDIRECTORY" Name="Influx-Capacitor.Service" />
+          <Directory Id="APPLICATIONROOTDIRECTORY" Name="Influx-Capacitor" />
         </Directory>
       </Directory>
     </Directory>
@@ -54,6 +54,10 @@
     <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\Tharga.Influx-Capacitor.Console\bin\$(var.Environment)'>
       <Component Id="Console" Guid="011E4067-8813-4223-AF15-B3F97C460E03">
         <File Name="Tharga.Influx-Capacitor.Console.exe" KeyPath="yes" >
+          <Shortcut Id="APPLICATIONROOTDIRECTORY" Directory="APPLICATIONROOTDIRECTORY" Name="Tharga.Influx-Capacitor.Service.exe" Show="normal" WorkingDirectory="APPLICATIONROOTDIRECTORY" >
+            <!--<Icon Id="Tharga.Influx-Capacitor.Service.exe" src="Tharga.Influx-Capacitor.Service.exe" />-->
+            <!--<Icon Id="R.exe" src="R.ico" />-->
+          </Shortcut>
           <!--<Shortcut Id="startmenuAdv"
                     Directory="ProgramMenuDir"
                     Advertise="yes"
@@ -82,7 +86,7 @@
       <Custom Action="LaunchApp" Before="InstallFinalize">NOT Installed AND NOT PATCH</Custom>
     </InstallExecuteSequence>
 
-	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Influx-Capacitor.Console.exe "config auto"' Execute="deferred" Return="check" Impersonate="no" />
+	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Tharga.Influx-Capacitor.Console.exe "config auto" /e' Execute="deferred" Return="check" Impersonate="no" />
     
   </Product>
 </Wix>

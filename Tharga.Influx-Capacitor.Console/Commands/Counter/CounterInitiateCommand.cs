@@ -22,7 +22,9 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var initaiteBusiness = new InitaiteBusiness(_configBusiness, _counterBusiness);
             var messages = initaiteBusiness.CreateAll();
             foreach (var message in messages)
-                OutputInformation(message);
+            {
+                OutputLine(message.Item1, message.Item2);
+            }
 
             return true;
         }

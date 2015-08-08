@@ -43,6 +43,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Thargelion.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="InfluxDB.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -73,9 +76,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tharga.Toolkit.Console, Version=1.5.11.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Tharga.Toolkit.Console, Version=1.5.12.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Solutions\packages\Tharga.Toolkit.Console.1.5.11.0\lib\net45\Tharga.Toolkit.Console.dll</HintPath>
+      <HintPath>..\Solutions\packages\Tharga.Toolkit.Console.1.5.12.0\lib\net45\Tharga.Toolkit.Console.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -91,8 +94,6 @@
     <Compile Include="Commands\Counter\CounterDisableCommand.cs" />
     <Compile Include="Commands\Counter\CounterListCommand.cs" />
     <Compile Include="Commands\Counter\CounterReadCommand.cs" />
-    <Compile Include="Commands\Processor\RunProcessorCommand.cs" />
-    <Compile Include="Commands\Processor\ProcessorCommands.cs" />
     <Compile Include="Commands\Service\ServiceStatusCommand.cs" />
     <Compile Include="Commands\Service\ServiceCommands.cs" />
     <Compile Include="Commands\Service\ServiceRestartCommand.cs" />
@@ -119,8 +120,9 @@
       <Name>Tharga.Influx-Capacitor.Collector</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Commands\Config\Change\" />
+    <Content Include="Thargelion.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
@@ -135,6 +137,10 @@
     <Error Condition="!Exists('..\Solutions\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
     <Error Condition="Exists('..\Solutions\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

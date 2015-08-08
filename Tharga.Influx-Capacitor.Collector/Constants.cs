@@ -3,6 +3,6 @@
     public static class Constants
     {
         public const string ServiceName = "Influx-Capacitor";
-        public const string NoConfigUrl = "dummy";
+        public const string NoConfigUrl = "http://thargelion.se/dummy:8086";
     }
 }

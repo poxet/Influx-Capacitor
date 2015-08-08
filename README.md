@@ -6,7 +6,7 @@ It is installed as a windows service named *Influx-Capacitor*. There is also a c
 Data is collected and sent to a [InfluxDB](https://github.com/influxdb/influxdb) database of your choice. [Grafana](https://github.com/grafana/grafana) is a great way of looking at the data.
 
 Install using chocolatey
-https://chocolatey.org/packages/Influx-capacitor
+https://chocolatey.org/packages/Influx-Capacitor
 
 ## Performance Counters
 
