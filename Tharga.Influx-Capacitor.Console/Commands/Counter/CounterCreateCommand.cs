@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 {
-    internal class CounterCreateCommand : ActionCommandBase
+    internal class CounterCreateCommand : CounterCommandBase
     {
         private readonly IConfigBusiness _configBusiness;
         private readonly ICounterBusiness _counterBusiness;
@@ -37,7 +37,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
                 var instanceNames = _counterBusiness.GetInstances(categoryName, counterName);
                 var instanceName = QueryParam("Instance", GetParam(paramList, index++), instanceNames.Select(x => new KeyValuePair<string, string>(x, x)));
 
-                addAnother = QueryParam<bool>("Add another?", GetParam(paramList, index++), new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } });
+                addAnother = QueryParam("Add another?", GetParam(paramList, index++), new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } });
 
                 var collector = new Collector.Entities.Counter(categoryName, counterName, instanceName);
                 collectors.Add(collector);
@@ -47,10 +47,21 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var secondsInterval = QueryParam<int>("Seconds Interval", GetParam(paramList, index++));
 
             var initaiteBusiness = new InitaiteBusiness(_configBusiness, _counterBusiness);
-            var message = initaiteBusiness.CreateCounter(groupName, secondsInterval, collectors);
-            OutputInformation(message);
+            var response = initaiteBusiness.CreateCounter(groupName, secondsInterval, collectors);
+            OutputInformation(response.Item2);
+
+            TestNewCounterGroup(response);
 
             return false;
+        }
+
+        private void TestNewCounterGroup(Tuple<string, string> response)
+        {
+            var config = _configBusiness.LoadFiles(new string[] { });
+            var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
+            var counterGroup = counterGroups.Single(x => x.Name == response.Item1);
+
+            ReadCounterGroup(counterGroup);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -24,10 +25,11 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             yield return CreateMemoryCounter();
         }
 
-        public string CreateCounter(string groupName, int secondsInterval, List<ICounter> counters)
+        public Tuple<string, string> CreateCounter(string groupName, int secondsInterval, List<ICounter> counters)
         {
             var response = new CounterGroup(groupName, secondsInterval, counters);
-            return CreateFile(groupName, response);
+            var message = CreateFile(groupName, response);
+            return new Tuple<string, string>(groupName, message);
         }
 
         private string CreateProcessorCounter()

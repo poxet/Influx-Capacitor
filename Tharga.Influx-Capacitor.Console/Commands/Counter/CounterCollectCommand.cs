@@ -28,9 +28,15 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var index = 0;
             var counterGroup = QueryParam("Group", GetParam(paramList, index++), counterGroups.Select(x => new KeyValuePair<IPerformanceCounterGroup, string>(x, x.Name)));
 
-            var processor = new Collector.Processor(_configBusiness, _counterBusiness, _influxDbAgentLoader);
-            var count = await processor.CollectAssync(counterGroup);
+            var counterGroupsToRead = counterGroup != null ? new[] { counterGroup } : counterGroups;
 
+            var processor = new Collector.Processor(_configBusiness, _counterBusiness, _influxDbAgentLoader);
+
+            var count = 0;
+            foreach (var cg in counterGroupsToRead)
+            {
+                count += await processor.CollectAssync(cg);
+            }
             OutputInformation("Totally {0} metrics points where collected and sent to the database.", count);
 
             return true;

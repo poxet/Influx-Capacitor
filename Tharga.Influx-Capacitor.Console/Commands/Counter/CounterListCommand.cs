@@ -34,7 +34,11 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
                     }
                     else
                     {
-                        OutputInformation("   -\t{0}", counter.Name);
+                        var name = counter.Name;
+                        if (string.IsNullOrEmpty(name))
+                            name = "N/A";
+
+                        OutputWarning("   -\t{0}", name);
                     }                    
                 }
             }

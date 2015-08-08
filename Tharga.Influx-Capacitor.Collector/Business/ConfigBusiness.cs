@@ -65,6 +65,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     {
                         var ex = new InvalidOperationException("There are more than one counter group in the config files.");
                         ex.Data.Add("GroupName", grp.Name);
+                        ex.Data.Add("File", configurationFilename);
                         throw ex;
                     }
 
