@@ -13,7 +13,7 @@ Steps to manually build the installation package
 
 Steps to manually update the version
 1. Change the versions of AssemblyVersionInfo.cs
-2. Update version in influxdb-collector.nuspec
+2. Update version in Influx-Capacitor.nuspec
 3. Change the path in file ChocolateyInstall.ps1 so that the version is reflected
 4. Change Version in BuildMsi.bat
 5. Generate a new Id in BuildMsi.bat

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Name='Influx Capacitor' Id='$(var.Id)' UpgradeCode='BE4E9B64-AC3B-4A25-8AAA-179EAF00EE38' Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='Thargelion AB'>
-    
+
     <Package InstallerVersion="300" Compressed="yes"/>
 
     <UI Id="WixUI_SkipLicenseAgreement">
@@ -33,60 +33,61 @@
         <File Name="InfluxDB.Net.dll" />
         <File Name="Microsoft.Threading.Tasks.dll" />
         <File Name="Newtonsoft.Json.dll" />
-        <!--<File Name="MemoryCounterConfiguration.xml" />-->
-        <!--<File Name="NetworkInterfaceConfiguration.xml" />-->
-        <!--<File Name="ProcessorCounterConfiguration.xml" />-->
-        <!--<File Name="SqlConfiguration.xml" />-->
-        <!--<File Name="WebServiceConfiguration.xml" />-->
         <File Name="Tharga.Toolkit.Console.dll" />
       </Component>
     </DirectoryRef>
-    
+
     <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\Tharga.Influx-Capacitor.Service\bin\$(var.Environment)'>
       <Component Id="ServiceServer" Guid="D341C6FB-5C67-47B7-B6AE-51ECAAE30703">
-        <File Name="Tharga.Influx-Capacitor.Service.exe" KeyPath="yes" />        
-		    <File Name="Tharga.Influx-Capacitor.Service.exe.config" />
+        <File Name="Tharga.Influx-Capacitor.Service.exe" KeyPath="yes" />
+        <File Name="Tharga.Influx-Capacitor.Service.exe.config" />
         <ServiceInstall Name="Influx-Capacitor" DisplayName="Influx-Capacitor" Description="Influx Capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana." Type="ownProcess" Start="auto" ErrorControl="normal" Account="LocalSystem" />
         <ServiceControl Name="Influx-Capacitor" Id="StartService" Start="install" Stop="both" Remove="uninstall" Wait="no" />
       </Component>
     </DirectoryRef>
 
     <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\Tharga.Influx-Capacitor.Console\bin\$(var.Environment)'>
+      <Directory Id="DesktopFolder" Name="Desktop"></Directory>
       <Component Id="Console" Guid="011E4067-8813-4223-AF15-B3F97C460E03">
         <File Name="Tharga.Influx-Capacitor.Console.exe" KeyPath="yes" >
-          <Shortcut Id="APPLICATIONROOTDIRECTORY" Directory="APPLICATIONROOTDIRECTORY" Name="Tharga.Influx-Capacitor.Service.exe" Show="normal" WorkingDirectory="APPLICATIONROOTDIRECTORY" >
-            <!--<Icon Id="Tharga.Influx-Capacitor.Service.exe" src="Tharga.Influx-Capacitor.Service.exe" />-->
-            <!--<Icon Id="R.exe" src="R.ico" />-->
-          </Shortcut>
-          <!--<Shortcut Id="startmenuAdv"
-                    Directory="ProgramMenuDir"
-                    Advertise="yes"
-                    Name="Advertis"
-                    WorkingDirectory="INSTALLDIR"
-                    Icon="Icon.exe">
-            <Icon Id="Icon.exe" SourceFile="Tharga.Influx-Capacitor.Console.exe" />
-          </Shortcut>-->
+          <!--<Shortcut Id="ApplicationStartMenuShortcut" Directory="APPLICATIONROOTDIRECTORY" Name="Influx Capacitor" Show="normal" WorkingDirectory="APPLICATIONROOTDIRECTORY" />-->
         </File>
-        <File Name="Tharga.Influx-Capacitor.Console.exe.config" />        
+        <File Name="Tharga.Influx-Capacitor.Console.exe.config" />
       </Component>
     </DirectoryRef>
 
-    <!--<Directory Id="ProgramMenuFolder" Name="PMenu" LongName="Programs">
-      <Directory Id="ProgramMenuDir" Name="Nonadver" LongName="Nonadvertised Shortcut" />
-    </Directory>-->
-    
     <Feature Id="Core" Title="Core" Level="1" Absent="disallow" Display="expand">
       <ComponentRef Id="Core"/>
       <ComponentRef Id="Console"/>
       <ComponentRef Id="ServiceServer"/>
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
 
-	<InstallExecuteSequence>
-      <RemoveExistingProducts Before="InstallInitialize" /> 
+    <InstallExecuteSequence>
+      <RemoveExistingProducts Before="InstallInitialize" />
       <Custom Action="LaunchApp" Before="InstallFinalize">NOT Installed AND NOT PATCH</Custom>
     </InstallExecuteSequence>
 
-	<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Tharga.Influx-Capacitor.Console.exe "config auto" /e' Execute="deferred" Return="check" Impersonate="no" />
-    
+    <CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Tharga.Influx-Capacitor.Console.exe "config auto" /e' Execute="deferred" Return="check" Impersonate="no" />
+
   </Product>
+
+  <Fragment>
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+      <Component Id="ApplicationShortcut" Guid="379B14C9-3A4F-4FB4-B516-A25E687C5A10">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="Influx Capacitor" Description="Influx-Capacitor Management Console" Target="[APPLICATIONROOTDIRECTORY]Tharga.Influx-Capacitor.Console.exe" WorkingDirectory="APPLICATIONROOTDIRECTORY" />
+        <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="APPLICATIONROOTDIRECTORY" On="uninstall" />
+        <RegistryValue Root="HKLM" Key="Software\Thargelion\Influx-Capacitor" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop" Guid="FD2C9CFA-2F89-424A-88DA-CFF1EE2FE1E0">
+        <Shortcut Id="ApplicationDesktopShortcut" Name="Influx Capacitor" Description="Influx-Capacitor Management Console" Target="[APPLICATIONROOTDIRECTORY]Tharga.Influx-Capacitor.Console.exe" WorkingDirectory="APPLICATIONROOTDIRECTORY" />
+        <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\Thargelion\Influx-Capacitor" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
 </Wix>

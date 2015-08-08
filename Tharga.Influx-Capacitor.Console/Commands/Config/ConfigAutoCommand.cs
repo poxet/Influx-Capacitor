@@ -64,7 +64,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 if (!status)
                 {
                     OutputLine("Setup did not go as it should. Correct the issues manually and type exit when you are done.", ConsoleColor.Blue);
-                    OutputLine("Use the site https://github.com/poxet/influxdb-collector for support.", ConsoleColor.Blue);
+                    OutputLine("Use the site https://github.com/poxet/Influx-Capacitor for support.", ConsoleColor.Blue);
                 }
             }
         }

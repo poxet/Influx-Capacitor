@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Console.Commands.Config;
 using Tharga.InfluxCapacitor.Console.Commands.Counter;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
@@ -12,6 +13,7 @@ namespace Tharga.InfluxCapacitor.Console
     {
         private static void Main(string[] args)
         {
+            System.Console.Title = Constants.ServiceName + " Management Console";
             var compositeRoot = new CompositeRoot();
             
             var command = new RootCommand(compositeRoot.ClientConsole);
