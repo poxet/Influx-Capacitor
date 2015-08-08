@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Xml;
 using InfluxDB.Net;
 using Tharga.InfluxCapacitor.Collector.Entities;
@@ -154,7 +156,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             dme.AppendChild(xmeUsername);
 
             var xmePassword = xml.CreateElement("Password");
-            xmePassword.InnerText = newDbConfig.Password;
+            xmePassword.InnerText = Encrypt(newDbConfig.Password);
             dme.AppendChild(xmePassword);
 
             var xmeName = xml.CreateElement("Name");
@@ -164,6 +166,27 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var xmlData = xml.ToFormattedString();
 
             _fileLoaderAgent.WriteAllText(databaseConfigFilePath, xmlData);
+        }
+
+        private static string Encrypt(string password)
+        {
+            var crypto = new Crypto(Environment.OSVersion.VersionString);
+            var result = crypto.EncryptStringAes(password, Environment.MachineName);
+            return result;
+        }
+
+        private static string Decrypt(string password)
+        {
+            var crypto = new Crypto(Environment.OSVersion.VersionString);
+            try
+            {
+                var result = crypto.DecryptStringAes(password, Environment.MachineName);
+                return result;
+            }
+            catch (FormatException exception)
+            {
+                return password;
+            }
         }
 
         private IEnumerable<ICounterGroup> GetCounterGroups(XmlDocument document)
@@ -226,8 +249,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         break;
                 }
             }
-            //var namedItem = counter.Attributes.GetNamedItem("Name");
-            //var name = namedItem != null ? namedItem.Value : null;
+
             return new Counter(categoryName, counterName, instanceName);
         }
 
@@ -253,7 +275,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         username = item.InnerText;
                         break;
                     case "Password":
-                        password = item.InnerText;
+                        password = Decrypt(item.InnerText);
                         break;
                     case "Name":
                         name = item.InnerText;
@@ -340,6 +362,135 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             File.WriteAllText(applicationFolderPath + "\\" + fileName, contents);
 
             return true;
+        }
+    }
+
+    public class Crypto
+    {
+        private readonly byte[] _salt;
+
+        public Crypto(string salt)
+        {
+            _salt = Encoding.ASCII.GetBytes(salt ?? "i6113742kbB7c8");
+        }
+
+        public string EncryptStringAes(string plainText, string sharedSecret)
+        {
+            if (string.IsNullOrEmpty(plainText))
+                throw new ArgumentNullException("plainText");
+            if (string.IsNullOrEmpty(sharedSecret))
+                throw new ArgumentNullException("sharedSecret");
+
+            string outStr;
+            RijndaelManaged aesAlg = null;
+
+            try
+            {
+                // generate the key from the shared secret and the salt
+                var key = new Rfc2898DeriveBytes(sharedSecret, _salt);
+
+                // Create a RijndaelManaged object
+                aesAlg = new RijndaelManaged();
+                aesAlg.Key = key.GetBytes(aesAlg.KeySize / 8);
+
+                // Create a decryptor to perform the stream transform.
+                var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                // Create the streams used for encryption.
+                using (var msEncrypt = new MemoryStream())
+                {
+                    // prepend the IV
+                    msEncrypt.Write(BitConverter.GetBytes(aesAlg.IV.Length), 0, sizeof(int));
+                    msEncrypt.Write(aesAlg.IV, 0, aesAlg.IV.Length);
+                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (var swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            //Write all data to the stream.
+                            swEncrypt.Write(plainText);
+                        }
+                    }
+                    outStr = Convert.ToBase64String(msEncrypt.ToArray());
+                }
+            }
+            finally
+            {
+                // Clear the RijndaelManaged object.
+                if (aesAlg != null)
+                    aesAlg.Clear();
+            }
+
+            // Return the encrypted bytes from the memory stream.
+            return outStr;
+        }
+
+        public string DecryptStringAes(string cipherText, string sharedSecret)
+        {
+            if (string.IsNullOrEmpty(cipherText))
+                throw new ArgumentNullException("cipherText");
+            if (string.IsNullOrEmpty(sharedSecret))
+                throw new ArgumentNullException("sharedSecret");
+
+            // Declare the RijndaelManaged object
+            // used to decrypt the data.
+            RijndaelManaged aesAlg = null;
+
+            // Declare the string used to hold
+            // the decrypted text.
+            string plaintext;
+
+            try
+            {
+                // generate the key from the shared secret and the salt
+                var key = new Rfc2898DeriveBytes(sharedSecret, _salt);
+
+                // Create the streams used for decryption.                
+                var bytes = Convert.FromBase64String(cipherText);
+                using (var msDecrypt = new MemoryStream(bytes))
+                {
+                    // Create a RijndaelManaged object
+                    // with the specified key and IV.
+                    aesAlg = new RijndaelManaged();
+                    aesAlg.Key = key.GetBytes(aesAlg.KeySize / 8);
+                    // Get the initialization vector from the encrypted stream
+                    aesAlg.IV = ReadByteArray(msDecrypt);
+                    // Create a decrytor to perform the stream transform.
+                    var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                    using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (var srDecrypt = new StreamReader(csDecrypt))
+
+                            // Read the decrypted bytes from the decrypting stream
+                            // and place them in a string.
+                            plaintext = srDecrypt.ReadToEnd();
+                    }
+                }
+            }
+            finally
+            {
+                // Clear the RijndaelManaged object.
+                if (aesAlg != null)
+                    aesAlg.Clear();
+            }
+
+            return plaintext;
+        }
+
+        private static byte[] ReadByteArray(Stream s)
+        {
+            byte[] rawLength = new byte[sizeof(int)];
+            if (s.Read(rawLength, 0, rawLength.Length) != rawLength.Length)
+            {
+                throw new SystemException("Stream did not contain properly formatted byte array");
+            }
+
+            byte[] buffer = new byte[BitConverter.ToInt32(rawLength, 0)];
+            if (s.Read(buffer, 0, buffer.Length) != buffer.Length)
+            {
+                throw new SystemException("Did not read byte array properly");
+            }
+
+            return buffer;
         }
     }
 }
