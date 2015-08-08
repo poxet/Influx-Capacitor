@@ -19,7 +19,8 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
                 return true;
             }
 
-            await ServiceCommands.StopServiceAsync();
+            var response = await ServiceCommands.StopServiceAsync();
+            OutputInformation("Service is {0}.", response);
 
             return true;
         }
