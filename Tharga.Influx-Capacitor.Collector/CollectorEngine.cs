@@ -52,7 +52,7 @@ namespace Tharga.InfluxCapacitor.Collector
                 var value = performanceCounterInfo.PerformanceCounter.NextValue();
                 var categoryName = performanceCounterInfo.PerformanceCounter.CategoryName;
                 var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
-                var key = performanceCounterInfo.Name.Clean();
+                var key = performanceCounterInfo.PerformanceCounter.InstanceName;
 
                 var point = new Point
                 {
