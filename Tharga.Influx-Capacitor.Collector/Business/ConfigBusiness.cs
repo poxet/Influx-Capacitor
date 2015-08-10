@@ -65,7 +65,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 {
                     if (groups.Any(x => x.Name == grp.Name))
                     {
-                        var ex = new InvalidOperationException("There are more than one counter group in the config files.");
+                        var ex = new InvalidOperationException("There are more than one counter group with the same name in the config files(s).");
                         ex.Data.Add("GroupName", grp.Name);
                         ex.Data.Add("File", configurationFilename);
                         throw ex;
