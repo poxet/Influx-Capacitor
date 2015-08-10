@@ -20,20 +20,31 @@ namespace Tharga.InfluxCapacitor.Collector
             _influxDbAgentLoader = influxDbAgentLoader;
         }
 
+        public async void RunAsync(IPerformanceCounterGroup[] counterGroupsToRead)
+        {
+            foreach (var counterGroup in counterGroupsToRead)
+            {
+                var engine = new CollectorEngine(counterGroup);
+                engine.NotificationEvent += Engine_NotificationEvent;
+                await engine.StartAsync();
+            }
+        }
+
+        [Obsolete("Use the RunAsync method that takes counters, not config file.")]
         public async Task RunAsync(string[] configFileNames)
         {
             var config = _configBusiness.LoadFiles(configFileNames);
 
-            var client = _influxDbAgentLoader.GetAgent(config.Database);
-
-            var pong = await client.PingAsync();
-            InvokeNotificationEvent(string.Format("Ping: {0} (ver {1}, {2} ms)", pong.Success ? "success" : "fail", pong.Version, pong.ResponseTime), OutputLevel.Information);
+            //var client = _influxDbAgentLoader.GetAgent(config.Database);
+            //var pong = await client.PingAsync();
+            //InvokeNotificationEvent(string.Format("Ping: {0} (ver {1}, {2} ms)", pong.Success ? "success" : "fail", pong.Version, pong.ResponseTime), OutputLevel.Information);
 
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
 
             foreach (var counterGroup in counterGroups)
             {
-                var engine = new CollectorEngine(client, counterGroup);
+                //var engine = new CollectorEngine(client, counterGroup);
+                var engine = new CollectorEngine(counterGroup);
                 engine.NotificationEvent += Engine_NotificationEvent;
                 await engine.StartAsync();
             }
@@ -41,9 +52,9 @@ namespace Tharga.InfluxCapacitor.Collector
 
         public async Task<int> CollectAssync(IPerformanceCounterGroup counterGroup)
         {
-            var config = _configBusiness.LoadFiles();
-            var client = _influxDbAgentLoader.GetAgent(config.Database);
-            var engine = new CollectorEngine(client, counterGroup);
+            //var config = _configBusiness.LoadFiles();
+            //var client = _influxDbAgentLoader.GetAgent(config.Database);
+            var engine = new CollectorEngine(counterGroup);
 
             return await engine.RegisterCounterValuesAsync();
         }

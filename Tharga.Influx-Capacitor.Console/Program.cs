@@ -9,13 +9,13 @@ using Tharga.Toolkit.Console.Command;
 namespace Tharga.InfluxCapacitor.Console
 {
     [ExcludeFromCodeCoverage]
-    static class Program
+    internal static class Program
     {
         private static void Main(string[] args)
         {
             System.Console.Title = Constants.ServiceName + " Management Console";
             var compositeRoot = new CompositeRoot();
-            
+
             var command = new RootCommand(compositeRoot.ClientConsole);
 
             command.RegisterCommand(new ConfigCommands(compositeRoot));

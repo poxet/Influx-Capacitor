@@ -101,28 +101,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var response = new List<PerformanceCounter>();
             try
             {
-                //if (string.IsNullOrEmpty(instanceName))
-                //{
-                //    string[] counterNames;
-                //    if (counterName.Contains("*"))
-                //    {
-                //        var cat = new PerformanceCounterCategory(categoryName);
-                //        counterNames = cat.GetCounters().Where(x => Match(x.CounterName, counterName)).Select(x => x.CounterName).ToArray();
-                //    }
-                //    else
-                //    {
-                //        counterNames = new[] { counterName };
-                //    }
-
-                //    foreach (var counter in counterNames)
-                //    {
-                //        var processorCounter = new PerformanceCounter(categoryName, counter);
-                //        processorCounter.NextValue();
-                //        response.Add(processorCounter);
-                //    }
-                //}
-                //else 
-                    if ((counterName.Contains("*") || (instanceName != null && instanceName.Contains("*"))))
+                if ((counterName.Contains("*") || (instanceName != null && instanceName.Contains("*"))))
                 {
                     var cat = new PerformanceCounterCategory(categoryName);
 

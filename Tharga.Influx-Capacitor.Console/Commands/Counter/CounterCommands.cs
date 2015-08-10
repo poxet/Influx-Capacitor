@@ -13,6 +13,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             RegisterCommand(new CounterCollectCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness, compositeRoot.InfluxDbAgentLoader));
             RegisterCommand(new CounterInitiateCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
             RegisterCommand(new CounterCreateCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
+            RegisterCommand(new CounterStartCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness, compositeRoot.InfluxDbAgentLoader));
         }
     }
 }
