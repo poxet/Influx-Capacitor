@@ -97,6 +97,7 @@
     <Compile Include="Commands\Counter\CounterDisableCommand.cs" />
     <Compile Include="Commands\Counter\CounterListCommand.cs" />
     <Compile Include="Commands\Counter\CounterReadCommand.cs" />
+    <Compile Include="Commands\Counter\CounterStartCommand.cs" />
     <Compile Include="Commands\Service\ServiceStatusCommand.cs" />
     <Compile Include="Commands\Service\ServiceCommands.cs" />
     <Compile Include="Commands\Service\ServiceRestartCommand.cs" />

@@ -16,15 +16,17 @@ namespace Tharga.InfluxCapacitor.Collector
         public event EventHandler<NotificationEventArgs> NotificationEvent;
 
         private readonly IPerformanceCounterGroup _performanceCounterGroup;
+        private readonly ISendBusiness _sendBusiness;
         private readonly Timer _timer;
         private readonly string _name;
         private StopwatchHighPrecision _sw;
         private DateTime? _timestamp;
         private long _counter;
 
-        public CollectorEngine(IPerformanceCounterGroup performanceCounterGroup)
+        public CollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness)
         {
             _performanceCounterGroup = performanceCounterGroup;
+            _sendBusiness = sendBusiness;
             if (performanceCounterGroup.SecondsInterval > 0)
             {
                 _timer = new Timer(1000 * performanceCounterGroup.SecondsInterval);
@@ -45,21 +47,28 @@ namespace Tharga.InfluxCapacitor.Collector
             }
         }
 
+        private static DateTime Floor(DateTime dateTime, TimeSpan interval)
+        {
+            return dateTime.AddTicks(-(dateTime.Ticks % interval.Ticks));
+        }
+
         public async Task<int> RegisterCounterValuesAsync()
         {
             try
             {
-                double timeOffset = 0;
                 if (_timestamp == null)
                 {
                     _sw = new StopwatchHighPrecision();
                     _timestamp = DateTime.UtcNow;
+                    var nw = Floor(_timestamp.Value, new TimeSpan(0, 0, 0, 1));
+                    //Debug.WriteLine("ROUND: " + (nw - _timestamp.Value).TotalMilliseconds);
+                    _timestamp = nw;
                 }
                 else
                 {
                     var elapsedTotal = _sw.ElapsedTotal;
 
-                    timeOffset = new TimeSpan(elapsedTotal).TotalSeconds - _performanceCounterGroup.SecondsInterval * _counter;
+                    var timeOffset = new TimeSpan(elapsedTotal).TotalSeconds - _performanceCounterGroup.SecondsInterval * _counter;
 
                     Debug.WriteLine("TErr: " + timeOffset);
                     if (timeOffset > 1)
@@ -88,7 +97,7 @@ namespace Tharga.InfluxCapacitor.Collector
 
                 var swMain = new StopwatchHighPrecision();
 
-                var precision = TimeUnit.Seconds; //TimeUnit.Microseconds
+                var precision = TimeUnit.Seconds; //TimeUnit.Microseconds;
 
                 //Prepare read
                 var performanceCounterInfos = _performanceCounterGroup.PerformanceCounterInfos.Where(x => x.PerformanceCounter != null).ToArray();
@@ -128,8 +137,8 @@ namespace Tharga.InfluxCapacitor.Collector
                                         Fields = new Dictionary<string, object>
                                                      {
                                                          { "value", value },
-                                                         { "readSpan", readSpan }, //Time in ms from the first, to the lats counter read in the group.
-                                                         { "timeOffset", (float)(timeOffset * 1000) } //Time difference in ms from reported time, to when read actually started.
+                                                         //{ "readSpan", readSpan }, //Time in ms from the first, to the lats counter read in the group.
+                                                         //{ "timeOffset", (float)(timeOffset * 1000) } //Time difference in ms from reported time, to when read actually started.
                                                      },
                                         Precision = precision,
                                         Timestamp = timestamp
@@ -140,19 +149,17 @@ namespace Tharga.InfluxCapacitor.Collector
                         point.Tags.Add("instance", key);
                     }
 
-                    //points.Add(point);
                     points[i] = point;
                 }
 
                 var format = swMain.ElapsedSegment;
 
                 //Queue result
-                //await _client.WriteAsync(points.ToArray());
-                Enqueue(points);
+                _sendBusiness.Enqueue(points);
 
                 var enque = swMain.ElapsedSegment;
 
-                Debug.WriteLine(string.Format("Prepare: {0}, Read: {1} ms, Format: {2}, Enque: {3}, counters: {4}", new TimeSpan(prepare).TotalMilliseconds, new TimeSpan(read).TotalMilliseconds, new TimeSpan(format).TotalMilliseconds, new TimeSpan(enque).TotalMilliseconds, points.Length));
+                Debug.WriteLine(string.Format("Prepare: {0}, Read: {1} ms, Format: {2}, Enque: {3}, counters: {4}, ReadSpan: {5}", new TimeSpan(prepare).TotalMilliseconds, new TimeSpan(read).TotalMilliseconds, new TimeSpan(format).TotalMilliseconds, new TimeSpan(enque).TotalMilliseconds, points.Length, readSpan));
 
                 return points.Length;
             }
@@ -161,11 +168,6 @@ namespace Tharga.InfluxCapacitor.Collector
                 EventLog.WriteEntry(Constants.ServiceName, exception.Message, EventLogEntryType.Error);
                 return -1;
             }
-        }
-
-        private void Enqueue(Point[] points)
-        {
-            //TODO: Place the points on a que to be sent to the server later on.
         }
 
         public async Task StartAsync()

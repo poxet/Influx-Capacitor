@@ -19,7 +19,9 @@ namespace Tharga.InfluxCapacitor.Service
                 EventLog.CreateEventSource(ServiceName, "Application");
 
             //TODO: Inject before this point
-            _processor = new Processor(new ConfigBusiness(new FileLoaderAgent()), new CounterBusiness(), new InfluxDbAgentLoader());
+            var configBusiness = new ConfigBusiness(new FileLoaderAgent());
+            var influxDbAgentLoader = new InfluxDbAgentLoader();
+            _processor = new Processor(configBusiness, new CounterBusiness(), new SendBusiness(configBusiness, influxDbAgentLoader));
 
             // These Flags set whether or not to handle that specific
             //  type of event. Set to true if you need it, false otherwise.

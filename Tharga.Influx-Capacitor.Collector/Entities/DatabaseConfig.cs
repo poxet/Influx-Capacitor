@@ -28,5 +28,6 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public string Password { get { return _password; } }
         public string Name { get { return _name; } }
         public InfluxDbVersion InfluxDbVersion { get { return _influxDbVersion; } }
+        public int FlushSecondsInterval { get { return 10; } } //TODO: Make this configurable
     }
 }

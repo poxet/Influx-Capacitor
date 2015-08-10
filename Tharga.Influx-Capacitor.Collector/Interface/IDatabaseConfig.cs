@@ -9,5 +9,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string Password { get; }
         string Name { get; }
         InfluxDbVersion InfluxDbVersion { get; }
+        int FlushSecondsInterval { get; }
     }
 }

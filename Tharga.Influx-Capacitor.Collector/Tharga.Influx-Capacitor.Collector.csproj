@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
+    <Compile Include="Agents\SendBusiness.cs" />
     <Compile Include="Business\ConfigBusiness.cs" />
     <Compile Include="Business\CounterBusiness.cs" />
     <Compile Include="Agents\FileLoaderAgent.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Interface\IInfluxDbAgentLoader.cs" />
     <Compile Include="Interface\IPerformanceCounterGroup.cs" />
     <Compile Include="Interface\IPerformanceCounterInfo.cs" />
+    <Compile Include="Interface\ISendBusiness.cs" />
     <Compile Include="Interface\RegistryHKey.cs" />
     <Compile Include="NotificationEventArgs.cs" />
     <Compile Include="Processor.cs" />
