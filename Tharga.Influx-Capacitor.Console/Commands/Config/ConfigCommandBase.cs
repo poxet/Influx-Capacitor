@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using InfluxDB.Net;
 using InfluxDB.Net.Models;
@@ -82,7 +83,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             return new Tuple<string, InfluxDbVersion>(url, influxDbVersion);
         }
 
-        protected async Task<IDatabaseConfig> GetUsernameAsync(string paramList, int index, IDatabaseConfig config)
+        protected async Task<IDatabaseConfig> GetUsernameAsync(string paramList, int index, IDatabaseConfig config, string action)
         {
             var points = new[]
             {
@@ -91,7 +92,9 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     Name = Constants.ServiceName, 
                     Tags = new Dictionary<string, object>
                     {
-                        { "hostname", Environment.MachineName }
+                        { "hostname", Environment.MachineName },
+                        { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
+                        { "action", action },
                     },
                     Fields = new Dictionary<string, object>
                     {

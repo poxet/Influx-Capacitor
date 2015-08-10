@@ -38,7 +38,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 }
 
                 var config = _configBusiness.OpenDatabaseConfig();
-                var logonInfo = await GetUsernameAsync(paramList, index++, config);
+                var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_auto");
                 if (logonInfo == null)
                 {
                     status = false;

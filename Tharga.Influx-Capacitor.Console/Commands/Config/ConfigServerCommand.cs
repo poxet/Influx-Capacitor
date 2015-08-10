@@ -22,7 +22,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 return false;
 
             var config = new DatabaseConfig(response.Item1, null, null, null, response.Item2);
-            var logonInfo = await GetUsernameAsync(paramList, index++, config);
+            var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_change");
             if (logonInfo == null)
                 return false;
 
