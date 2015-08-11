@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             _sendBusiness = sendBusiness;
         }
 
-        public async override Task<bool> InvokeAsync(string paramList)
+        public override async Task<bool> InvokeAsync(string paramList)
         {
             var config = _configBusiness.LoadFiles(new string[] { });
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
@@ -29,11 +30,22 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var index = 0;
             var counterGroup = QueryParam("Group", GetParam(paramList, index++), counterGroups.Select(x => new KeyValuePair<IPerformanceCounterGroup, string>(x, x.Name)));
 
-            var counterGroupsToRead = counterGroup != null ? new[] { counterGroup } : counterGroups;
-
             var processor = new Processor(_configBusiness, _counterBusiness, _sendBusiness);
 
-            processor.RunAsync(counterGroupsToRead);
+            if (counterGroup == null)
+            {
+                if (!processor.RunAsync(new string[] { }).Wait(5000))
+                {
+                    throw new InvalidOperationException("Unable to start processor engine.");
+                }
+            }
+            else
+            {
+                var counterGroupsToRead = counterGroup != null ? new[] { counterGroup } : counterGroups;
+
+
+                processor.RunAsync(counterGroupsToRead);
+            }
 
             return true;
         }

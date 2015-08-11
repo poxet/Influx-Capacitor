@@ -5,7 +5,7 @@ using System.Timers;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
-namespace Tharga.InfluxCapacitor.Collector.Agents
+namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class SendBusiness : ISendBusiness
     {
@@ -36,6 +36,9 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
 
                 //TODO: Possible to log what is sent
 
+                //TODO: Remove when working
+                EventLog.WriteEntry(Constants.ServiceName, string.Format("Sending {0} points to server.", pts.Count), EventLogEntryType.Information);
+
                 //Send all theese points to influx
                 _client.WriteAsync(pts.ToArray());
             }
@@ -47,6 +50,9 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
 
         public void Enqueue(Point[] points)
         {
+            //TODO: Remove when working
+            EventLog.WriteEntry(Constants.ServiceName, string.Format("Enqueueing {0} points.", points.Length), EventLogEntryType.Information);
+
             if (!_timer.Enabled)
             {
                 _timer.Start();

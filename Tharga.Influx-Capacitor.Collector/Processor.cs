@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -38,8 +39,18 @@ namespace Tharga.InfluxCapacitor.Collector
 
             foreach (var counterGroup in counterGroups)
             {
-                await CollectAssync(counterGroup);
+                var engine = new CollectorEngine(counterGroup, _sendBusiness);
+                engine.NotificationEvent += Engine_NotificationEvent;
+                await engine.StartAsync();
+
+                //var engine = new CollectorEngine(counterGroup, _sendBusiness);
+                //engine.NotificationEvent += Engine_NotificationEvent;
+                //await engine.StartAsync();
+                //await CollectAssync(counterGroup);
             }
+
+            //TODO: Remove when working
+            EventLog.WriteEntry(Constants.ServiceName, string.Format("Collecting from {0} counter groups.", counterGroups.Length), EventLogEntryType.Information);
         }
 
         public async Task<int> CollectAssync(IPerformanceCounterGroup counterGroup)

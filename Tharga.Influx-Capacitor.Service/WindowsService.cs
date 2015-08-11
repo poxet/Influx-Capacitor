@@ -16,7 +16,9 @@ namespace Tharga.InfluxCapacitor.Service
             ServiceName = Constants.ServiceName;
 
             if (!EventLog.SourceExists(ServiceName))
+            {
                 EventLog.CreateEventSource(ServiceName, "Application");
+            }
 
             //TODO: Inject before this point
             var configBusiness = new ConfigBusiness(new FileLoaderAgent());
@@ -46,8 +48,10 @@ namespace Tharga.InfluxCapacitor.Service
         {
             try
             {
-                if (!_processor.RunAsync(new string[]{}).Wait(5000))
+                if (!_processor.RunAsync(new string[] { }).Wait(5000))
+                {
                     throw new InvalidOperationException("Cannot start service.");
+                }
 
                 base.OnStart(args);
             }

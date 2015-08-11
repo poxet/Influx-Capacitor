@@ -79,7 +79,7 @@
     </Compile>
     <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
-    <Compile Include="Agents\SendBusiness.cs" />
+    <Compile Include="Business\SendBusiness.cs" />
     <Compile Include="Business\ConfigBusiness.cs" />
     <Compile Include="Business\CounterBusiness.cs" />
     <Compile Include="Agents\FileLoaderAgent.cs" />
