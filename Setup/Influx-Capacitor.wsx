@@ -50,7 +50,6 @@
       <Directory Id="DesktopFolder" Name="Desktop"></Directory>
       <Component Id="Console" Guid="011E4067-8813-4223-AF15-B3F97C460E03">
         <File Name="Tharga.Influx-Capacitor.Console.exe" KeyPath="yes" >
-          <!--<Shortcut Id="ApplicationStartMenuShortcut" Directory="APPLICATIONROOTDIRECTORY" Name="Influx Capacitor" Show="normal" WorkingDirectory="APPLICATIONROOTDIRECTORY" />-->
         </File>
         <File Name="Tharga.Influx-Capacitor.Console.exe.config" />
       </Component>

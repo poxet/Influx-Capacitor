@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.ServiceProcess;
 using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Agents;
@@ -86,6 +87,7 @@ namespace Tharga.InfluxCapacitor.Service
                 {
                     throw new InvalidOperationException("Cannot start service.");
                 }
+                EventLog.WriteEntry(ServiceName, string.Format("Service " + Constants.ServiceName + " version " + Assembly.GetExecutingAssembly().GetName().Version + " started."), EventLogEntryType.Information);
 
                 base.OnStart(args);
             }
