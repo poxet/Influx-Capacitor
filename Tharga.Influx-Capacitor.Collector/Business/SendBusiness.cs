@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Event;
@@ -20,7 +21,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             var config = configBusiness.LoadFiles();
 
-            _timer = new Timer(1000 * config.Database.FlushSecondsInterval);
+            _timer = new Timer(1000 * config.Application.FlushSecondsInterval);
             _timer.Elapsed += Elapsed;
 
             _client = new Lazy<IInfluxDbAgent>(() => influxDbAgentLoader.GetAgent(config.Database));
@@ -68,7 +69,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public void Enqueue(Point[] points)
         {
-            //OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Enqueueing {0} points.", points.Length), points.Length));
+            if (!points.Any())
+            {
+                return;
+            }
 
             if (!_timer.Enabled)
             {

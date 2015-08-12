@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
+    <Compile Include="Entities\ApplicationConfig.cs" />
     <Compile Include="Handlers\DataInitiator.cs" />
     <Compile Include="Event\GetPerformanceCounterEventArgs.cs" />
     <Compile Include="Handlers\Crypto.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Event\EngineActionEventArgs.cs" />
     <Compile Include="Entities\PerformanceCounterInfo.cs" />
+    <Compile Include="Interface\IApplicationConfig.cs" />
     <Compile Include="Interface\IConfig.cs" />
     <Compile Include="Interface\IConfigBusiness.cs" />
     <Compile Include="Interface\ICounter.cs" />

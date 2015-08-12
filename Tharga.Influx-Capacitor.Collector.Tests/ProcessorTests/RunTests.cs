@@ -11,6 +11,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.ProcessorTests
     public class RunTests
     {
         [Test]
+        [Ignore]
         public async void Should_run()
         {
             //Arrange

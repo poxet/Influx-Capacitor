@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using InfluxDB.Net.Models;
 using Moq;
 using NUnit.Framework;
 using Tharga.InfluxCapacitor.Collector.Entities;
@@ -27,7 +28,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             collectorEngine.CollectRegisterCounterValuesAsync().Wait();
 
             //Assert
-            Assert.Fail("Should assert that the message is enqued.");
+            sendBusinessMock.Verify(x => x.Enqueue(It.IsAny<Point[]>()), Times.Once);
         }
 
         [Test]
@@ -46,7 +47,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             collectorEngine.CollectRegisterCounterValuesAsync().Wait();
 
             //Assert
-            Assert.Fail("Should assert that the message is enqued.");
+            sendBusinessMock.Verify(x => x.Enqueue(It.IsAny<Point[]>()), Times.Once);
         }
     }
 }

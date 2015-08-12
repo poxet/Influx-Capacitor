@@ -36,7 +36,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             {
                 try
                 {
-                    client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty", influxDbVersion, -1));
+                    client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty", influxDbVersion));
                 }
                 catch (Exception exception)
                 {
@@ -70,8 +70,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                         //influxDbVersion = QueryParam("Version", versionParam, new Dictionary<InfluxDbVersion, string> { { InfluxDbVersion.Ver0_8X, "0.8x" }, { InfluxDbVersion.Ver0_9X, "0.9x" }, { InfluxDbVersion.Auto, "Auto" } });
                         //versionParam = null;
                         influxDbVersion = InfluxDbVersion.Auto;
-                        //TODO: Review that the last parameter -1 works in this scenario
-                        client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert", influxDbVersion, -1));
+                        client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert", influxDbVersion));
 
                         connectionConfirmed = await client.CanConnect();
                     }
@@ -143,8 +142,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     database = QueryParam<string>("DatabaseName", GetParam(paramList, index++));
                     var user = QueryParam<string>("Username", GetParam(paramList, index++));
                     var password = QueryParam<string>("Password", GetParam(paramList, index++));
-                    //TODO: Review that the last parameter -1 works in this scenario
-                    config = new DatabaseConfig(url, user, password, database, influxDbVersion, -1);
+                    config = new DatabaseConfig(url, user, password, database, influxDbVersion);
 
                     client = _influxDbAgentLoader.GetAgent(config);
                     response = await client.WriteAsync(points);

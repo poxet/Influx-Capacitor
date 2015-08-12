@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector;
-using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
@@ -46,6 +46,8 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     return false;
                 }
 
+                _configBusiness.InitiateApplicationConfig();
+
                 if (!InitiateDefaultCounters())
                 {
                     status = false;
@@ -85,9 +87,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 }
             }
 
-            if (someIssue)
-                return false;
-            return true;
+            return !someIssue;
         }
 
         private async Task<bool> StartService()

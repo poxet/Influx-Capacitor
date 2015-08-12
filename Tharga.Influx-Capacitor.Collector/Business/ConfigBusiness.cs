@@ -43,6 +43,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             IDatabaseConfig database = null;
             var groups = new List<ICounterGroup>();
+            IApplicationConfig application = null;
 
             foreach (var configurationFilename in configurationFilenames)
             {
@@ -53,6 +54,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
                 var db = GetDatabaseConfig(document);
                 var grps = GetCounterGroups(document).ToList();
+                var app = GetApplicationConfig(document);
 
                 if (db != null)
                 {
@@ -75,9 +77,19 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         groups.Add(grp);
                     }
                 }
+
+                if (app != null)
+                {
+                    if (application != null)
+                    {
+                        throw new InvalidOperationException("There are application configuration sections in more than one config file.");
+                    }
+
+                    application = app;
+                }
             }
 
-            var config = new Config(database, groups);
+            var config = new Config(database, application, groups);
             return config;
         }
 
@@ -117,8 +129,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
-                //TODO: Review that the last parameter -1 works in this scenario
-                return new DatabaseConfig(Constants.NoConfigUrl, null, null, null, InfluxDbVersion.Auto, -1);
+                return new DatabaseConfig(Constants.NoConfigUrl, null, null, null, InfluxDbVersion.Auto);
             }
 
             var config = LoadFile(databaseConfigFilePath);
@@ -128,14 +139,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         public void SaveDatabaseUrl(string url, InfluxDbVersion influxDbVersion)
         {
             var config = OpenDatabaseConfig();
-            var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name, influxDbVersion, config.FlushSecondsInterval);
+            var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name, influxDbVersion);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
         public void SaveDatabaseConfig(string databaseName, string username, string password)
         {
             var config = OpenDatabaseConfig();
-            var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName, config.InfluxDbVersion, config.FlushSecondsInterval);
+            var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName, config.InfluxDbVersion);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
@@ -166,13 +177,53 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             xmeName.InnerText = newDbConfig.Name;
             dme.AppendChild(xmeName);
 
-            var xmeFlushSecondsInterval = xml.CreateElement("FlushSecondsInterval");
-            xmeFlushSecondsInterval.InnerText = newDbConfig.FlushSecondsInterval.ToString();
-            dme.AppendChild(xmeFlushSecondsInterval);
-
             var xmlData = xml.ToFormattedString();
 
             _fileLoaderAgent.WriteAllText(databaseConfigFilePath, xmlData);
+        }
+
+        public void SaveApplicationConfig(int flushSecondsInterval, bool debugMode)
+        {
+            var newDbConfig = new ApplicationConfig(flushSecondsInterval, debugMode);
+            SaveApplicationConfigEx(newDbConfig);
+        }
+
+        public void InitiateApplicationConfig()
+        {
+            var path = GetAppDataFolder();
+            var applicationConfigFilePath = path + "\\application.xml";
+
+            if (File.Exists(applicationConfigFilePath))
+                return;
+
+            SaveApplicationConfig(10, false);
+        }
+
+        private void SaveApplicationConfigEx(ApplicationConfig applicationConfig)
+        {
+            var path = GetAppDataFolder();
+            var applicationConfigFilePath = path + "\\application.xml";
+
+            var xml = new XmlDocument();
+            var xme = xml.CreateElement(Constants.ServiceName);
+            xml.AppendChild(xme);
+            var dme = xml.CreateElement("Application");
+            xme.AppendChild(dme);
+
+            var xmeFlushSecondsInterval = xml.CreateElement("FlushSecondsInterval");
+            xmeFlushSecondsInterval.InnerText = applicationConfig.FlushSecondsInterval.ToString();
+            dme.AppendChild(xmeFlushSecondsInterval);
+
+            if (applicationConfig.DebugMode)
+            {
+                var xmeDebug = xml.CreateElement("Debug");
+                xmeDebug.InnerText = applicationConfig.DebugMode.ToString();
+                dme.AppendChild(xmeDebug);
+            }
+
+            var xmlData = xml.ToFormattedString();
+
+            _fileLoaderAgent.WriteAllText(applicationConfigFilePath, xmlData);
         }
 
         private static string Encrypt(string password)
@@ -264,6 +315,39 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return new Counter(categoryName, counterName, instanceName);
         }
 
+        private static ApplicationConfig GetApplicationConfig(XmlDocument document)
+        {
+            var databases = document.GetElementsByTagName("Application");
+            if (databases.Count == 0)
+                return null;
+
+            var flushSecondsInterval = 10;
+            var debugMode = false;
+            foreach (XmlElement item in databases[0].ChildNodes)
+            {
+                switch (item.Name)
+                {
+                    case "FlushSecondsInterval":
+                        if (!int.TryParse(item.InnerText, out flushSecondsInterval))
+                        {
+                            flushSecondsInterval = 10;
+                        }
+                        break;
+                    case "Debug":
+                        if (!bool.TryParse(item.InnerText, out debugMode))
+                        {
+                            debugMode = false;
+                        }
+                        break;
+                    case "":
+                        break;
+                }
+            }
+
+            var database = new ApplicationConfig(flushSecondsInterval, debugMode);
+            return database;
+        }
+
         private static DatabaseConfig GetDatabaseConfig(XmlDocument document)
         {
             var databases = document.GetElementsByTagName("Database");
@@ -275,7 +359,6 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string password = null;
             string name = null;
             var influxDbVersion = InfluxDbVersion.Auto;
-            var flushSecondsInterval = 10;
             foreach (XmlElement item in databases[0].ChildNodes)
             {
                 switch (item.Name)
@@ -298,18 +381,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                             influxDbVersion = InfluxDbVersion.Auto;
                         }
                         break;
-                    case "FlushSecondsInterval":
-                        if (!int.TryParse(item.InnerText, out flushSecondsInterval))
-                        {
-                            flushSecondsInterval = 10;
-                        }
-                        break;
                     case "":
                         break;
                 }
             }
 
-            var database = new DatabaseConfig(url, username, password, name, influxDbVersion, flushSecondsInterval);
+            var database = new DatabaseConfig(url, username, password, name, influxDbVersion);
             return database;
         }
 
@@ -340,8 +417,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 {
                     var db = GetDatabaseConfig(document);
                     var grp = GetCounterGroups(document).ToList();
+                    var app = GetApplicationConfig(document);
 
-                    if (db != null || grp.Any())
+                    if (db != null || grp.Any() || app != null)
                     {
                         yield return configFile;
                     }

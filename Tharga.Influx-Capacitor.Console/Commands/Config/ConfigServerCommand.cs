@@ -21,8 +21,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             if (string.IsNullOrEmpty(response.Item1))
                 return false;
 
-            //TODO: Review that the last parameter -1 works in this scenario
-            var config = new DatabaseConfig(response.Item1, null, null, null, response.Item2, -1);
+            var config = new DatabaseConfig(response.Item1, null, null, null, response.Item2);
             var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_change");
             if (logonInfo == null)
                 return false;
