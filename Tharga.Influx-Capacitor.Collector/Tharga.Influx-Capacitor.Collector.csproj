@@ -79,12 +79,19 @@
     </Compile>
     <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
+    <Compile Include="Handlers\DataInitiator.cs" />
+    <Compile Include="Event\GetPerformanceCounterEventArgs.cs" />
+    <Compile Include="Handlers\Crypto.cs" />
+    <Compile Include="Event\InvalidConfigEventArgs.cs" />
     <Compile Include="Business\SendBusiness.cs" />
     <Compile Include="Business\ConfigBusiness.cs" />
     <Compile Include="Business\CounterBusiness.cs" />
     <Compile Include="Agents\FileLoaderAgent.cs" />
-    <Compile Include="Business\XmlDocumentExtensions.cs" />
+    <Compile Include="Event\SendBusinessEventArgs.cs" />
+    <Compile Include="Extensions\XmlDocumentExtensions.cs" />
+    <Compile Include="Event\CollectRegisterCounterValuesEventArgs.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Event\EngineActionEventArgs.cs" />
     <Compile Include="Entities\PerformanceCounterInfo.cs" />
     <Compile Include="Interface\IConfig.cs" />
     <Compile Include="Interface\IConfigBusiness.cs" />
@@ -93,7 +100,7 @@
     <Compile Include="Interface\ICounterGroup.cs" />
     <Compile Include="Interface\IDatabaseConfig.cs" />
     <Compile Include="Interface\IFileLoaderAgent.cs" />
-    <Compile Include="CollectorEngine.cs" />
+    <Compile Include="Handlers\CollectorEngine.cs" />
     <Compile Include="Entities\Config.cs" />
     <Compile Include="Entities\Counter.cs" />
     <Compile Include="Entities\CounterGroup.cs" />
@@ -105,11 +112,9 @@
     <Compile Include="Interface\IPerformanceCounterInfo.cs" />
     <Compile Include="Interface\ISendBusiness.cs" />
     <Compile Include="Interface\RegistryHKey.cs" />
-    <Compile Include="NotificationEventArgs.cs" />
-    <Compile Include="Processor.cs" />
+    <Compile Include="Handlers\Processor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StopwatchHighPrecision.cs" />
-    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Handlers\StopwatchHighPrecision.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

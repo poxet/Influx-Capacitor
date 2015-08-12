@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using InfluxDB.Net;
+using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Event;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
 {
@@ -13,5 +16,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         void SaveDatabaseConfig(string databaseName, string username, string password);
         IEnumerable<string> GetConfigFiles();
         bool CreateConfig(string fileName, List<ICounterGroup> counterGroups);
+        event EventHandler<InvalidConfigEventArgs> InvalidConfigEvent;
     }
 }

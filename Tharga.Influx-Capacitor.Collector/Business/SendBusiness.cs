@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Timers;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class SendBusiness : ISendBusiness
     {
+        private static readonly object _syncRoot = new object();
+        public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
+
         private readonly Timer _timer;
         private readonly Queue<Point[]> _queue = new Queue<Point[]>();
-        private readonly IInfluxDbAgent _client;
+        private readonly Lazy<IInfluxDbAgent> _client;
 
         public SendBusiness(IConfigBusiness configBusiness, IInfluxDbAgentLoader influxDbAgentLoader)
         {
@@ -20,38 +23,52 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _timer = new Timer(1000 * config.Database.FlushSecondsInterval);
             _timer.Elapsed += Elapsed;
 
-            _client = influxDbAgentLoader.GetAgent(config.Database);
+            _client = new Lazy<IInfluxDbAgent>(() => influxDbAgentLoader.GetAgent(config.Database));
         }
 
         private void Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
+            lock (_syncRoot)
             {
-                var pts = new List<Point>();
-                while (_queue.Count > 0)
+                if (!_timer.Enabled)
                 {
-                    var points = _queue.Dequeue();
-                    pts.AddRange(points);
+                    return;
                 }
+                
+                var pts = new List<Point>();
+                try
+                {
+                    while (_queue.Count > 0)
+                    {
+                        var points = _queue.Dequeue();
+                        pts.AddRange(points);
+                    }
 
-                //TODO: Possible to log what is sent
+                    if (pts.Count == 0)
+                    {
+                        return;
+                    }
 
-                //TODO: Remove when working
-                EventLog.WriteEntry(Constants.ServiceName, string.Format("Sending {0} points to server.", pts.Count), EventLogEntryType.Information);
+                    //TODO: Possible to log what is sent
 
-                //Send all theese points to influx
-                _client.WriteAsync(pts.ToArray());
-            }
-            catch (Exception exception)
-            {
-                EventLog.WriteEntry(Constants.ServiceName, exception.Message, EventLogEntryType.Error);
+                    //Send all theese points to influx
+                    _client.Value.WriteAsync(pts.ToArray());
+
+                    OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Sending {0} points to server.", pts.Count), pts.Count, false));
+                }
+                catch (Exception exception)
+                {
+                    OnSendBusinessEvent(new SendBusinessEventArgs(exception));
+                    OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Putting {0} points back in the queue.", pts.Count), pts.Count, true));
+                    _queue.Enqueue(pts.ToArray()); //Put the points back in the queue to be sent later.
+                    _timer.Enabled = false;
+                }
             }
         }
 
         public void Enqueue(Point[] points)
         {
-            //TODO: Remove when working
-            EventLog.WriteEntry(Constants.ServiceName, string.Format("Enqueueing {0} points.", points.Length), EventLogEntryType.Information);
+            //OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Enqueueing {0} points.", points.Length), points.Length));
 
             if (!_timer.Enabled)
             {
@@ -59,6 +76,15 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
 
             _queue.Enqueue(points);
+        }
+
+        protected virtual void OnSendBusinessEvent(SendBusinessEventArgs e)
+        {
+            var handler = SendBusinessEvent;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
     }
 }

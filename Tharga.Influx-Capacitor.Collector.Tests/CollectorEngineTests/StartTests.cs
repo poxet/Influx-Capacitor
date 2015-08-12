@@ -4,6 +4,7 @@ using System.Threading;
 using Moq;
 using NUnit.Framework;
 using Tharga.InfluxCapacitor.Collector.Entities;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests

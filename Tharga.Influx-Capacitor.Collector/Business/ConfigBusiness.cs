@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Xml;
 using InfluxDB.Net;
 using Tharga.InfluxCapacitor.Collector.Entities;
+using Tharga.InfluxCapacitor.Collector.Event;
+using Tharga.InfluxCapacitor.Collector.Extensions;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class ConfigBusiness : IConfigBusiness
     {
+        public event EventHandler<InvalidConfigEventArgs> InvalidConfigEvent;
+
         private readonly IFileLoaderAgent _fileLoaderAgent;
 
         public ConfigBusiness(IFileLoaderAgent fileLoaderAgent)
@@ -65,13 +68,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 {
                     if (groups.Any(x => x.Name == grp.Name))
                     {
-                        var ex = new InvalidOperationException("There are more than one counter group with the same name in the config files(s).");
-                        ex.Data.Add("GroupName", grp.Name);
-                        ex.Data.Add("File", configurationFilename);
-                        throw ex;
+                        OnInvalidConfigEvent(grp.Name, configurationFilename);
                     }
-
-                    groups.Add(grp);
+                    else
+                    {
+                        groups.Add(grp);
+                    }
                 }
             }
 
@@ -311,15 +313,26 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 var fileData = _fileLoaderAgent.ReadAllText(configFile);
 
-                var document = new XmlDocument();
-                document.LoadXml(fileData);
-
-                var db = GetDatabaseConfig(document);
-                var grp = GetCounterGroups(document).ToList();
-
-                if (db != null || grp.Any())
+                XmlDocument document = null;
+                try
                 {
-                    yield return configFile;
+                    document = new XmlDocument();
+                    document.LoadXml(fileData);
+                }
+                catch (XmlException exception)
+                {
+                    OnInvalidConfigEvent(exception, configFile);
+                }
+
+                if (document != null)
+                {
+                    var db = GetDatabaseConfig(document);
+                    var grp = GetCounterGroups(document).ToList();
+
+                    if (db != null || grp.Any())
+                    {
+                        yield return configFile;
+                    }
                 }
             }
         }
@@ -367,134 +380,23 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             return true;
         }
-    }
 
-    public class Crypto
-    {
-        private readonly byte[] _salt;
-
-        public Crypto(string salt)
+        protected virtual void OnInvalidConfigEvent(Exception exception, string configFileName)
         {
-            _salt = Encoding.ASCII.GetBytes(salt ?? "i6113742kbB7c8");
+            var handler = InvalidConfigEvent;
+            if (handler != null)
+            {
+                handler(this, new InvalidConfigEventArgs(exception, configFileName));
+            }
         }
 
-        public string EncryptStringAes(string plainText, string sharedSecret)
+        protected virtual void OnInvalidConfigEvent(string groupName, string configFileName)
         {
-            if (string.IsNullOrEmpty(plainText))
-                throw new ArgumentNullException("plainText");
-            if (string.IsNullOrEmpty(sharedSecret))
-                throw new ArgumentNullException("sharedSecret");
-
-            string outStr;
-            RijndaelManaged aesAlg = null;
-
-            try
+            var handler = InvalidConfigEvent;
+            if (handler != null)
             {
-                // generate the key from the shared secret and the salt
-                var key = new Rfc2898DeriveBytes(sharedSecret, _salt);
-
-                // Create a RijndaelManaged object
-                aesAlg = new RijndaelManaged();
-                aesAlg.Key = key.GetBytes(aesAlg.KeySize / 8);
-
-                // Create a decryptor to perform the stream transform.
-                var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-                // Create the streams used for encryption.
-                using (var msEncrypt = new MemoryStream())
-                {
-                    // prepend the IV
-                    msEncrypt.Write(BitConverter.GetBytes(aesAlg.IV.Length), 0, sizeof(int));
-                    msEncrypt.Write(aesAlg.IV, 0, aesAlg.IV.Length);
-                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (var swEncrypt = new StreamWriter(csEncrypt))
-                        {
-                            //Write all data to the stream.
-                            swEncrypt.Write(plainText);
-                        }
-                    }
-                    outStr = Convert.ToBase64String(msEncrypt.ToArray());
-                }
+                handler(this, new InvalidConfigEventArgs(groupName, configFileName));
             }
-            finally
-            {
-                // Clear the RijndaelManaged object.
-                if (aesAlg != null)
-                    aesAlg.Clear();
-            }
-
-            // Return the encrypted bytes from the memory stream.
-            return outStr;
-        }
-
-        public string DecryptStringAes(string cipherText, string sharedSecret)
-        {
-            if (string.IsNullOrEmpty(cipherText))
-                throw new ArgumentNullException("cipherText");
-            if (string.IsNullOrEmpty(sharedSecret))
-                throw new ArgumentNullException("sharedSecret");
-
-            // Declare the RijndaelManaged object
-            // used to decrypt the data.
-            RijndaelManaged aesAlg = null;
-
-            // Declare the string used to hold
-            // the decrypted text.
-            string plaintext;
-
-            try
-            {
-                // generate the key from the shared secret and the salt
-                var key = new Rfc2898DeriveBytes(sharedSecret, _salt);
-
-                // Create the streams used for decryption.                
-                var bytes = Convert.FromBase64String(cipherText);
-                using (var msDecrypt = new MemoryStream(bytes))
-                {
-                    // Create a RijndaelManaged object
-                    // with the specified key and IV.
-                    aesAlg = new RijndaelManaged();
-                    aesAlg.Key = key.GetBytes(aesAlg.KeySize / 8);
-                    // Get the initialization vector from the encrypted stream
-                    aesAlg.IV = ReadByteArray(msDecrypt);
-                    // Create a decrytor to perform the stream transform.
-                    var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-                    using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (var srDecrypt = new StreamReader(csDecrypt))
-
-                            // Read the decrypted bytes from the decrypting stream
-                            // and place them in a string.
-                            plaintext = srDecrypt.ReadToEnd();
-                    }
-                }
-            }
-            finally
-            {
-                // Clear the RijndaelManaged object.
-                if (aesAlg != null)
-                    aesAlg.Clear();
-            }
-
-            return plaintext;
-        }
-
-        private static byte[] ReadByteArray(Stream s)
-        {
-            byte[] rawLength = new byte[sizeof(int)];
-            if (s.Read(rawLength, 0, rawLength.Length) != rawLength.Length)
-            {
-                throw new SystemException("Stream did not contain properly formatted byte array");
-            }
-
-            byte[] buffer = new byte[BitConverter.ToInt32(rawLength, 0)];
-            if (s.Read(buffer, 0, buffer.Length) != buffer.Length)
-            {
-                throw new SystemException("Did not read byte array properly");
-            }
-
-            return buffer;
         }
     }
 }

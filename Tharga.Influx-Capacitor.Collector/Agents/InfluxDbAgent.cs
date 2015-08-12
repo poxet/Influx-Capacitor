@@ -25,7 +25,18 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
                 throw exp;
             }
 
-            _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password, _databaseConfig.InfluxDbVersion);
+            try
+            {
+                _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password, _databaseConfig.InfluxDbVersion);
+            }
+            catch (Exception exception)
+            {
+                var exp = new InvalidOperationException("Could not establish a connection to the database.", exception);
+                exp.Data.Add("Url", databaseConfig.Url);
+                exp.Data.Add("Username", databaseConfig.Username);
+                exp.Data.Add("InfluxDbVersion", databaseConfig.InfluxDbVersion);
+                throw exp;
+            }
         }
 
         public async Task<InfluxDbApiResponse> WriteAsync(Point[] points)

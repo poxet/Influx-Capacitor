@@ -2,6 +2,7 @@
 using InfluxDB.Net.Models;
 using Moq;
 using NUnit.Framework;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Tests.ProcessorTests

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
 using Tharga.Toolkit.Console.Command.Base;
@@ -71,7 +72,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
 
         private bool InitiateDefaultCounters()
         {
-            var initaiteBusiness = new InitaiteBusiness(_configBusiness, _counterBusiness);
+            var initaiteBusiness = new DataInitiator(_configBusiness, _counterBusiness);
             var messages = initaiteBusiness.CreateAll();
             var someIssue = false;
             foreach (var message in messages)

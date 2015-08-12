@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter
@@ -51,7 +52,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var groupName = QueryParam<string>("Group Name", GetParam(paramList, index++));
             var secondsInterval = QueryParam<int>("Seconds Interval", GetParam(paramList, index++));
 
-            var initaiteBusiness = new InitaiteBusiness(_configBusiness, _counterBusiness);
+            var initaiteBusiness = new DataInitiator(_configBusiness, _counterBusiness);
             var response = initaiteBusiness.CreateCounter(groupName, secondsInterval, collectors);
 
             OutputLine(response.Item2.Item1, response.Item2.Item2);

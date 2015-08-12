@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
@@ -19,7 +20,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 
         public async override Task<bool> InvokeAsync(string paramList)
         {
-            var initaiteBusiness = new InitaiteBusiness(_configBusiness, _counterBusiness);
+            var initaiteBusiness = new DataInitiator(_configBusiness, _counterBusiness);
             var messages = initaiteBusiness.CreateAll();
             foreach (var message in messages)
             {

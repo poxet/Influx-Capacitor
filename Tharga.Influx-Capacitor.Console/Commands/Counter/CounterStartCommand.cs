@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector;
+using Tharga.InfluxCapacitor.Collector.Event;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
@@ -31,6 +33,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var counterGroup = QueryParam("Group", GetParam(paramList, index++), counterGroups.Select(x => new KeyValuePair<IPerformanceCounterGroup, string>(x, x.Name)));
 
             var processor = new Processor(_configBusiness, _counterBusiness, _sendBusiness);
+            processor.EngineActionEvent += EngineActionEvent;
 
             if (counterGroup == null)
             {
@@ -41,13 +44,16 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             }
             else
             {
-                var counterGroupsToRead = counterGroup != null ? new[] { counterGroup } : counterGroups;
-
-
+                var counterGroupsToRead = new[] { counterGroup };
                 processor.RunAsync(counterGroupsToRead);
             }
 
             return true;
+        }
+
+        private void EngineActionEvent(object sender, EngineActionEventArgs e)
+        {
+            OutputLine(e.Message, e.Success ? OutputLevel.Information : OutputLevel.Error);
         }
     }
 }

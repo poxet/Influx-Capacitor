@@ -5,12 +5,15 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Tharga.InfluxCapacitor.Collector.Entities;
+using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class CounterBusiness : ICounterBusiness
     {
+        public event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
+
         public CounterBusiness()
         {
             if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
@@ -149,14 +152,21 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     response.Add(processorCounter);
                 }
             }
-            catch (InvalidOperationException exception)
+            catch (Exception exception)
             {
-                var message = exception.Message;
-                message += " categoryName=" + categoryName + ", counterName=" + counterName + ", instanceName=" + (instanceName ?? "N/A");
-                EventLog.WriteEntry(Constants.ServiceName, message, EventLogEntryType.Error);
+                OnGetPerformanceCounters(exception, categoryName, counterName, instanceName);
             }
 
             return response;
+        }
+
+        protected virtual void OnGetPerformanceCounters(Exception exception, string categoryName, string counterName, string instanceName)
+        {
+            var handler = GetPerformanceCounterEvent;
+            if (handler != null)
+            {
+                handler(this, new GetPerformanceCounterEventArgs(exception, categoryName, counterName, instanceName));
+            }
         }
     }
 }

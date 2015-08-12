@@ -33,8 +33,15 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
 
             IInfluxDbAgent client = null;
             if (!string.IsNullOrEmpty(url) && url != Constants.NoConfigUrl)
-            {                
-                client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty", influxDbVersion));
+            {
+                try
+                {
+                    client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty", influxDbVersion));
+                }
+                catch (Exception exception)
+                {
+                    OutputWarning(exception.Message);
+                }
             }
 
             var connectionConfirmed = false;

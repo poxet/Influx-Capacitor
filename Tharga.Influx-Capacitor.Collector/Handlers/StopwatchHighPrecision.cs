@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Tharga.InfluxCapacitor.Collector
+namespace Tharga.InfluxCapacitor.Collector.Handlers
 {
     internal class StopwatchHighPrecision
     {

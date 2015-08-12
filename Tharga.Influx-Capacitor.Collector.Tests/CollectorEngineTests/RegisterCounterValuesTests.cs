@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Moq;
 using NUnit.Framework;
 using Tharga.InfluxCapacitor.Collector.Entities;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
@@ -23,7 +24,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object);
 
             //Act
-            collectorEngine.RegisterCounterValuesAsync().Wait();
+            collectorEngine.CollectRegisterCounterValuesAsync().Wait();
 
             //Assert
             Assert.Fail("Should assert that the message is enqued.");
@@ -42,7 +43,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object);
 
             //Act
-            collectorEngine.RegisterCounterValuesAsync().Wait();
+            collectorEngine.CollectRegisterCounterValuesAsync().Wait();
 
             //Assert
             Assert.Fail("Should assert that the message is enqued.");

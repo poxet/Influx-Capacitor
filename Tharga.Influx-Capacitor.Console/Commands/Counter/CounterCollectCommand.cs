@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector;
+using Tharga.InfluxCapacitor.Collector.Event;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
@@ -32,15 +34,21 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var counterGroupsToRead = counterGroup != null ? new[] { counterGroup } : counterGroups;
 
             var processor = new Processor(_configBusiness, _counterBusiness, _sendBusiness);
+            processor.EngineActionEvent += EngineActionEvent;
 
             var count = 0;
             foreach (var cg in counterGroupsToRead)
             {
                 count += await processor.CollectAssync(cg);
             }
-            OutputInformation("Totally {0} metrics points where collected and sent to the database.", count);
+            //OutputInformation("Totally {0} metrics points where collected and sent to the database.", count);
 
             return true;
+        }
+
+        private void EngineActionEvent(object sender, EngineActionEventArgs e)
+        {
+            OutputLine(e.Message, e.Success ? OutputLevel.Information : OutputLevel.Error);
         }
     }
 }
