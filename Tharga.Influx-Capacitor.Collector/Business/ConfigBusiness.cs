@@ -117,7 +117,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
-                return new DatabaseConfig(Constants.NoConfigUrl, null, null, null, InfluxDbVersion.Auto);
+                //TODO: Review that the last parameter -1 works in this scenario
+                return new DatabaseConfig(Constants.NoConfigUrl, null, null, null, InfluxDbVersion.Auto, -1);
             }
 
             var config = LoadFile(databaseConfigFilePath);
@@ -127,14 +128,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         public void SaveDatabaseUrl(string url, InfluxDbVersion influxDbVersion)
         {
             var config = OpenDatabaseConfig();
-            var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name, influxDbVersion);
+            var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name, influxDbVersion, config.FlushSecondsInterval);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
         public void SaveDatabaseConfig(string databaseName, string username, string password)
         {
             var config = OpenDatabaseConfig();
-            var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName, config.InfluxDbVersion);
+            var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName, config.InfluxDbVersion, config.FlushSecondsInterval);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
@@ -164,6 +165,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var xmeName = xml.CreateElement("Name");
             xmeName.InnerText = newDbConfig.Name;
             dme.AppendChild(xmeName);
+
+            var xmeFlushSecondsInterval = xml.CreateElement("FlushSecondsInterval");
+            xmeFlushSecondsInterval.InnerText = newDbConfig.FlushSecondsInterval.ToString();
+            dme.AppendChild(xmeFlushSecondsInterval);
 
             var xmlData = xml.ToFormattedString();
 
@@ -270,6 +275,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string password = null;
             string name = null;
             var influxDbVersion = InfluxDbVersion.Auto;
+            var flushSecondsInterval = 10;
             foreach (XmlElement item in databases[0].ChildNodes)
             {
                 switch (item.Name)
@@ -292,12 +298,18 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                             influxDbVersion = InfluxDbVersion.Auto;
                         }
                         break;
+                    case "FlushSecondsInterval":
+                        if (!int.TryParse(item.InnerText, out flushSecondsInterval))
+                        {
+                            flushSecondsInterval = 10;
+                        }
+                        break;
                     case "":
                         break;
                 }
             }
 
-            var database = new DatabaseConfig(url, username, password, name, influxDbVersion);
+            var database = new DatabaseConfig(url, username, password, name, influxDbVersion, flushSecondsInterval);
             return database;
         }
 

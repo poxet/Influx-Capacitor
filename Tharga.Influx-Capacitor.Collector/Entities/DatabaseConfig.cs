@@ -11,8 +11,9 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         private readonly string _password;
         private readonly string _name;
         private readonly InfluxDbVersion _influxDbVersion;
+        private readonly int _flushSecondsInterval;
 
-        public DatabaseConfig(string url, string username, string password, string name, InfluxDbVersion influxDbVersion)
+        public DatabaseConfig(string url, string username, string password, string name, InfluxDbVersion influxDbVersion, int flushSecondsInterval)
         {
             if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url", "No url to influxDB provided.");
 
@@ -21,6 +22,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             _password = password;
             _name = name;
             _influxDbVersion = influxDbVersion;
+            _flushSecondsInterval = flushSecondsInterval;
         }
 
         public string Url { get { return _url; } }
@@ -28,6 +30,6 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public string Password { get { return _password; } }
         public string Name { get { return _name; } }
         public InfluxDbVersion InfluxDbVersion { get { return _influxDbVersion; } }
-        public int FlushSecondsInterval { get { return 10; } } //TODO: Make this configurable
+        public int FlushSecondsInterval { get { return _flushSecondsInterval; } }
     }
 }
