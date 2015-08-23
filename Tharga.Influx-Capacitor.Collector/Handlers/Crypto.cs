@@ -9,7 +9,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
     {
         private readonly byte[] _salt;
 
-        public Crypto(string salt)
+        public Crypto(string salt = null)
         {
             _salt = Encoding.ASCII.GetBytes(salt ?? "i6113742kbB7c8");
         }
