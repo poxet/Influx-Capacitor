@@ -1,2 +1,2 @@
-"C:\Program Files (x86)\WiX Toolset v3.9\bin\candle.exe" Influx-Capacitor.wsx -dEnvironment="Release" -dVersion="1.0.7" -dId="61A7A8F3-9C6C-4066-9ED1-1FA31864558C"
+"C:\Program Files (x86)\WiX Toolset v3.9\bin\candle.exe" Influx-Capacitor.wsx -dEnvironment="Release" -dVersion="1.0.8" -dId="09770ACA-AD7D-4A5D-B262-60923D5C0726"
 "C:\Program Files (x86)\WiX Toolset v3.9\bin\light.exe" -ext WixUIExtension -cultures:en-us Influx-Capacitor.wixobj
