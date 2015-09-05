@@ -5,12 +5,12 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>Influx-Capacitor</id>
     <title>Influx Capacitor</title>
-    <version>1.0.8</version>
+    <version>$version$</version>
     <authors>Daniel Bohlin</authors>
     <owners>Thargelion AB</owners>
     <language>en-US</language>
     <description>Influx Capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana.</description>
-    <projectUrl>https://github.com/poxet/Influx-Capacitor</projectUrl>
+    <projectUrl>http://influx-capacitor.com</projectUrl>
     <tags>Influx Capacitor collect metrics influx influxdb performance counter grafana time series tharga</tags>
     <copyright></copyright>
     <licenseUrl>https://github.com/poxet/Influx-Capacitor/blob/master/LICENSE</licenseUrl>
