@@ -7,6 +7,7 @@ using InfluxDB.Net;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Collector.Handlers
 {
@@ -68,12 +69,12 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     if (elapseOffset > 1)
                     {
                         _counter = _counter + 1 + (int)elapseOffset;
-                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, "Dropping " + (int)elapseOffset + " steps."));
+                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, "Dropping " + (int)elapseOffset + " steps.", OutputLevel.Warning));
                         return -2;
                     }
                     if (elapseOffset < -1)
                     {
-                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, "Jumping 1 step."));
+                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, "Jumping 1 step.", OutputLevel.Warning));
                         return -3;
                     }
 
@@ -106,7 +107,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 _sendBusiness.Enqueue(points);
                 timeInfo.Add("Enque", swMain.ElapsedSegment);
 
-                OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, points.Count(), timeInfo, elapseOffset));
+                OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, points.Count(), timeInfo, elapseOffset, OutputLevel.Default));
 
                 return points.Length;
             }

@@ -7,17 +7,21 @@ using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
+using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Service
 {
     public class WindowsService : ServiceBase
     {
         private readonly Processor _processor;
+        private readonly ServerConsole _console;
 
         public WindowsService()
         {
+            _console = new ServerConsole();
             ServiceName = Constants.ServiceName;
 
+            //TODO: This can be removed when the new version of Tharga.Toolkit.Console is used. One version after 1.5.13.0 will do this for you.
             if (!EventLog.SourceExists(ServiceName))
             {
                 EventLog.CreateEventSource(ServiceName, "Application");
@@ -43,30 +47,30 @@ namespace Tharga.InfluxCapacitor.Service
             CanStop = true;
         }
 
+        public IConsole Console { get { return _console; } }
+
         void _processor_EngineActionEvent(object sender, EngineActionEventArgs e)
         {
-            if (!e.Success)
-            {
-                EventLog.WriteEntry(Constants.ServiceName, e.Message, EventLogEntryType.Error);
-            }
+            _console.WriteLine(e.Message, e.OutputLevel, null);
+            Trace.WriteLine(e.Message, e.OutputLevel.ToString());
         }
 
         private void SendBusinessEvent(object sender, SendBusinessEventArgs e)
         {
-            if (!e.Success)
-            {
-                EventLog.WriteEntry(Constants.ServiceName, e.Message, e.Warning ? EventLogEntryType.Warning : EventLogEntryType.Error);
-            }
+            _console.WriteLine(e.Message, e.OutputLevel, null);
+            Trace.WriteLine(e.Message, e.OutputLevel.ToString());
         }
 
         private void GetPerformanceCounterEvent(object sender, GetPerformanceCounterEventArgs e)
         {
-            EventLog.WriteEntry(Constants.ServiceName, e.Message, EventLogEntryType.Warning);
+            _console.WriteLine(e.Message, OutputLevel.Warning, null);
+            Trace.TraceWarning(e.Message);
         }
 
         private void InvalidConfigEvent(object sender, InvalidConfigEventArgs e)
         {
-            EventLog.WriteEntry(Constants.ServiceName, e.Message, EventLogEntryType.Warning);
+            _console.WriteLine(e.Message, OutputLevel.Warning, null);
+            Trace.TraceWarning(e.Message);
         }
 
         static void Main()
@@ -87,13 +91,16 @@ namespace Tharga.InfluxCapacitor.Service
                 {
                     throw new InvalidOperationException("Cannot start service.");
                 }
-                EventLog.WriteEntry(ServiceName, string.Format("Service " + Constants.ServiceName + " version " + Assembly.GetExecutingAssembly().GetName().Version + " started."), EventLogEntryType.Information);
+                var message = string.Format("Service " + Constants.ServiceName + " version " + Assembly.GetExecutingAssembly().GetName().Version + " started.");
+                _console.WriteLine(message, OutputLevel.Information, null);
+                Trace.TraceInformation(message);
 
                 base.OnStart(args);
             }
             catch (Exception exception)
             {
-                EventLog.WriteEntry(ServiceName, exception.Message, EventLogEntryType.Error);
+                _console.WriteLine(exception.Message, OutputLevel.Error, null);
+                Trace.TraceInformation(exception.Message);
                 throw;
             }
         }
@@ -131,6 +138,11 @@ namespace Tharga.InfluxCapacitor.Service
         protected override void OnSessionChange(SessionChangeDescription changeDescription)
         {
             base.OnSessionChange(changeDescription);
+        }
+
+        public void Start(string[] args)
+        {
+            OnStart(args);
         }
     }
 }

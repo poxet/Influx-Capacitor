@@ -1,4 +1,5 @@
 using System;
+using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Collector.Event
 {
@@ -6,29 +7,16 @@ namespace Tharga.InfluxCapacitor.Collector.Event
     {
         private readonly string _engineName;
         private readonly string _message;
-        private readonly bool _success;
+        private readonly OutputLevel _outputLevel;
 
-        public EngineActionEventArgs(string engineName, string message, bool success)
+        public EngineActionEventArgs(string engineName, string message, OutputLevel outputLevel)
         {
             _engineName = engineName;
             _message = message;
-            _success = success;
+            _outputLevel = outputLevel;
         }
 
-        public string Message
-        {
-            get
-            {
-                return string.Format("Engine {0}: {1}", _engineName, _message);
-            }
-        }
-
-        public bool Success
-        {
-            get
-            {
-                return _success;
-            }
-        }
+        public string Message { get { return string.Format("Engine {0}: {1}", _engineName, _message); } }
+        public OutputLevel OutputLevel { get { return _outputLevel; } }
     }
 }

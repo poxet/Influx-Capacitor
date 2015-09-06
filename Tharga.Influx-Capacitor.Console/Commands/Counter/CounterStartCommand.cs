@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
@@ -53,7 +52,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 
         private void EngineActionEvent(object sender, EngineActionEventArgs e)
         {
-            OutputLine(e.Message, e.Success ? OutputLevel.Information : OutputLevel.Error);
+            OutputLine(e.Message, e.OutputLevel);
         }
     }
 }

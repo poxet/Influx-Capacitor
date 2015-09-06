@@ -22,12 +22,12 @@ namespace Tharga.InfluxCapacitor.Console
 
         void SendBusinessEvent(object sender, SendBusinessEventArgs e)
         {
-            ClientConsole.WriteLine(e.Message, e.Success ? OutputLevel.Information : (e.Warning ? OutputLevel.Warning : OutputLevel.Error));
+            ClientConsole.WriteLine(e.Message, e.OutputLevel, null);
         }
 
         void InvalidConfigEvent(object sender, InvalidConfigEventArgs e)
         {
-            ClientConsole.WriteLine(e.Message, OutputLevel.Warning);
+            ClientConsole.WriteLine(e.Message, OutputLevel.Warning, null);
         }
 
         public IConsole ClientConsole { get; private set; }

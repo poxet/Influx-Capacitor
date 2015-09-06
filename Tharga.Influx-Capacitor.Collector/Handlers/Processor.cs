@@ -46,7 +46,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
         private void CollectRegisterCounterValuesEvent(object sender, CollectRegisterCounterValuesEventArgs e)
         {
-            OnEngineActionEvent(new EngineActionEventArgs(e.EngineName, e.Message, e.Success));
+            OnEngineActionEvent(new EngineActionEventArgs(e.EngineName, e.Message, e.OutputLevel));
         }
 
         protected virtual void OnEngineActionEvent(EngineActionEventArgs e)

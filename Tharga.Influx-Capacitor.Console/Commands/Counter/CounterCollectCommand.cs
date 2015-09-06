@@ -48,7 +48,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 
         private void EngineActionEvent(object sender, EngineActionEventArgs e)
         {
-            OutputLine(e.Message, e.Success ? OutputLevel.Information : OutputLevel.Error);
+            OutputLine(e.Message, e.OutputLevel);
         }
     }
 }

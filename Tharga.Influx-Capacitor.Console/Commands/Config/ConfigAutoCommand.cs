@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector;
-using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
@@ -66,8 +65,8 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             {
                 if (!status)
                 {
-                    OutputLine("Setup did not go as it should. Correct the issues manually and type exit when you are done.", ConsoleColor.Blue);
-                    OutputLine("Use the site https://github.com/poxet/Influx-Capacitor for support.", ConsoleColor.Blue);
+                    OutputLine("Setup did not go as it should. Correct the issues manually and type exit when you are done.", ConsoleColor.Blue, OutputLevel.Information);
+                    OutputLine("Use the site https://github.com/poxet/Influx-Capacitor for support.", ConsoleColor.Blue, OutputLevel.Information);
                 }
             }
         }

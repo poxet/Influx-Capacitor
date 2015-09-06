@@ -19,7 +19,7 @@ namespace Tharga.InfluxCapacitor.Console
             var command = new RootCommand(compositeRoot.ClientConsole);
 
             command.RegisterCommand(new ConfigCommands(compositeRoot));
-            command.RegisterCommand(new ServiceCommands());
+            command.RegisterCommand(new ServiceCommands(compositeRoot));
             command.RegisterCommand(new CounterCommands(compositeRoot));
 
             new CommandEngine(command).Run(args);

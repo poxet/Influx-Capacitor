@@ -5,6 +5,7 @@ using System.Timers;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
@@ -55,12 +56,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     //Send all theese points to influx
                     _client.Value.WriteAsync(pts.ToArray());
 
-                    OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Sending {0} points to server.", pts.Count), pts.Count, false));
+                    OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Sending {0} points to server.", pts.Count), pts.Count, OutputLevel.Information));
                 }
                 catch (Exception exception)
                 {
                     OnSendBusinessEvent(new SendBusinessEventArgs(exception));
-                    OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Putting {0} points back in the queue.", pts.Count), pts.Count, true));
+                    OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Putting {0} points back in the queue.", pts.Count), pts.Count, OutputLevel.Warning));
                     _queue.Enqueue(pts.ToArray()); //Put the points back in the queue to be sent later.
                     _timer.Enabled = false;
                 }
@@ -79,7 +80,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 _timer.Start();
             }
 
-            _queue.Enqueue(points);
+            lock (_syncRoot)
+            {
+                _queue.Enqueue(points);
+            }
         }
 
         protected virtual void OnSendBusinessEvent(SendBusinessEventArgs e)

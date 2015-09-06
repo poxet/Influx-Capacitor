@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
