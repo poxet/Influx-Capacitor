@@ -35,7 +35,8 @@ namespace Tharga.InfluxCapacitor.Service
             counterBusiness.GetPerformanceCounterEvent += GetPerformanceCounterEvent;
             var sendBusiness = new SendBusiness(configBusiness, influxDbAgentLoader);
             sendBusiness.SendBusinessEvent += SendBusinessEvent;
-            _processor = new Processor(configBusiness, counterBusiness, sendBusiness);
+            var tagLoader = new TagLoader(configBusiness);
+            _processor = new Processor(configBusiness, counterBusiness, sendBusiness, tagLoader);
             _processor.EngineActionEvent += _processor_EngineActionEvent;
 
             // These Flags set whether or not to handle that specific

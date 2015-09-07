@@ -7,5 +7,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         List<ICounterGroup> Groups { get; }
         IDatabaseConfig Database { get; }
         IApplicationConfig Application { get; }
+        List<ITag> Tags { get; }
     }
 }

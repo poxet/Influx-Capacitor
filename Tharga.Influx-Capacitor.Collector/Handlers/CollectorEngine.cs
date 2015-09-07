@@ -19,14 +19,16 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         private readonly ISendBusiness _sendBusiness;
         private readonly Timer _timer;
         private readonly string _name;
+        private readonly ITag[] _tags;
         private StopwatchHighPrecision _sw;
         private DateTime? _timestamp;
         private long _counter;
 
-        public CollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness)
+        public CollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader)
         {
             _performanceCounterGroup = performanceCounterGroup;
             _sendBusiness = sendBusiness;
+            _tags = tagLoader.GetGlobalTags().Union(_performanceCounterGroup.Tags).ToArray();
             if (performanceCounterGroup.SecondsInterval > 0)
             {
                 _timer = new Timer(1000 * performanceCounterGroup.SecondsInterval);
@@ -68,13 +70,15 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                     if (elapseOffset > 1)
                     {
-                        _counter = _counter + 1 + (int)elapseOffset;
-                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, "Dropping " + (int)elapseOffset + " steps.", OutputLevel.Warning));
+                        //_counter = _counter + 1 + (int)elapseOffset;
+                        _counter = _counter + (int)elapseOffset;
+                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Dropping {0} steps.", (int)elapseOffset), OutputLevel.Warning));
                         return -2;
                     }
+
                     if (elapseOffset < -1)
                     {
-                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, "Jumping 1 step.", OutputLevel.Warning));
+                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Jumping 1 step. ({0})", (int)elapseOffset), OutputLevel.Warning));
                         return -3;
                     }
 
@@ -85,6 +89,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                         _timer.Interval = next;
                     }
                 }
+
                 var timestamp = _timestamp.Value.AddSeconds(_performanceCounterGroup.SecondsInterval * _counter);
                 _counter++;
 
@@ -99,7 +104,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 var values = ReadValues(performanceCounterInfos);
                 timeInfo.Add("Read", swMain.ElapsedSegment);
 
-                //Prepare result
+                //Prepare result                
                 var points = FormatResult(performanceCounterInfos, values, precision, timestamp);
                 timeInfo.Add("Format", swMain.ElapsedSegment);
 
@@ -139,25 +144,22 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 var categoryName = performanceCounterInfo.PerformanceCounter.CategoryName;
                 var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
                 var key = performanceCounterInfo.PerformanceCounter.InstanceName;
+                var tags = GetTags(_tags, categoryName, counterName);
+                var fields = new Dictionary<string, object>
+                {
+                    { "value", value },
+                    //{ "readSpan", readSpan }, //Time in ms from the first, to the lats counter read in the group.
+                    //{ "timeOffset", (float)(timeOffset * 1000) } //Time difference in ms from reported time, to when read actually started.
+                };
 
                 var point = new Point
-                                {
-                                    Name = _name,
-                                    Tags = new Dictionary<string, object>
-                                               {
-                                                   { "hostname", Environment.MachineName },
-                                                   { "category", categoryName },
-                                                   { "counter", counterName },
-                                               },
-                                    Fields = new Dictionary<string, object>
-                                                 {
-                                                     { "value", value },
-                                                     //{ "readSpan", readSpan }, //Time in ms from the first, to the lats counter read in the group.
-                                                     //{ "timeOffset", (float)(timeOffset * 1000) } //Time difference in ms from reported time, to when read actually started.
-                                                 },
-                                    Precision = precision,
-                                    Timestamp = timestamp
-                                };
+                {
+                    Name = _name,
+                    Tags = tags,
+                    Fields = fields,
+                    Precision = precision,
+                    Timestamp = timestamp
+                };
 
                 if (!string.IsNullOrEmpty(key))
                 {
@@ -166,7 +168,23 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                 points[i] = point;
             }
+
             return points;
+        }
+
+        private static Dictionary<string, object> GetTags(ITag[] globalTags, string categoryName, string counterName)
+        {
+            var dictionary = new Dictionary<string, object>
+            {
+                { "hostname", Environment.MachineName },
+                { "category", categoryName },
+                { "counter", counterName },
+            };
+            foreach (var tag in globalTags)
+            {
+                dictionary.Add(tag.Name, tag.Value);
+            }
+            return dictionary;
         }
 
         public async Task StartAsync()

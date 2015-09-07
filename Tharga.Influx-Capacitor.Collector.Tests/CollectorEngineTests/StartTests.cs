@@ -24,7 +24,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroupMock.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
-            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object);
+            var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
+            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
 
             //Act
             await collectorEngine.StartAsync();
@@ -44,7 +45,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroupMock.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
-            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object);
+            var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
+            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
 
             //Act
             await collectorEngine.StartAsync();
@@ -64,7 +66,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroupMock.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
-            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object);
+            var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
+            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
 
             //Act
             await collectorEngine.StartAsync();

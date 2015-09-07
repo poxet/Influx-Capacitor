@@ -22,7 +22,7 @@ namespace Tharga.InfluxCapacitor.Console
             command.RegisterCommand(new ServiceCommands(compositeRoot));
             command.RegisterCommand(new CounterCommands(compositeRoot));
 
-            new CommandEngine(command).Run(args);
+           new CommandEngine(command).Run(args);
         }
     }
 }

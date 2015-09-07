@@ -8,12 +8,11 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             : base("Counter")
         {
             RegisterCommand(new CounterListCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
-            //RegisterCommand(new CounterDisableCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
             RegisterCommand(new CounterReadCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
-            RegisterCommand(new CounterCollectCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness, compositeRoot.SendBusiness));
+            RegisterCommand(new CounterCollectCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness, compositeRoot.SendBusiness, compositeRoot.TagLoader));
             RegisterCommand(new CounterInitiateCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
             RegisterCommand(new CounterCreateCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
-            RegisterCommand(new CounterStartCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness, compositeRoot.SendBusiness));
+            RegisterCommand(new CounterStartCommand(compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness, compositeRoot.SendBusiness, compositeRoot.TagLoader));
         }
     }
 }

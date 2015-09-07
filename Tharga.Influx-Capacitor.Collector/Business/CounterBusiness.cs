@@ -53,7 +53,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     }
                 }
 
-                var performanceCounterGroup = new PerformanceCounterGroup(group.Name, group.SecondsInterval, performanceCounterInfos);
+                var performanceCounterGroup = new PerformanceCounterGroup(group.Name, group.SecondsInterval, performanceCounterInfos, group.Tags);
                 counterGroups.Add(performanceCounterGroup);
             }
 

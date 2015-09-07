@@ -18,6 +18,7 @@ namespace Tharga.InfluxCapacitor.Console
             CounterBusiness = new CounterBusiness();
             SendBusiness = new SendBusiness(ConfigBusiness, InfluxDbAgentLoader);
             SendBusiness.SendBusinessEvent += SendBusinessEvent;
+            TagLoader = new TagLoader(ConfigBusiness);
         }
 
         void SendBusinessEvent(object sender, SendBusinessEventArgs e)
@@ -33,6 +34,7 @@ namespace Tharga.InfluxCapacitor.Console
         public IConsole ClientConsole { get; private set; }
         public IInfluxDbAgentLoader InfluxDbAgentLoader { get; private set; }
         public ISendBusiness SendBusiness { get; private set; }
+        public ITagLoader TagLoader { get; private set; }
         public IFileLoaderAgent FileLoaderAgent { get; private set; }
         public IConfigBusiness ConfigBusiness { get; private set; }
         public ICounterBusiness CounterBusiness { get; private set; }

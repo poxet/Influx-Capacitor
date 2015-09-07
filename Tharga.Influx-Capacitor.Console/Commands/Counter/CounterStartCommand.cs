@@ -14,13 +14,15 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
         private readonly IConfigBusiness _configBusiness;
         private readonly ICounterBusiness _counterBusiness;
         private readonly ISendBusiness _sendBusiness;
+        private readonly ITagLoader _tagLoader;
 
-        public CounterStartCommand(IConfigBusiness configBusiness, ICounterBusiness counterBusiness, ISendBusiness sendBusiness)
+        public CounterStartCommand(IConfigBusiness configBusiness, ICounterBusiness counterBusiness, ISendBusiness sendBusiness, ITagLoader tagLoader)
             : base("Start", "Start the counter and run the collector.")
         {
             _configBusiness = configBusiness;
             _counterBusiness = counterBusiness;
             _sendBusiness = sendBusiness;
+            _tagLoader = tagLoader;
         }
 
         public override async Task<bool> InvokeAsync(string paramList)
@@ -31,7 +33,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var index = 0;
             var counterGroup = QueryParam("Group", GetParam(paramList, index++), counterGroups.Select(x => new KeyValuePair<IPerformanceCounterGroup, string>(x, x.Name)));
 
-            var processor = new Processor(_configBusiness, _counterBusiness, _sendBusiness);
+            var processor = new Processor(_configBusiness, _counterBusiness, _sendBusiness, _tagLoader);
             processor.EngineActionEvent += EngineActionEvent;
 
             if (counterGroup == null)

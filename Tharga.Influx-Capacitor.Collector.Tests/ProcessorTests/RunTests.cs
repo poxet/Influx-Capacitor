@@ -25,7 +25,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.ProcessorTests
             influxDbAgentMock.Setup(x => x.PingAsync()).ReturnsAsync(new Pong());
             influxDbAgentLoaderMock.Setup(x => x.GetAgent(config.Database)).Returns(influxDbAgentMock.Object);
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
-            var processor = new Processor(configBusinessMock.Object, counterBusinessMock.Object, sendBusinessMock.Object);
+            var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
+            var processor = new Processor(configBusinessMock.Object, counterBusinessMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
             var configFiles = new string[] { };
 
             //Act

@@ -44,6 +44,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             IDatabaseConfig database = null;
             var groups = new List<ICounterGroup>();
             IApplicationConfig application = null;
+            var tags = new List<ITag>();
 
             foreach (var configurationFilename in configurationFilenames)
             {
@@ -55,6 +56,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 var db = GetDatabaseConfig(document);
                 var grps = GetCounterGroups(document).ToList();
                 var app = GetApplicationConfig(document);
+                var tgs = GetGlobalTags(document);
 
                 if (db != null)
                 {
@@ -70,7 +72,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 {
                     if (groups.Any(x => x.Name == grp.Name))
                     {
-                        OnInvalidConfigEvent(grp.Name, configurationFilename);
+                        OnInvalidConfigEvent(grp.Name, null, configurationFilename);
                     }
                     else
                     {
@@ -87,9 +89,21 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
                     application = app;
                 }
+
+                foreach (var tg in tgs)
+                {
+                    if (tags.Any(x => x.Name == tg.Name))
+                    {
+                        OnInvalidConfigEvent(null, tg.Name, configurationFilename);
+                    }
+                    else
+                    {
+                        tags.Add(tg);
+                    }
+                }
             }
 
-            var config = new Config(database, application, groups);
+            var config = new Config(database, application, groups, tags);
             return config;
         }
 
@@ -255,6 +269,15 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
         }
 
+        private IEnumerable<ITag> GetGlobalTags(XmlDocument document)
+        {
+            var tags = document.GetElementsByTagName("Tag");
+            foreach (XmlElement tag in tags)
+            {
+                yield return GetTag(tag);
+            }
+        }
+
         private IEnumerable<ICounterGroup> GetCounterGroups(XmlDocument document)
         {
             var counterGroups = document.GetElementsByTagName("CounterGroup");
@@ -262,6 +285,13 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 yield return GetCounterGroup(counterGroup);
             }
+        }
+
+        private ITag GetTag(XmlElement tag)
+        {
+            var name = tag.GetElementsByTagName("Name")[0].InnerText;
+            var value = tag.GetElementsByTagName("Value")[0].InnerText;
+            return new Tag(name, value);
         }
 
         private ICounterGroup GetCounterGroup(XmlElement counterGroup)
@@ -275,7 +305,15 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 cts.Add(GetCounter(counter));
             }
-            return new CounterGroup(name, secondsInterval, cts);
+
+            var tags = new List<ITag>(); 
+            var tagElements = counterGroup.GetElementsByTagName("GroupTag");           
+            foreach (XmlElement tagElement in tagElements)
+            {
+                tags.Add(GetTag(tagElement));
+            }
+            
+            return new CounterGroup(name, secondsInterval, cts, tags);
         }
 
         private static string GetString(XmlElement element, string name)
@@ -422,8 +460,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     var db = GetDatabaseConfig(document);
                     var grp = GetCounterGroups(document).ToList();
                     var app = GetApplicationConfig(document);
+                    var tgs = GetGlobalTags(document);
 
-                    if (db != null || grp.Any() || app != null)
+                    if (db != null || grp.Any() || app != null || tgs != null)
                     {
                         yield return configFile;
                     }
@@ -484,12 +523,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
         }
 
-        protected virtual void OnInvalidConfigEvent(string groupName, string configFileName)
+        protected virtual void OnInvalidConfigEvent(string groupName, string tagName, string configFileName)
         {
             var handler = InvalidConfigEvent;
             if (handler != null)
             {
-                handler(this, new InvalidConfigEventArgs(groupName, configFileName));
+                handler(this, new InvalidConfigEventArgs(groupName, tagName, configFileName));
             }
         }
     }

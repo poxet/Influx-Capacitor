@@ -7,5 +7,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string Name { get; }
         int SecondsInterval { get; }
         IEnumerable<ICounter> Counters { get; }
+        IEnumerable<ITag> Tags { get; }
     }
 }

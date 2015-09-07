@@ -39,6 +39,39 @@ If you want to get the name of the counters right, simply open *perfmon* and fin
 ## Database connection settings
 The settings are stored in the file database.xml located in hte ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). You can change settings directly in that file and restert the service, or you can use the command "setup change" in the console application, and the service will be restarted for you.
 
+## Tags
+You can add constant tags on a global level or at counter group level. This can be done in any of the configuration files. The name of the tag has to be unique.
+
+Global tags that will be added to all points sent to the database can be added like this.
+```
+<Influx-Capacitor>
+  <Tag>
+	<Name>[TagName]</Name>
+	<Value>[TagValue]</Value>
+  </Tag>
+</Influx-Capacitor>
+```
+
+It is also possible to add a tag for a specific counter group, these tags can be added like this.
+```
+<Influx-Capacitor>
+  <CounterGroups>
+    <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]">
+      <Counter>
+        <CategoryName>[CategoryName]</CategoryName>
+        <CounterName>[CounterName]</CounterName>
+        <InstanceName>[InstanceName]</InstanceName>
+      </Counter>
+	  <GroupTag>
+		<Name>[TagName]</Name>
+		<Value>[TagValue]</Value>
+	  </GroupTag>
+    </CounterGroup>
+  </CounterGroups>
+</Influx-Capacitor>
+```
+
+
 ## Running the console application
 The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided together with the installation. The program can be started with command parameters, or you can type the commands you want in the program.
 

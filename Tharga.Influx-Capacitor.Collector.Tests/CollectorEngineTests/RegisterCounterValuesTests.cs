@@ -21,14 +21,20 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroupMock.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroupMock.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
+            performanceCounterGroupMock.SetupGet(x => x.Tags).Returns(new ITag[] { });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
-            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object);
+            sendBusinessMock.Setup(x => x.Enqueue(It.IsAny<Point[]>()));
+            var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
+            tagLaoderMock.Setup(x => x.GetGlobalTags()).Returns(new[] { Mock.Of<ITag>(x => x.Name == "B") });
+            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
 
             //Act
-            collectorEngine.CollectRegisterCounterValuesAsync().Wait();
+            var response = collectorEngine.CollectRegisterCounterValuesAsync().Result;
 
             //Assert
+            tagLaoderMock.Verify(x => x.GetGlobalTags(), Times.Once);
             sendBusinessMock.Verify(x => x.Enqueue(It.IsAny<Point[]>()), Times.Once);
+            Assert.That(response, Is.EqualTo(1));
         }
 
         [Test]
@@ -40,14 +46,20 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroupMock.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroupMock.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { });
+            performanceCounterGroupMock.SetupGet(x => x.Tags).Returns(new ITag[] { });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
-            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object);
+            sendBusinessMock.Setup(x => x.Enqueue(It.IsAny<Point[]>()));
+            var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
+            tagLaoderMock.Setup(x => x.GetGlobalTags()).Returns(new[] { Mock.Of<ITag>(x => x.Name == "B") });
+            var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
 
             //Act
-            collectorEngine.CollectRegisterCounterValuesAsync().Wait();
+            var response = collectorEngine.CollectRegisterCounterValuesAsync().Result;
 
             //Assert
+            tagLaoderMock.Verify(x => x.GetGlobalTags(), Times.Once);
             sendBusinessMock.Verify(x => x.Enqueue(It.IsAny<Point[]>()), Times.Once);
+            Assert.That(response, Is.EqualTo(0));
         }
     }
 }

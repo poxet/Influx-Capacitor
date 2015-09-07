@@ -79,7 +79,9 @@
     </Compile>
     <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
+    <Compile Include="Business\TagLoader.cs" />
     <Compile Include="Entities\ApplicationConfig.cs" />
+    <Compile Include="Entities\Tag.cs" />
     <Compile Include="Handlers\DataInitiator.cs" />
     <Compile Include="Event\GetPerformanceCounterEventArgs.cs" />
     <Compile Include="Handlers\Crypto.cs" />
@@ -113,6 +115,8 @@
     <Compile Include="Interface\IPerformanceCounterGroup.cs" />
     <Compile Include="Interface\IPerformanceCounterInfo.cs" />
     <Compile Include="Interface\ISendBusiness.cs" />
+    <Compile Include="Interface\ITag.cs" />
+    <Compile Include="Interface\ITagLoader.cs" />
     <Compile Include="Interface\RegistryHKey.cs" />
     <Compile Include="Handlers\Processor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
