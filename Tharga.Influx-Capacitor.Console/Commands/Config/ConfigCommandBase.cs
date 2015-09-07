@@ -24,7 +24,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             _configBusiness = configBusiness;
         }
 
-        protected async Task<Tuple<string, InfluxDbVersion>> GetServerUrlAsync(string paramList, int index, string defaultUrl, InfluxDbVersion influxDbVersion)
+        protected async Task<string> GetServerUrlAsync(string paramList, int index, string defaultUrl)
         {
             var urlParam = GetParam(paramList, index++);
             //var versionParam = GetParam(paramList, index++);
@@ -36,7 +36,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             {
                 try
                 {
-                    client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty", influxDbVersion));
+                    client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty"));
                 }
                 catch (Exception exception)
                 {
@@ -67,10 +67,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     {
                         url = QueryParam<string>("Url", urlParam);
                         urlParam = null;
-                        //influxDbVersion = QueryParam("Version", versionParam, new Dictionary<InfluxDbVersion, string> { { InfluxDbVersion.Ver0_8X, "0.8x" }, { InfluxDbVersion.Ver0_9X, "0.9x" }, { InfluxDbVersion.Auto, "Auto" } });
-                        //versionParam = null;
-                        influxDbVersion = InfluxDbVersion.Auto;
-                        client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert", influxDbVersion));
+                        client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert"));
 
                         connectionConfirmed = await client.CanConnect();
                     }
@@ -84,10 +81,10 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     }
                 }
 
-                _configBusiness.SaveDatabaseUrl(url, influxDbVersion);
+                _configBusiness.SaveDatabaseUrl(url);
             }
             OutputInformation("Connection to server {0} confirmed.", url);
-            return new Tuple<string, InfluxDbVersion>(url, influxDbVersion);
+            return url;
         }
 
         protected async Task<IDatabaseConfig> GetUsernameAsync(string paramList, int index, IDatabaseConfig config, string action)
@@ -97,7 +94,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 new Point
                 {
                     Name = Constants.ServiceName, 
-                    Tags = new Dictionary<string, object>
+                    Tags = new Dictionary<string, string>
                     {
                         { "hostname", Environment.MachineName },
                         { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
@@ -114,7 +111,6 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             var dataChanged = false;
 
             var url = config.Url;
-            var influxDbVersion = config.InfluxDbVersion;
 
             IInfluxDbAgent client = null;
             InfluxDbApiResponse response = null;
@@ -142,7 +138,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     database = QueryParam<string>("DatabaseName", GetParam(paramList, index++));
                     var user = QueryParam<string>("Username", GetParam(paramList, index++));
                     var password = QueryParam<string>("Password", GetParam(paramList, index++));
-                    config = new DatabaseConfig(url, user, password, database, influxDbVersion);
+                    config = new DatabaseConfig(url, user, password, database);
 
                     client = _influxDbAgentLoader.GetAgent(config);
                     response = await client.WriteAsync(points);

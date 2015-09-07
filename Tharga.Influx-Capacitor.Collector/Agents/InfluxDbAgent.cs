@@ -27,14 +27,13 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
 
             try
             {
-                _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password, _databaseConfig.InfluxDbVersion);
+                _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password);
             }
             catch (Exception exception)
             {
                 var exp = new InvalidOperationException("Could not establish a connection to the database.", exception);
                 exp.Data.Add("Url", databaseConfig.Url);
                 exp.Data.Add("Username", databaseConfig.Username);
-                exp.Data.Add("InfluxDbVersion", databaseConfig.InfluxDbVersion);
                 throw exp;
             }
         }

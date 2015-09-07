@@ -28,7 +28,6 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             }
 
             OutputInformation("Url:      {0}", config.Url);
-            OutputInformation("Version:  {0}", config.InfluxDbVersion);
             OutputInformation("Name:     {0}", config.Name);
             OutputInformation("Username: {0}", config.Username);
 

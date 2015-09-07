@@ -17,11 +17,11 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
         {
             var index = 0;            
 
-            var response = await GetServerUrlAsync(paramList, index++, null, InfluxDbVersion.Auto);
-            if (string.IsNullOrEmpty(response.Item1))
+            var response = await GetServerUrlAsync(paramList, index++, null);
+            if (string.IsNullOrEmpty(response))
                 return false;
 
-            var config = new DatabaseConfig(response.Item1, null, null, null, response.Item2);
+            var config = new DatabaseConfig(response, null, null, null);
             var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_change");
             if (logonInfo == null)
                 return false;

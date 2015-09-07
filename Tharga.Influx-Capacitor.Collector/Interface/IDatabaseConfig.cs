@@ -1,5 +1,3 @@
-using InfluxDB.Net;
-
 namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface IDatabaseConfig
@@ -8,6 +6,5 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string Username { get; }
         string Password { get; }
         string Name { get; }
-        InfluxDbVersion InfluxDbVersion { get; }        
     }
 }

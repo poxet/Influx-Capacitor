@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using InfluxDB.Net;
 using Tharga.InfluxCapacitor.Collector.Event;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
@@ -10,7 +9,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         IConfig LoadFiles();
         IConfig LoadFiles(string[] configurationFilenames);
         IDatabaseConfig OpenDatabaseConfig();
-        void SaveDatabaseUrl(string url, InfluxDbVersion influxDbVersion);
+        void SaveDatabaseUrl(string url);
         void SaveDatabaseConfig(string databaseName, string username, string password);
         void SaveApplicationConfig(int flushSecondsInterval, bool debugMode);
         void InitiateApplicationConfig();

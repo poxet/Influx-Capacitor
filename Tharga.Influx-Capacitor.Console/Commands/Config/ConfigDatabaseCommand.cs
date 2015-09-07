@@ -47,7 +47,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
         public async override Task<bool> InvokeAsync(string paramList)
         {
             var currentConfig = _configBusiness.OpenDatabaseConfig();
-            var config = new DatabaseConfig(currentConfig.Url, string.Empty, string.Empty, string.Empty, currentConfig.InfluxDbVersion);
+            var config = new DatabaseConfig(currentConfig.Url, string.Empty, string.Empty, string.Empty);
 
             var index = 0;
             var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_database");

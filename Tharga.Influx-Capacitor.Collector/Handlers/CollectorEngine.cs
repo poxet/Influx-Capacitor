@@ -186,9 +186,9 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             return points;
         }
 
-        private static Dictionary<string, object> GetTags(ITag[] globalTags, string categoryName, string counterName)
+        private static Dictionary<string, string> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName)
         {
-            var dictionary = new Dictionary<string, object>
+            var dictionary = new Dictionary<string, string>
             {
                 { "hostname", Environment.MachineName },
                 { "category", categoryName },

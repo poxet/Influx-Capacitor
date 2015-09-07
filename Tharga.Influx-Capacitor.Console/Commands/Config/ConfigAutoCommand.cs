@@ -28,10 +28,9 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 var index = 0;
 
                 var defaultUrl = _configBusiness.OpenDatabaseConfig().Url;
-                var influxDbVersion = _configBusiness.OpenDatabaseConfig().InfluxDbVersion;
 
-                var response = await GetServerUrlAsync(paramList, index++, defaultUrl, influxDbVersion);
-                if (response == null || string.IsNullOrEmpty(response.Item1))
+                var response = await GetServerUrlAsync(paramList, index++, defaultUrl);
+                if (string.IsNullOrEmpty(response))
                 {
                     status = false;
                     return false;

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using InfluxDB.Net;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Extensions;
@@ -143,24 +142,24 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
-                return new DatabaseConfig(Constants.NoConfigUrl, null, null, null, InfluxDbVersion.Auto);
+                return new DatabaseConfig(Constants.NoConfigUrl, null, null, null);
             }
 
             var config = LoadFile(databaseConfigFilePath);
             return config.Database;
         }
 
-        public void SaveDatabaseUrl(string url, InfluxDbVersion influxDbVersion)
+        public void SaveDatabaseUrl(string url)
         {
             var config = OpenDatabaseConfig();
-            var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name, influxDbVersion);
+            var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
         public void SaveDatabaseConfig(string databaseName, string username, string password)
         {
             var config = OpenDatabaseConfig();
-            var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName, config.InfluxDbVersion);
+            var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
@@ -400,7 +399,6 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string username = null;
             string password = null;
             string name = null;
-            var influxDbVersion = InfluxDbVersion.Auto;
             foreach (XmlElement item in databases[0].ChildNodes)
             {
                 switch (item.Name)
@@ -417,18 +415,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     case "Name":
                         name = item.InnerText;
                         break;
-                    case "InfluxDbVersion":
-                        if (!Enum.TryParse(item.InnerText, true, out influxDbVersion))
-                        {
-                            influxDbVersion = InfluxDbVersion.Auto;
-                        }
-                        break;
                     case "":
                         break;
                 }
             }
 
-            var database = new DatabaseConfig(url, username, password, name, influxDbVersion);
+            var database = new DatabaseConfig(url, username, password, name);
             return database;
         }
 
