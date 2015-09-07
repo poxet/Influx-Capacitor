@@ -23,6 +23,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         private StopwatchHighPrecision _sw;
         private DateTime? _timestamp;
         private long _counter;
+        private int _missCounter;
 
         public CollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader)
         {
@@ -68,19 +69,32 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                     elapseOffset = new TimeSpan(elapsedTotal).TotalSeconds - _performanceCounterGroup.SecondsInterval * _counter;
 
+                    if (_missCounter > 6)
+                    {
+                        //Reset everything and start over.
+                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Missed {0} counts. Resetting and start over.", _missCounter), OutputLevel.Warning));
+
+                        _timestamp = null;
+                        _counter = 0;
+                        _missCounter = 0;
+                    }
+
                     if (elapseOffset > 1)
                     {
-                        //_counter = _counter + 1 + (int)elapseOffset;
-                        _counter = _counter + (int)elapseOffset;
+                        _missCounter++;
+                        _counter = _counter + 1 + (int)elapseOffset;
                         OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Dropping {0} steps.", (int)elapseOffset), OutputLevel.Warning));
                         return -2;
                     }
 
                     if (elapseOffset < -1)
                     {
+                        _missCounter++;
                         OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Jumping 1 step. ({0})", (int)elapseOffset), OutputLevel.Warning));
                         return -3;
                     }
+
+                    _missCounter = 0;
 
                     //Adjust interval
                     var next = 1000 * (_performanceCounterGroup.SecondsInterval - elapseOffset);
