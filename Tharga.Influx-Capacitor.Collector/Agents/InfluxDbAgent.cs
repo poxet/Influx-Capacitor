@@ -27,7 +27,7 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
 
             try
             {
-                _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password);
+                _influxDb = new InfluxDb(_databaseConfig.Url, _databaseConfig.Username, _databaseConfig.Password, InfluxVersion.Auto);
             }
             catch (Exception exception)
             {
