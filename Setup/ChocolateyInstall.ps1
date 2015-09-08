@@ -1,6 +1,6 @@
 $packageName = 'windirstat'
 $fileType = 'msi'
-$url = 'http://thargelion.net/resources/Influx-Capacitor/Influx-Capacitor.1.0.8.msi'
+$url = 'http://influx-capacitor.com/Resources/Production/Influx-Capacitor.#Version#.msi'
 $silentArgs = ''
 
 Install-ChocolateyPackage $packageName $fileType "$silentArgs" "$url"

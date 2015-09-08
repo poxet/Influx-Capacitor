@@ -5,7 +5,7 @@
     <!-- Read this before publishing packages to chocolatey.org: https://github.com/chocolatey/chocolatey/wiki/CreatePackages -->
     <id>Influx-Capacitor</id>
     <title>Influx Capacitor</title>
-    <version>$version$</version>
+    <version>#Version#</version>
     <authors>Daniel Bohlin</authors>
     <owners>Thargelion AB</owners>
     <language>en-US</language>

@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{472514BE
 		..\Setup\Influx-Capacitor.nuspec = ..\Setup\Influx-Capacitor.nuspec
 		..\Setup\Influx-Capacitor.wsx = ..\Setup\Influx-Capacitor.wsx
 		..\Setup\Note.txt = ..\Setup\Note.txt
+		..\Setup\SetChocolateyVersion.ps1 = ..\Setup\SetChocolateyVersion.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{75270509-6847-49AD-90CD-5EA4F972A857}"
