@@ -69,7 +69,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                     elapseOffset = new TimeSpan(elapsedTotal).TotalSeconds - _performanceCounterGroup.SecondsInterval * _counter;
 
-                    if (_missCounter > 6)
+                    if (_missCounter >= 6)
                     {
                         //Reset everything and start over.
                         OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Missed {0} counts. Resetting and start over.", _missCounter), OutputLevel.Warning));
@@ -77,6 +77,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                         _timestamp = null;
                         _counter = 0;
                         _missCounter = 0;
+                        return -4;
                     }
 
                     if (elapseOffset > 1)
@@ -90,7 +91,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     if (elapseOffset < -1)
                     {
                         _missCounter++;
-                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Jumping 1 step. ({0})", (int)elapseOffset), OutputLevel.Warning));
+                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Jumping 1 step. ({0} = new TimeSpan({1}).TotalSeconds - {2} * {3})", (int)elapseOffset, elapsedTotal, _performanceCounterGroup.SecondsInterval, _counter), OutputLevel.Warning));
                         return -3;
                     }
 
