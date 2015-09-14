@@ -15,7 +15,7 @@
     <copyright></copyright>
     <licenseUrl>https://github.com/poxet/Influx-Capacitor/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <iconUrl>http://www.thargelion.se/Images/Logotype/Thargelion-White-Icon-48.png</iconUrl>
+    <iconUrl>http://influx-capacitor.com/Images/icon-48x48.png</iconUrl>
     <releaseNotes></releaseNotes>
   </metadata>
   <files>
