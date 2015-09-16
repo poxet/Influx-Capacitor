@@ -65,7 +65,7 @@
 
     <InstallExecuteSequence>
       <RemoveExistingProducts Before="InstallInitialize" />
-      <Custom Action="LaunchApp" Before="InstallFinalize">NOT Installed AND NOT PATCH</Custom>
+      <!--<Custom Action="LaunchApp" Before="InstallFinalize">NOT Installed AND NOT PATCH</Custom>-->
     </InstallExecuteSequence>
 
     <!--<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Tharga.Influx-Capacitor.Console.exe "config auto" /e' Execute="deferred" Return="check" Impersonate="no" />-->
