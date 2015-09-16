@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Influx-Capacitor>
+
+    <CounterGroups>
+    <CounterGroup Name="perfmon.memory.free_bytes" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>Available Bytes</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.memory.committed_bytes" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>Committed Bytes</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.memory.cache_bytes" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>Cache Bytes</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.memory.pool_paged_bytes" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>Pool Paged Bytes</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.memory.pool_nonpaged_bytes" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>Pool Nonpaged Bytes</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+	<CounterGroup Name="perfmon.memory.system_code_bytes" SecondsInterval="5">
+	  <Counter>
+	    <CategoryName>Memory</CategoryName>
+		<CounterName>System Code Total Bytes</CounterName>
+		<InstanceName></InstanceName>
+	  </Counter>
+	</CounterGroup>
+    <CounterGroup Name="perfmon.memory.system_driver_bytes" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>System Driver Total Bytes</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.memory.free_pte" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>Free System Page Table Entries</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.memory.pct_committed_in_use" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>% Committed Bytes In Use</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.memory.pages_input_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>Pages Input/sec</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.memory.pages_output_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Memory</CategoryName>
+        <CounterName>Pages Output/sec</CounterName>
+        <InstanceName></InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.memory.pct_pagefile_used" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Paging File</CategoryName>
+        <CounterName>% Usage</CounterName>
+        <InstanceName>_Total</InstanceName>
+      </Counter>
+    </CounterGroup>
+  </CounterGroups>
+	
+</Influx-Capacitor>
