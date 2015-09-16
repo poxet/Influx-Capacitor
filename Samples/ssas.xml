@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-16"?>
+
+<!-- #### please replace "MySQLServerInstanceName" by your SQL Server instance name #### -->
+
+<Influx-Capacitor>
+
+  <CounterGroups>
+	<CounterGroup Name="perfmon.ssas.cache.current_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Cache</CategoryName>
+			<CounterName>Current KB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.connection.current_user_sessions" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Connection</CategoryName>
+			<CounterName>Current user sessions</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.connection.failures_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Connection</CategoryName>
+			<CounterName>Failures/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.connection.requests_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Connection</CategoryName>
+			<CounterName>Requests/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.connection.successes_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Connection</CategoryName>
+			<CounterName>Successes/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.locks.latch_waits_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Locks</CategoryName>
+			<CounterName>Latch waits/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.locks.lock_waits_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Locks</CategoryName>
+			<CounterName>Lock waits/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.locks.total_deadlocks_detected" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Locks</CategoryName>
+			<CounterName>Total deadlocks detected</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.aggregated_cache_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>AggCacheKB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.cleaner_memory_nonshrinkable_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Cleaner Memory nonshrinkable KB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.cleaner_memory_shrinkable_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Cleaner Memory shrinkable KB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.filestore_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Filestore KB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.filestore_read_kilobytes_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Filestore KB Reads/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.filestore_write_kilobytes_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Filestore KB Write/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.filestore_memory_pinned_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Filestore Memory Pinned KB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.filestore_reads_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Filestore Reads/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.filestore_writes_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Filestore Writes/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.memory_limit_hard_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Memory Limit Hard KB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.memory_limit_high_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Memory Limit High KB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.memory_limit_low_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Memory Limit Low KB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.memory.memory_usage_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSOLAP$MySQLServerInstanceName:Memory</CategoryName>
+			<CounterName>Memory Usage KB</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.process.pct_privileged_time" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% Privileged Time</CounterName>
+			<InstanceName>msmdsrv</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.process.pct_user_time" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% User Time</CounterName>
+			<InstanceName>msmdsrv</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.process.handle_count" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Handle Count</CounterName>
+			<InstanceName>msmdsrv</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssas.process.thread_count" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Thread Count</CounterName>
+			<InstanceName>msmdsrv</InstanceName>
+		</Counter>
+	</CounterGroup>
+  </CounterGroups>
+
+</Influx-Capacitor>
