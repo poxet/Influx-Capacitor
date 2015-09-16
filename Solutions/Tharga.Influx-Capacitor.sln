@@ -44,6 +44,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.Influx-Capacitor.Service.Console", "..\Tharga.Influx-Capacitor.Service.Console\Tharga.Influx-Capacitor.Service.Console.csproj", "{33DCFFDC-8E5A-4A4E-942F-A3F5B42FB8D3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{147798FA-C2A9-491D-A320-0FA276578F98}"
+	ProjectSection(SolutionItems) = preProject
+		..\Samples\disk.xml = ..\Samples\disk.xml
+		..\Samples\memory.xml = ..\Samples\memory.xml
+		..\Samples\network.xml = ..\Samples\network.xml
+		..\Samples\processor.xml = ..\Samples\processor.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CI|Any CPU = CI|Any CPU

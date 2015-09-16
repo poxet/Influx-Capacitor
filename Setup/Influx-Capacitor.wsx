@@ -42,7 +42,7 @@
         <File Name="Tharga.Influx-Capacitor.Service.exe" KeyPath="yes" />
         <File Name="Tharga.Influx-Capacitor.Service.exe.config" />
         <ServiceInstall Name="Influx-Capacitor" DisplayName="Influx-Capacitor" Description="Influx Capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana." Type="ownProcess" Start="auto" ErrorControl="normal" Account="LocalSystem" />
-        <ServiceControl Name="Influx-Capacitor" Id="StartService" Start="install" Stop="both" Remove="uninstall" Wait="no" />
+        <!--<ServiceControl Name="Influx-Capacitor" Id="StartService" Start="install" Stop="both" Remove="uninstall" Wait="no" />-->
       </Component>
     </DirectoryRef>
 
@@ -68,7 +68,7 @@
       <Custom Action="LaunchApp" Before="InstallFinalize">NOT Installed AND NOT PATCH</Custom>
     </InstallExecuteSequence>
 
-    <CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Tharga.Influx-Capacitor.Console.exe "config auto" /e' Execute="deferred" Return="check" Impersonate="no" />
+    <!--<CustomAction Id="LaunchApp" Directory="APPLICATIONROOTDIRECTORY" ExeCommand='[SystemFolder]cmd.exe /C Tharga.Influx-Capacitor.Console.exe "config auto" /e' Execute="deferred" Return="check" Impersonate="no" />-->
 
   </Product>
 

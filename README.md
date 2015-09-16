@@ -99,5 +99,6 @@ The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided 
 The currently supported version of InfluxDB is 0.9x.
 
 ## Thanks to
-- [ziyasal/InfluxDB.Net](https://github.com/ziyasal/InfluxDB.Net)
+- [zeugfr(https://github.com/zeugfr)]
 - [discoduck2x](https://github.com/discoduck2x)
+- [ziyasal/InfluxDB.Net](https://github.com/ziyasal/InfluxDB.Net)
