@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-16"?>
+
+<!-- #### please replace "12.0" (SQL 2014) by "11.0" for SQL 2012 or "13.0" for SQL 2016 #### -->
+
+<Influx-Capacitor>
+
+  <CounterGroups>
+	<CounterGroup Name="perfmon.ssis.pipeline.rows_read" SecondsInterval="20">
+		<Counter>
+			<CategoryName>SQLServer:SSIS Pipeline 12.0</CategoryName>
+			<CounterName>Rows read</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssis.pipeline.rows_written" SecondsInterval="20">
+		<Counter>
+			<CategoryName>SQLServer:SSIS Pipeline 12.0</CategoryName>
+			<CounterName>Rows written</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssis.package_instances" SecondsInterval="20">
+		<Counter>
+			<CategoryName>SQLServer:SSIS Service 12.0</CategoryName>
+			<CounterName>SSIS Package Instances</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssis.process.pct_privileged_time" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% Privileged Time</CounterName>
+			<InstanceName>MsDtsSrvr</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssis.process.pct_user_time" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% User Time</CounterName>
+			<InstanceName>MsDtsSrvr</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssis.process.handle_count" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Handle Count</CounterName>
+			<InstanceName>MsDtsSrvr</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssis.process.thread_count" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Thread Count</CounterName>
+			<InstanceName>MsDtsSrvr</InstanceName>
+		</Counter>
+	</CounterGroup>
+  </CounterGroups>
+
+</Influx-Capacitor>
