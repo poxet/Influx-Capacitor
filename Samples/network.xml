@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Influx-Capacitor>
+
+  <CounterGroups>
+    <CounterGroup Name="perfmon.network.bytes_received_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Bytes Received/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.network.bytes_sent_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Bytes Sent/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.network.packets_received_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Packets Received/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.network.packets_sent_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Packets Sent/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.network.packets_received_errors" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Packets Received Errors</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.network.packets_sent_errors" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Packets Outbound Errors</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.network.packets_received_discarded" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Packets Received Discarded</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.network.packets_sent_discarded" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Packets Outbound Discarded</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.network.packets_received_unknown" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Packets Received Unknown</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.network.output_queue_length" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Network Interface</CategoryName>
+        <CounterName>Output Queue Length</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+  </CounterGroups>
+</Influx-Capacitor>
