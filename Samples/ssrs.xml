@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-16"?>
+
+<!-- #### please replace "MySQLServerInstanceName" by your SQL Server instance name #### -->
+<!-- #### please replace "MSRS 2014" by "MSRS 2012" or "MSRS 2016" (depending on your version) #### -->
+
+<Influx-Capacitor>
+
+  <CounterGroups>
+	<CounterGroup Name="perfmon.ssrs.webservice.requests_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSRS 2014 Web Service</CategoryName>
+			<CounterName>Requests/Sec</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.webservice.total_processing_failures" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSRS 2014 Web Service</CategoryName>
+			<CounterName>Total Processing Failures</CounterName>
+			<InstanceName>*</InstanceName>
+			</Counter>
+			</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.webservice.total_requests" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSRS 2014 Web Service</CategoryName>
+			<CounterName>Total Requests</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.windows_service.requests_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSRS 2014 Windows Service</CategoryName>
+			<CounterName>Requests/Sec</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.windows_service.total_processing_failures" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSRS 2014 Windows Service</CategoryName>
+			<CounterName>Total Processing Failures</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.windows_service.total_requests" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSRS 2014 Windows Service</CategoryName>
+			<CounterName>Total Requests</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.service.errors_total" SecondsInterval="20">
+		<Counter>
+			<CategoryName>ReportServer$MySQLServerInstanceName:Service</CategoryName>
+			<CounterName>Errors Total</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.service.errors_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>ReportServer$MySQLServerInstanceName:Service</CategoryName>
+			<CounterName>Errors/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.service.memory_pressure_state" SecondsInterval="20">
+		<Counter>
+			<CategoryName>ReportServer$MySQLServerInstanceName:Service</CategoryName>
+			<CounterName>Memory Pressure State</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.service.memory_shrink_amount" SecondsInterval="20">
+		<Counter>
+			<CategoryName>ReportServer$MySQLServerInstanceName:Service</CategoryName>
+			<CounterName>Memory Shrink Amount</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.service.requests_not_authorized" SecondsInterval="20">
+		<Counter>
+			<CategoryName>ReportServer$MySQLServerInstanceName:Service</CategoryName>
+			<CounterName>Requests Not Authorized</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.service.requests_rejected" SecondsInterval="20">
+		<Counter>
+			<CategoryName>ReportServer$MySQLServerInstanceName:Service</CategoryName>
+			<CounterName>Requests Rejected</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.service.requests_total" SecondsInterval="20">
+		<Counter>
+			<CategoryName>ReportServer$MySQLServerInstanceName:Service</CategoryName>
+			<CounterName>Requests Total</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.service.requests_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>ReportServer$MySQLServerInstanceName:Service</CategoryName>
+			<CounterName>Requests/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.process.pct_privileged_time" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% Privileged Time</CounterName>
+			<InstanceName>ReportingServicesService</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.process.pct_user_time" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% User Time</CounterName>
+			<InstanceName>ReportingServicesService</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.process.handle_count" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Handle Count</CounterName>
+			<InstanceName>ReportingServicesService</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.ssrs.process.thread_count" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Thread Count</CounterName>
+			<InstanceName>ReportingServicesService</InstanceName>
+		</Counter>
+	</CounterGroup>
+  </CounterGroups>
+
+</Influx-Capacitor>
