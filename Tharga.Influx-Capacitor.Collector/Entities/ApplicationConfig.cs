@@ -14,13 +14,6 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         }
 
         public int FlushSecondsInterval { get { return _flushSecondsInterval; } }
-
-        public bool DebugMode
-        {
-            get
-            {
-                return _debugMode;
-            }
-        }
+        public bool DebugMode { get { return _debugMode; } }
     }
 }

@@ -72,7 +72,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     if (_missCounter >= 6)
                     {
                         //Reset everything and start over.
-                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Missed {0} counts. Resetting and start over.", _missCounter), OutputLevel.Warning));
+                        OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Missed {0} cycles. Resetting and starting over.", _missCounter), OutputLevel.Warning));
 
                         _timestamp = null;
                         _counter = 0;

@@ -22,8 +22,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             var config = configBusiness.LoadFiles();
 
-            _timer = new Timer(1000 * config.Application.FlushSecondsInterval);
-            _timer.Elapsed += Elapsed;
+            var flushMilliSecondsInterval = 1000 * config.Application.FlushSecondsInterval;
+            if (flushMilliSecondsInterval > 0)
+            {
+                _timer = new Timer(flushMilliSecondsInterval);
+                _timer.Elapsed += Elapsed;
+            }
 
             _client = new Lazy<IInfluxDbAgent>(() => influxDbAgentLoader.GetAgent(config.Database));
         }
@@ -32,7 +36,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             lock (_syncRoot)
             {
-                if (!_timer.Enabled)
+                if (_timer == null || !_timer.Enabled)
                 {
                     return;
                 }
@@ -54,9 +58,16 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     //TODO: Possible to log what is sent
 
                     //Send all theese points to influx
-                    _client.Value.WriteAsync(pts.ToArray());
-
-                    OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Sending {0} points to server.", pts.Count), pts.Count, OutputLevel.Information));
+                    var client = _client.Value;
+                    if (client != null)
+                    {
+                        client.WriteAsync(pts.ToArray());
+                        OnSendBusinessEvent(new SendBusinessEventArgs(string.Format("Sending {0} points to server.", pts.Count), pts.Count, OutputLevel.Information));
+                    }
+                    else
+                    {
+                        OnSendBusinessEvent(new SendBusinessEventArgs("There is no client configured for sending data to the database, or the client has invalid settings.", pts.Count, OutputLevel.Error));
+                    }
                 }
                 catch (Exception exception)
                 {
@@ -72,6 +83,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             if (!points.Any())
             {
+                return;
+            }
+
+            if (_timer == null)
+            {
+                OnSendBusinessEvent(new SendBusinessEventArgs("The engine that sends data to the database is not enabled. Probably becuse the FlushSecondsInterval has not been configured.", points.Length, OutputLevel.Error));
                 return;
             }
 

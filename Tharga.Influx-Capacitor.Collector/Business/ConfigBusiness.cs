@@ -102,6 +102,11 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
             }
 
+            if (application == null)
+            {
+                application = new ApplicationConfig(10, false);
+            }
+
             var config = new Config(database, application, groups, tags);
             return config;
         }

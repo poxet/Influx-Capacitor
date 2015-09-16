@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
@@ -9,7 +8,10 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
     {
         public IInfluxDbAgent GetAgent(IDatabaseConfig database)
         {
-            if (database == null) throw new ArgumentNullException("database", "No database configuration provided.");
+            if (database == null)
+            {
+                return null;
+            }
 
             return new InfluxDbAgent(database);
         }
