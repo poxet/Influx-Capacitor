@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Influx-Capacitor>
+
+  <CounterGroups>
+    <CounterGroup Name="perfmon.df.free_megabytes" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>Free Megabytes</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.df.pct_free" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>% Free Space</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.disk.read_bytes_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>Disk Read Bytes/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.disk.write_bytes_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>Disk Write Bytes/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.disk.reads_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>Disk Reads/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.disk.writes_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>Disk Writes/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+	<CounterGroup Name="perfmon.disk.average_bytes_per_read" SecondsInterval="5">
+		<Counter>
+			<CategoryName>LogicalDisk</CategoryName>
+			<CounterName>Avg. Disk Bytes/Read</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.disk.average_bytes_per_write" SecondsInterval="5">
+		<Counter>
+			<CategoryName>LogicalDisk</CategoryName>
+			<CounterName>Avg. Disk Bytes/Write</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+    <CounterGroup Name="perfmon.disk.average_second_per_read" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>Avg. Disk sec/Read</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.disk.average_second_per_write" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>Avg. Disk sec/Write</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.disk.avergae_disk_queue_length" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>Avg. Disk Queue Length</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.disk.pct_busy" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>% Disk Time</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.disk.pct_idle" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>% Idle Time</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.disk.io_split_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>LogicalDisk</CategoryName>
+        <CounterName>Split IO/Sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+  </CounterGroups>
+
+</Influx-Capacitor>
