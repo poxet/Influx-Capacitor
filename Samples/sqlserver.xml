@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="utf-16"?>
+
+<!-- #### please replace "MySQLServerInstanceName" by your SQL Server instance name #### -->
+
+<Influx-Capacitor>
+
+  <CounterGroups>
+	<CounterGroup Name="perfmon.mssql.access_methods.fullscans_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Access Methods</CategoryName>
+			<CounterName>Full Scans/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.access_methods.index_searches_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Access Methods</CategoryName>
+			<CounterName>Index Searches/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.access_methods.page_splits_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Access Methods</CategoryName>
+			<CounterName>Page Splits/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.access_methods.probe_scans_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Access Methods</CategoryName>
+			<CounterName>Probe Scans/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.access_methods.range_scans_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Access Methods</CategoryName>
+			<CounterName>Range Scans/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.access_methods.workfiles_created_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Access Methods</CategoryName>
+			<CounterName>Workfiles Created/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.access_methods.worktables_created_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Access Methods</CategoryName>
+			<CounterName>Worktables Created/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.buffer_manager.checkpoint_pages_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Buffer Manager</CategoryName>
+			<CounterName>Checkpoint pages/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.buffer_manager.free_list_stalls_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Buffer Manager</CategoryName>
+			<CounterName>Free list stalls/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.buffer_manager.lazy_writes_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Buffer Manager</CategoryName>
+			<CounterName>Lazy writes/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.buffer_manager.page_life_expectancy" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Buffer Manager</CategoryName>
+			<CounterName>Page life expectancy</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.buffer_manager.page_lookups_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Buffer Manager</CategoryName>
+			<CounterName>Page lookups/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.buffer_manager.page_reads_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Buffer Manager</CategoryName>
+			<CounterName>Page reads/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.buffer_manager.page_writes_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Buffer Manager</CategoryName>
+			<CounterName>Page writes/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.buffer_manager.readahead_pages_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Buffer Manager</CategoryName>
+			<CounterName>Readahead pages/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.databases.active_transactions" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Databases</CategoryName>
+			<CounterName>Active Transactions</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.databases.data_files_size_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Databases</CategoryName>
+			<CounterName>Data File(s) Size (KB)</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.databases.log_files_size_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Databases</CategoryName>
+			<CounterName>Log File(s) Size (KB)</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.databases.log_files_used_size_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Databases</CategoryName>
+			<CounterName>Log File(s) Used Size (KB)</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.databases.percent_log_used" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Databases</CategoryName>
+			<CounterName>Percent Log Used</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.databases.transactions_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Databases</CategoryName>
+			<CounterName>Transactions/sec</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.databases.write_transactions_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Databases</CategoryName>
+			<CounterName>Write Transactions/sec</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.general_statistics.active_temp_tables" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:General Statistics</CategoryName>
+			<CounterName>Active Temp Tables</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.general_statistics.logical_connections" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:General Statistics</CategoryName>
+			<CounterName>Logical Connections</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.general_statistics.processes_blocked" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:General Statistics</CategoryName>
+			<CounterName>Processes blocked</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.general_statistics.temp_tables_creation_rate" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:General Statistics</CategoryName>
+			<CounterName>Temp Tables Creation Rate</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.general_statistics.temp_tables_for_destruction" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:General Statistics</CategoryName>
+			<CounterName>Temp Tables For Destruction</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.general_statistics.transactions" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:General Statistics</CategoryName>
+			<CounterName>Transactions</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.general_statistics.user_connections" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:General Statistics</CategoryName>
+			<CounterName>User Connections</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.locks.average_wait_time_in_milliseconds" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Locks</CategoryName>
+			<CounterName>Average Wait Time (ms)</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.locks.lock_requests_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Locks</CategoryName>
+			<CounterName>Lock Requests/sec</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.locks.lock_timeouts_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Locks</CategoryName>
+			<CounterName>Lock Timeouts/sec</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.locks.lock_wait_time_in_milliseconds" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Locks</CategoryName>
+			<CounterName>Lock Wait Time (ms)</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.locks.lock_waits_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Locks</CategoryName>
+			<CounterName>Lock Waits/sec</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.locks.number_of_deadlocks_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Locks</CategoryName>
+			<CounterName>Number of Deadlocks/sec</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.connection_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Connection Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.database_cache_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Database Cache Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.free_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Free Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.granted_workspace_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Granted Workspace Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.lock_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Lock Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.log_pool_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Log Pool Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.maximum_workspace_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Maximum Workspace Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.optimizer_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Optimizer Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.reserved_server_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Reserved Server Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.sql_cache_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>SQL Cache Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.stolen_server_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Stolen Server Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.target_server_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Target Server Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.memory_manager.total_server_memory_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Memory Manager</CategoryName>
+			<CounterName>Total Server Memory (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.sql_errors.errors_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:SQL Errors</CategoryName>
+			<CounterName>Errors/sec</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.sql_statistics.batch_requests_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:SQL Statistics</CategoryName>
+			<CounterName>Batch Requests/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.sql_statistics.sql_attention_rate" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:SQL Statistics</CategoryName>
+			<CounterName>SQL Attention rate</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.sql_statistics.sql_compilations_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:SQL Statistics</CategoryName>
+			<CounterName>SQL Compilations/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.sql_statistics.sql_recompilations_per_second" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:SQL Statistics</CategoryName>
+			<CounterName>SQL Re-Compilations/sec</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.transactions.free_space_in_tempdb_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Transactions</CategoryName>
+			<CounterName>Free Space in tempdb (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.transactions.longest_transaction_running_time" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Transactions</CategoryName>
+			<CounterName>Longest Transaction Running Time</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.transactions.transactions" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Transactions</CategoryName>
+			<CounterName>Transactions</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.transactions.version_store_size_in_kilobytes" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Transactions</CategoryName>
+			<CounterName>Version Store Size (KB)</CounterName>
+			<InstanceName></InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.lock_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Lock waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.log_buffer_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Log buffer waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.log_write_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Log write waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.memory_grant_queue_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Memory grant queue waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.network_io_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Network IO waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.nonpage_latch_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Non-Page latch waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.page_io_latch_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Page IO latch waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.page_latch_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Page latch waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.thread_safe_memory_objects_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Thread-safe memory objects waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.transaction_ownership_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Transaction ownership waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.wait_for_the_worker" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Wait for the worker</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.wait_statistics.workspace_synchronization_waits" SecondsInterval="20">
+		<Counter>
+			<CategoryName>MSSQL$MySQLServerInstanceName:Wait Statistics</CategoryName>
+			<CounterName>Workspace synchronization waits</CounterName>
+			<InstanceName>*</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.process.pct_privileged_time" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% Privileged Time</CounterName>
+			<InstanceName>sqlservr</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% Privileged Time</CounterName>
+			<InstanceName>SQLAGENT</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% Privileged Time</CounterName>
+			<InstanceName>fdhost</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% Privileged Time</CounterName>
+			<InstanceName>fdlauncher</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% Privileged Time</CounterName>
+			<InstanceName>msdtc</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.process.pct_user_time" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% User Time</CounterName>
+			<InstanceName>sqlservr</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% User Time</CounterName>
+			<InstanceName>SQLAGENT</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% User Time</CounterName>
+			<InstanceName>fdhost</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% User Time</CounterName>
+			<InstanceName>fdlauncher</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>% User Time</CounterName>
+			<InstanceName>msdtc</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.process.handle_count" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Handle Count</CounterName>
+			<InstanceName>sqlservr</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Handle Count</CounterName>
+			<InstanceName>SQLAGENT</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Handle Count</CounterName>
+			<InstanceName>fdhost</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Handle Count</CounterName>
+			<InstanceName>fdlauncher</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Handle Count</CounterName>
+			<InstanceName>msdtc</InstanceName>
+		</Counter>
+	</CounterGroup>
+	<CounterGroup Name="perfmon.mssql.process.thread_count" SecondsInterval="20">
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Thread Count</CounterName>
+			<InstanceName>sqlservr</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Thread Count</CounterName>
+			<InstanceName>SQLAGENT</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Thread Count</CounterName>
+			<InstanceName>fdhost</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Thread Count</CounterName>
+			<InstanceName>fdlauncher</InstanceName>
+		</Counter>
+		<Counter>
+			<CategoryName>Process</CategoryName>
+			<CounterName>Thread Count</CounterName>
+			<InstanceName>msdtc</InstanceName>
+		</Counter>
+	</CounterGroup>
+  </CounterGroups>
+
+  </Influx-Capacitor>
