@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Influx-Capacitor>
+
+  <CounterGroups>
+    <CounterGroup Name="perfmon.processor.pct_active" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.processor.pct_idle" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Idle Time</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.processor.pct_system" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Privileged Time</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.processor.pct_user" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% User Time</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.processor.pct_irq" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% Interrupt Time</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.processor.pct_dpc" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>% DPC Time</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.processor.queue_length" SecondsInterval="5">
+      <Counter>
+        <CategoryName>System</CategoryName>
+        <CounterName>Processor Queue Length</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.processor.context_switches_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>System</CategoryName>
+        <CounterName>Context Switches/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+    <CounterGroup Name="perfmon.processor.interrupt_per_second" SecondsInterval="5">
+      <Counter>
+        <CategoryName>Processor</CategoryName>
+        <CounterName>Interrupts/sec</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+  </CounterGroups>
+
+</Influx-Capacitor>
