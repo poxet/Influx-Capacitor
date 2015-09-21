@@ -75,9 +75,9 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
             }
 
             //Assert            
-            Assert.That(config, Is.Null);
-            Assert.That(exception, Is.Not.Null);
-            Assert.That(exception.Message, Is.EqualTo("There are database configuration sections in more than one config file."));
+            Assert.That(config, Is.Not.Null);
+            Assert.That(exception, Is.Null);
+            Assert.That(config.Databases.Count, Is.EqualTo(2));
         }
     }
 }

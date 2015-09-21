@@ -19,6 +19,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             string databaseName = "AA";
             var performanceCounterGroupMock = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroupMock.SetupGet(x => x.SecondsInterval).Returns(1);
+            performanceCounterGroupMock.SetupGet(x => x.RefreshInstanceInterval).Returns(1);
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
             performanceCounterGroupMock.SetupGet(x => x.Tags).Returns(new ITag[] { });
@@ -44,6 +45,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             string databaseName = "AA";
             var performanceCounterGroupMock = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroupMock.SetupGet(x => x.SecondsInterval).Returns(1);
+            performanceCounterGroupMock.SetupGet(x => x.RefreshInstanceInterval).Returns(1);
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
             performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo> { });
             performanceCounterGroupMock.SetupGet(x => x.Tags).Returns(new ITag[] { });
