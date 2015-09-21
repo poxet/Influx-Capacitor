@@ -30,36 +30,38 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             foreach (var group in config.Groups)
             {
-                var performanceCounterInfos = new List<IPerformanceCounterInfo>();
-                foreach (var counter in group.Counters)
-                {
-                    var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName).ToArray();
-                    if (performanceCounters.Any())
-                    {
-                        foreach (var performanceCounter in performanceCounters)
-                        {
-                            var name = counter.Name;
-                            if (name == "*")
-                            {
-                                name = performanceCounter.InstanceName;
-                            }
-
-                            performanceCounterInfos.Add(new PerformanceCounterInfo(name, performanceCounter));
-                        }
-                    }
-                    else
-                    {
-                        performanceCounterInfos.Add(new PerformanceCounterInfo(counter.Name, null));
-                    }
-                }
-
-                var performanceCounterGroup = new PerformanceCounterGroup(group.Name, group.SecondsInterval, performanceCounterInfos, group.Tags);
+                var performanceCounterGroup = new PerformanceCounterGroup(group, GetPerformanceCounterInfos);
                 counterGroups.Add(performanceCounterGroup);
             }
 
-            Thread.Sleep(100);
-
             return counterGroups;
+        }
+
+        private IEnumerable<IPerformanceCounterInfo> GetPerformanceCounterInfos(ICounterGroup group)
+        {
+            var performanceCounterInfos = new List<IPerformanceCounterInfo>();
+            foreach (var counter in group.Counters)
+            {
+                var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName).ToArray();
+                if (performanceCounters.Any())
+                {
+                    foreach (var performanceCounter in performanceCounters)
+                    {
+                        var name = counter.Name;
+                        if (name == "*")
+                        {
+                            name = performanceCounter.InstanceName;
+                        }
+
+                        performanceCounterInfos.Add(new PerformanceCounterInfo(name, performanceCounter));
+                    }
+                }
+                else
+                {
+                    performanceCounterInfos.Add(new PerformanceCounterInfo(counter.Name, null));
+                }
+            }
+            return performanceCounterInfos;
         }
 
         public IEnumerable<string> GetCategoryNames()

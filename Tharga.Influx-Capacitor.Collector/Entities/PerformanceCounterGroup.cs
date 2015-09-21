@@ -1,26 +1,56 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Entities
 {
     public class PerformanceCounterGroup : IPerformanceCounterGroup
     {
-        private readonly string _name;
-        private readonly int _secondsInterval;
-        private readonly IReadOnlyCollection<IPerformanceCounterInfo> _performanceCounterInfos;
-        private readonly IEnumerable<ITag> _tags;
+        private readonly object _syncRoot = new object();
+        private readonly ICounterGroup _counterGroup;
+        private readonly Func<ICounterGroup, IEnumerable<IPerformanceCounterInfo>> _counterLoader;
+        private List<IPerformanceCounterInfo> _performanceCounterInfos;
 
-        public PerformanceCounterGroup(string name, int secondsInterval, IReadOnlyCollection<IPerformanceCounterInfo> performanceCounterInfos, IEnumerable<ITag> tags)
+        public PerformanceCounterGroup(ICounterGroup counterGroup, Func<ICounterGroup, IEnumerable<IPerformanceCounterInfo>> counterLoader)
         {
-            _name = name;
-            _secondsInterval = secondsInterval;
-            _performanceCounterInfos = performanceCounterInfos;
-            _tags = tags;
+            _counterGroup = counterGroup;
+            _counterLoader = counterLoader;
         }
 
-        public string Name { get { return _name; } }
-        public int SecondsInterval { get { return _secondsInterval; } }
-        public IEnumerable<IPerformanceCounterInfo> PerformanceCounterInfos { get { return _performanceCounterInfos; } }
-        public IEnumerable<ITag> Tags { get { return _tags; } }
+        public string Name { get { return _counterGroup.Name; } }
+        public int SecondsInterval { get { return _counterGroup.SecondsInterval; } }
+        public IEnumerable<ITag> Tags { get { return _counterGroup.Tags; } }
+
+        public IEnumerable<IPerformanceCounterInfo> GetFreshCounters()
+        {
+            lock (_syncRoot)
+            {
+                var newPerformanceCounterInfos = _counterLoader(_counterGroup).ToList();
+                if (_performanceCounterInfos == null)
+                {
+                    _performanceCounterInfos = newPerformanceCounterInfos;
+                    Trace.TraceInformation("Loaded {0} counters.", _performanceCounterInfos.Count);
+                }
+                else
+                {
+                    //Get a new list of counters. Add new ones and remove obsolete ones. (Do not refresh the entire list since that messes up the metrics)
+                    var cnt = _performanceCounterInfos.Count;
+
+                    _performanceCounterInfos.RemoveAll(x => x.PerformanceCounter == null);
+                    _performanceCounterInfos.RemoveAll(x => !newPerformanceCounterInfos.Any(y => y.Name == x.Name && y.PerformanceCounter.CategoryName == x.PerformanceCounter.CategoryName && y.PerformanceCounter.CounterName == x.PerformanceCounter.CounterName && y.PerformanceCounter.InstanceName == x.PerformanceCounter.InstanceName));
+                    var removed = cnt - _performanceCounterInfos.Count;
+                    cnt = _performanceCounterInfos.Count;
+
+                    var newCounters = newPerformanceCounterInfos.Where(x => !_performanceCounterInfos.Any(y => y.Name == x.Name && y.PerformanceCounter.CategoryName == x.PerformanceCounter.CategoryName && y.PerformanceCounter.CounterName == x.PerformanceCounter.CounterName && y.PerformanceCounter.InstanceName == x.PerformanceCounter.InstanceName));
+                    _performanceCounterInfos = _performanceCounterInfos.Union(newCounters).ToList();
+                    var added = _performanceCounterInfos.Count - cnt;
+
+                    Trace.TraceInformation("Updated {0} counters, adding {1} and removing {2}.", _performanceCounterInfos.Count, added, removed);
+                }
+                return _performanceCounterInfos;
+            }
+        }
     }
 }

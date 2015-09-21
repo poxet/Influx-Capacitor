@@ -22,7 +22,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             var performanceCounterGroupMock = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroupMock.SetupGet(x => x.SecondsInterval).Returns(0);
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
-            performanceCounterGroupMock.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { });
+            performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo> { });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
             var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
             var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
@@ -43,7 +43,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             var performanceCounterGroupMock = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroupMock.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
-            performanceCounterGroupMock.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
+            performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
             var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
             var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
@@ -64,7 +64,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             var performanceCounterGroupMock = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroupMock.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
-            performanceCounterGroupMock.SetupGet(x => x.PerformanceCounterInfos).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
+            performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total")) });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
             var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
             var collectorEngine = new CollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);

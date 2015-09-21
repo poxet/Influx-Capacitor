@@ -25,7 +25,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             foreach (var counterGroup in counterGroups)
             {
                 OutputInformation("{0}", counterGroup.Name);
-                foreach (var counter in counterGroup.PerformanceCounterInfos)
+                foreach (var counter in counterGroup.GetFreshCounters())
                 {
                     if (counter.PerformanceCounter != null)
                     {

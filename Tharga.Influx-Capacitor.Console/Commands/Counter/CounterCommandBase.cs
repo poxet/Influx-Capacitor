@@ -13,7 +13,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
         protected void ReadCounterGroup(IPerformanceCounterGroup counterGroup)
         {
             var count = 0;
-            foreach (var counter in counterGroup.PerformanceCounterInfos)
+            foreach (var counter in counterGroup.GetFreshCounters())
             {
                 if (counter.PerformanceCounter != null)
                 {
@@ -26,6 +26,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
                     OutputWarning("Cannot read counter {0}.", counter.Name);
                 }
             }
+
             OutputInformation("{0} counters read.", count);
         }
     }

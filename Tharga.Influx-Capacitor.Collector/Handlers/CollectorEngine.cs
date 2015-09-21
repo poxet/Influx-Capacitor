@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
@@ -35,7 +36,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 _timer = new Timer(1000 * performanceCounterGroup.SecondsInterval);
                 _timer.Elapsed += Elapsed;
             }
-            _name = _performanceCounterGroup.Name;
+            _name = _performanceCounterGroup.Name;            
         }
 
         private async void Elapsed(object sender, ElapsedEventArgs e)
@@ -80,7 +81,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                         return -4;
                     }
 
-                    if (elapseOffset > 1)
+                    if (elapseOffset > _performanceCounterGroup.SecondsInterval)
                     {
                         _missCounter++;
                         _counter = _counter + 1 + (int)elapseOffset;
@@ -88,7 +89,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                         return -2;
                     }
 
-                    if (elapseOffset < -1)
+                    if (elapseOffset < _performanceCounterGroup.SecondsInterval * -1)
                     {
                         _missCounter++;
                         OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Jumping 1 step. ({0} = new TimeSpan({1}).TotalSeconds - {2} * {3})", (int)elapseOffset, elapsedTotal, _performanceCounterGroup.SecondsInterval, _counter), OutputLevel.Warning));
@@ -108,19 +109,21 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 var timestamp = _timestamp.Value.AddSeconds(_performanceCounterGroup.SecondsInterval * _counter);
                 _counter++;
 
-                var precision = TimeUnit.Seconds; //TimeUnit.Microseconds;
+                var precision = TimeUnit.Seconds;
                 timeInfo.Add("Synchronize", swMain.ElapsedSegment);
 
+                //TODO: Create a mutex lock here (So that two counters canno read the same signature at the same time, since the content of the _performanceCounterGroup might change during this process.
+
                 //Prepare read
-                var performanceCounterInfos = _performanceCounterGroup.PerformanceCounterInfos.Where(x => x.PerformanceCounter != null).ToArray();
-                timeInfo.Add("Prepare",swMain.ElapsedSegment);
+                var performanceCounterInfos = _performanceCounterGroup.GetFreshCounters().ToArray();
+                timeInfo.Add("Prepare", swMain.ElapsedSegment);
 
                 //Perform Read (This should be as fast and short as possible)
                 var values = ReadValues(performanceCounterInfos);
                 timeInfo.Add("Read", swMain.ElapsedSegment);
 
                 //Prepare result                
-                var points = FormatResult(performanceCounterInfos, values, precision, timestamp);
+                var points = FormatResult(performanceCounterInfos, values, precision, timestamp).ToArray();
                 timeInfo.Add("Format", swMain.ElapsedSegment);
 
                 //Queue result
@@ -128,6 +131,8 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 timeInfo.Add("Enque", swMain.ElapsedSegment);
 
                 OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, points.Count(), timeInfo, elapseOffset, OutputLevel.Default));
+
+                //TODO: Release mutex
 
                 return points.Length;
             }
@@ -138,53 +143,60 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             }
         }
 
-        private static float[] ReadValues(IPerformanceCounterInfo[] performanceCounterInfos)
+        private static float?[] ReadValues(IPerformanceCounterInfo[] performanceCounterInfos)
         {
-            var values = new float[performanceCounterInfos.Length];
+            var values = new float?[performanceCounterInfos.Length];
             for (var i = 0; i < values.Count(); i++)
             {
-                values[i] = performanceCounterInfos[i].PerformanceCounter.NextValue();
+                try
+                {
+                    values[i] = performanceCounterInfos[i].PerformanceCounter.NextValue();
+                }
+                catch (InvalidOperationException)
+                {
+                    values[i] = null;
+                }
             }
             return values;
         }
 
-        private Point[] FormatResult(IPerformanceCounterInfo[] performanceCounterInfos, float[] values, TimeUnit precision, DateTime timestamp)
+        private IEnumerable<Point> FormatResult(IPerformanceCounterInfo[] performanceCounterInfos, float?[] values, TimeUnit precision, DateTime timestamp)
         {
-            var points = new Point[performanceCounterInfos.Length];
             for (var i = 0; i < values.Count(); i++)
             {
-                var performanceCounterInfo = performanceCounterInfos[i];
                 var value = values[i];
-
-                var categoryName = performanceCounterInfo.PerformanceCounter.CategoryName;
-                var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
-                var key = performanceCounterInfo.PerformanceCounter.InstanceName;
-                var tags = GetTags(_tags, categoryName, counterName);
-                var fields = new Dictionary<string, object>
+                if (value != null)
                 {
-                    { "value", value },
-                    //{ "readSpan", readSpan }, //Time in ms from the first, to the lats counter read in the group.
-                    //{ "timeOffset", (float)(timeOffset * 1000) } //Time difference in ms from reported time, to when read actually started.
-                };
+                    var performanceCounterInfo = performanceCounterInfos[i];
 
-                var point = new Point
-                {
-                    Name = _name,
-                    Tags = tags,
-                    Fields = fields,
-                    Precision = precision,
-                    Timestamp = timestamp
-                };
+                    var categoryName = performanceCounterInfo.PerformanceCounter.CategoryName;
+                    var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
+                    var key = performanceCounterInfo.PerformanceCounter.InstanceName;
+                    var tags = GetTags(_tags, categoryName, counterName);
+                    var fields = new Dictionary<string, object>
+                                     {
+                                         { "value", value },
+                                         //{ "readSpan", readSpan }, //Time in ms from the first, to the lats counter read in the group.
+                                         //{ "timeOffset", (float)(timeOffset * 1000) } //Time difference in ms from reported time, to when read actually started.
+                                     };
 
-                if (!string.IsNullOrEmpty(key))
-                {
-                    point.Tags.Add("instance", key);
+                    var point = new Point
+                                    {
+                                        Name = _name,
+                                        Tags = tags,
+                                        Fields = fields,
+                                        Precision = precision,
+                                        Timestamp = timestamp
+                                    };
+
+                    if (!string.IsNullOrEmpty(key))
+                    {
+                        point.Tags.Add("instance", key);
+                    }
+
+                    yield return point;
                 }
-
-                points[i] = point;
             }
-
-            return points;
         }
 
         private static Dictionary<string, string> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName)
