@@ -13,7 +13,7 @@
       <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
     </UI>
 
-    <Upgrade Id="C742A659-5155-4BBA-8FCB-3068AAEBEE26">
+    <Upgrade Id="BE4E9B64-AC3B-4A25-8AAA-179EAF00EE38">
       <UpgradeVersion Minimum="0.9.0" IncludeMinimum="yes" OnlyDetect="no" Maximum='$(var.Version)' IncludeMaximum="no" Property="PREVIOUSFOUND" />
     </Upgrade>
 
