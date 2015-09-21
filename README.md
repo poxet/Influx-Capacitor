@@ -37,7 +37,9 @@ You can configure any Performance Counter available to be monitored. When you ha
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
 
 ## Database connection settings
-The settings are stored in the file database.xml located in hte ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). You can change settings directly in that file and restert the service, or you can use the command "setup change" in the console application, and the service will be restarted for you.
+The settings are typically stored in the file database.xml located in hte ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). The settings can be located in any other xml configuration file, but then you will not be able to manage the settings using the management console.
+You can change settings directly in the file and restert the service, or you can use the command "setup change" in the console application, and the service will be restarted for you.
+It is also possible to have multiple database targets. Add another *Database* element in the config file and restart the service. When using multiple targets the console application cannot be used to change the confguration.
 
 ## Tags
 You can add constant tags on a global level or at counter group level. This can be done in any of the configuration files. The name of the tag has to be unique.

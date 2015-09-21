@@ -16,14 +16,14 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.ProcessorTests
         {
             //Arrange
             var configBusinessMock = new Mock<IConfigBusiness>(MockBehavior.Strict);
-            var config = Mock.Of<IConfig>(x => x.Database == Mock.Of<IDatabaseConfig>());
+            var config = Mock.Of<IConfig>(x => x.Databases == Mocks.Of<IDatabaseConfig>().Take(1));
             configBusinessMock.Setup(x => x.LoadFiles(It.IsAny<string[]>())).Returns(config);
             var counterBusinessMock = new Mock<ICounterBusiness>(MockBehavior.Strict);
             counterBusinessMock.Setup(x => x.GetPerformanceCounterGroups(config)).Returns(Mocks.Of<IPerformanceCounterGroup>().Take(10).ToList());
             var influxDbAgentLoaderMock = new Mock<IInfluxDbAgentLoader>(MockBehavior.Strict);
             var influxDbAgentMock = new Mock<IInfluxDbAgent>(MockBehavior.Strict);
             influxDbAgentMock.Setup(x => x.PingAsync()).ReturnsAsync(new Pong());
-            influxDbAgentLoaderMock.Setup(x => x.GetAgent(config.Database)).Returns(influxDbAgentMock.Object);
+            influxDbAgentLoaderMock.Setup(x => x.GetAgent(config.Databases.First())).Returns(influxDbAgentMock.Object);
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
             var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
             var processor = new Processor(configBusinessMock.Object, counterBusinessMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);

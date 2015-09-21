@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Tharga.InfluxCapacitor.Collector.Business;
@@ -22,14 +23,15 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
 
             //Act
-            var config = configBusiness.LoadFile("myFile.xml");            
+            var config = configBusiness.LoadFile("myFile.xml");
 
-            //Assert            
-            Assert.That(config.Database, Is.Not.Null);
-            Assert.That(config.Database.Url, Is.EqualTo(url));
-            Assert.That(config.Database.Username, Is.EqualTo(username));
-            Assert.That(config.Database.Password, Is.EqualTo(password));
-            Assert.That(config.Database.Name, Is.EqualTo(databaseName));
+            //Assert    
+            var database = config.Databases.First();
+            Assert.That(database, Is.Not.Null);
+            Assert.That(database.Url, Is.EqualTo(url));
+            Assert.That(database.Username, Is.EqualTo(username));
+            Assert.That(database.Password, Is.EqualTo(password));
+            Assert.That(database.Name, Is.EqualTo(databaseName));
         }
 
         [Test]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Handlers;
@@ -27,7 +28,14 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             {
                 var index = 0;
 
-                var defaultUrl = _configBusiness.OpenDatabaseConfig().Url;
+                var configs = _configBusiness.OpenDatabaseConfig().ToArray();
+                if (configs.Count() > 1)
+                {
+                    OutputWarning("There are {0} database targets configured. When using multiple targets you will have to update the config files manually.", configs.Count());
+                    return false;
+                }
+
+                var defaultUrl = configs.First().Url;
 
                 var response = await GetServerUrlAsync(paramList, index++, defaultUrl);
                 if (string.IsNullOrEmpty(response))
@@ -36,7 +44,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     return false;
                 }
 
-                var config = _configBusiness.OpenDatabaseConfig();
+                var config = _configBusiness.OpenDatabaseConfig().First();
                 var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_auto");
                 if (logonInfo == null)
                 {

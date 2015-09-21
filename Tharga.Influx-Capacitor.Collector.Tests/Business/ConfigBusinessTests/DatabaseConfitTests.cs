@@ -1,3 +1,4 @@
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Tharga.InfluxCapacitor.Collector.Business;
@@ -27,7 +28,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
 
             //Act
-            var config = configBusiness.OpenDatabaseConfig();
+            var config = configBusiness.OpenDatabaseConfig().First();
 
             //Assert
             Assert.That(config, Is.Not.Null);

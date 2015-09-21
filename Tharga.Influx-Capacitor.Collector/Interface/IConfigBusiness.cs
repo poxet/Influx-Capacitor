@@ -8,7 +8,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
     {
         IConfig LoadFiles();
         IConfig LoadFiles(string[] configurationFilenames);
-        IDatabaseConfig OpenDatabaseConfig();
+        IEnumerable<IDatabaseConfig> OpenDatabaseConfig();
         void SaveDatabaseUrl(string url);
         void SaveDatabaseConfig(string databaseName, string username, string password);
         void SaveApplicationConfig(int flushSecondsInterval, bool debugMode);

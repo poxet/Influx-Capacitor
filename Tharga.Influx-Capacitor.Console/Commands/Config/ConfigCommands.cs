@@ -7,12 +7,12 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
         public ConfigCommands(ICompositeRoot compositeRoot)
             : base("Config")
         {
-            RegisterCommand(new ConfigListCommand(compositeRoot.ConfigBusiness));
+            RegisterCommand(new ConfigShowCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
             RegisterCommand(new ConfigAutoCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness, compositeRoot.CounterBusiness));
             RegisterCommand(new ConfigServerCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
-            RegisterCommand(new ConfigShowCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
             RegisterCommand(new ConfigDatabaseCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
             RegisterCommand(new ConfigureApplicationCommand(compositeRoot.InfluxDbAgentLoader, compositeRoot.ConfigBusiness));
+            RegisterCommand(new ConfigListCommand(compositeRoot.ConfigBusiness));
         }
     }
 }

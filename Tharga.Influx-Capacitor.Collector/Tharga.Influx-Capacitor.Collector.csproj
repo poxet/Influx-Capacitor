@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
+    <Compile Include="Business\DataSender.cs" />
     <Compile Include="Business\TagLoader.cs" />
     <Compile Include="Entities\ApplicationConfig.cs" />
     <Compile Include="Entities\Tag.cs" />

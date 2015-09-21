@@ -40,7 +40,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 configurationFilenames = GetConfigFiles().ToArray();
             }
 
-            IDatabaseConfig database = null;
+            var databases = new List<IDatabaseConfig>();
             var groups = new List<ICounterGroup>();
             IApplicationConfig application = null;
             var tags = new List<ITag>();
@@ -52,19 +52,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 var document = new XmlDocument();
                 document.LoadXml(fileData);
 
-                var db = GetDatabaseConfig(document);
+                var dbs = GetDatabaseConfig(document);
                 var grps = GetCounterGroups(document).ToList();
                 var app = GetApplicationConfig(document);
                 var tgs = GetGlobalTags(document);
 
-                if (db != null)
+                foreach (var db in dbs)
                 {
-                    if (database != null)
-                    {
-                        throw new InvalidOperationException("There are database configuration sections in more than one config file.");
-                    }
-
-                    database = db;
+                    databases.Add(db);
                 }
 
                 foreach (var grp in grps)
@@ -107,7 +102,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 application = new ApplicationConfig(10, false);
             }
 
-            var config = new Config(database, application, groups, tags);
+            var config = new Config(databases, application, groups, tags);
             return config;
         }
 
@@ -141,29 +136,29 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 throw new InvalidOperationException(string.Format("Unable to delete testfile {0} in application folder.", sampleFileName));
         }
 
-        public IDatabaseConfig OpenDatabaseConfig()
+        public IEnumerable<IDatabaseConfig> OpenDatabaseConfig()
         {
             var path = GetAppDataFolder();
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
-                return new DatabaseConfig(Constants.NoConfigUrl, null, null, null);
+                return new List<DatabaseConfig> { new DatabaseConfig(Constants.NoConfigUrl, null, null, null) };
             }
 
             var config = LoadFile(databaseConfigFilePath);
-            return config.Database;
+            return config.Databases;
         }
 
         public void SaveDatabaseUrl(string url)
         {
-            var config = OpenDatabaseConfig();
+            var config = OpenDatabaseConfig().First();
             var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
         public void SaveDatabaseConfig(string databaseName, string username, string password)
         {
-            var config = OpenDatabaseConfig();
+            var config = OpenDatabaseConfig().First();
             var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName);
             SaveDatabaseConfigEx(newDbConfig);
         }
@@ -394,39 +389,40 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return database;
         }
 
-        private static DatabaseConfig GetDatabaseConfig(XmlDocument document)
+        private static IEnumerable<DatabaseConfig> GetDatabaseConfig(XmlDocument document)
         {
             var databases = document.GetElementsByTagName("Database");
-            if (databases.Count == 0)
-                return null;
-
-            string url = null;
-            string username = null;
-            string password = null;
-            string name = null;
-            foreach (XmlElement item in databases[0].ChildNodes)
+            foreach (XmlNode database in databases)
             {
-                switch (item.Name)
-                {
-                    case "Url":
-                        url = item.InnerText;
-                        break;
-                    case "Username":
-                        username = item.InnerText;
-                        break;
-                    case "Password":
-                        password = Decrypt(item.InnerText);
-                        break;
-                    case "Name":
-                        name = item.InnerText;
-                        break;
-                    case "":
-                        break;
-                }
-            }
 
-            var database = new DatabaseConfig(url, username, password, name);
-            return database;
+                string url = null;
+                string username = null;
+                string password = null;
+                string name = null;
+                foreach (XmlElement item in database.ChildNodes)
+                {
+                    switch (item.Name)
+                    {
+                        case "Url":
+                            url = item.InnerText;
+                            break;
+                        case "Username":
+                            username = item.InnerText;
+                            break;
+                        case "Password":
+                            password = Decrypt(item.InnerText);
+                            break;
+                        case "Name":
+                            name = item.InnerText;
+                            break;
+                        case "":
+                            break;
+                    }
+                }
+
+                var db = new DatabaseConfig(url, username, password, name);
+                yield return db;
+            }
         }
 
         public IEnumerable<string> GetConfigFiles()

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -19,21 +21,37 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
 
         public async override Task<bool> InvokeAsync(string paramList)
         {
-            var config = _configBusiness.OpenDatabaseConfig();
+            var configs = _configBusiness.OpenDatabaseConfig().ToArray();
 
-            if (config.Url == Constants.NoConfigUrl)
+            if (!configs.Any() || configs.All(x => x.Url == Constants.NoConfigUrl))
             {
                 OutputWarning("No database configuration exists.");
                 return false;
             }
 
-            OutputInformation("Url:      {0}", config.Url);
-            OutputInformation("Name:     {0}", config.Name);
-            OutputInformation("Username: {0}", config.Username);
+            foreach (var config in  configs)
+            {
+                if (config.Url == Constants.NoConfigUrl)
+                {
+                    continue;
+                }
 
-            var client = _influxDbAgentLoader.GetAgent(config);
-            OutputInformation("Connect:  {0}", await client.CanConnect());
-            OutputInformation("Version:  {0}", await client.VersionAsync());
+                OutputInformation("Url:      {0}", config.Url);
+                OutputInformation("Name:     {0}", config.Name);
+                OutputInformation("Username: {0}", config.Username);
+
+                try
+                {
+                    var client = _influxDbAgentLoader.GetAgent(config);
+                    OutputInformation("Connect:  {0}", await client.CanConnect());
+                    OutputInformation("Version:  {0}", await client.VersionAsync());
+                }
+                catch (InvalidOperationException)
+                {
+                    OutputError("Unable to connect to database.");
+                }
+                OutputInformation("");
+            }
 
             return true;
         }

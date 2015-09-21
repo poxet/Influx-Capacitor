@@ -95,6 +95,7 @@
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
     <Compile Include="Commands\Config\ConfigDatabaseCommand.cs" />
+    <Compile Include="Commands\Config\ConfigureApplicationCommand.cs" />
     <Compile Include="Commands\Counter\CounterCollectCommand.cs" />
     <Compile Include="Commands\Counter\CounterCommandBase.cs" />
     <Compile Include="Commands\Counter\CounterCreateCommand.cs" />
