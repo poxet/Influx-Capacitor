@@ -24,9 +24,9 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             yield return CreateMemoryCounter();
         }
 
-        public Tuple<string, Tuple<string, OutputLevel>> CreateCounter(string groupName, int secondsInterval, List<ICounter> counters)
+        public Tuple<string, Tuple<string, OutputLevel>> CreateCounter(string groupName, int secondsInterval, int refreshInstanceInterval, List<ICounter> counters)
         {
-            var response = new CounterGroup(groupName, secondsInterval, counters, new ITag[] { });
+            var response = new CounterGroup(groupName, secondsInterval, refreshInstanceInterval, counters, new ITag[] { });
             var message = CreateFile(groupName, response);
             return new Tuple<string, Tuple<string, OutputLevel>>(groupName, message);
         }
@@ -36,7 +36,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             var name = "processor";
 
             var counters = new List<ICounter> { new Counter("Processor", "% Processor Time", "*") };
-            var response = new CounterGroup(name, 10, counters, new ITag[] { });
+            var response = new CounterGroup(name, 10, 0, counters, new ITag[] { });
             return ConvertErrorsToWarnings(CreateFile(name, response));
         }
 
@@ -45,7 +45,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             var name = "memory";
 
             var counters = new List<ICounter> { new Counter("Memory", "*") };
-            var response = new CounterGroup(name, 10, counters, new ITag[] { });
+            var response = new CounterGroup(name, 10, 0, counters, new ITag[] { });
             return ConvertErrorsToWarnings(CreateFile(name, response));
         }
 

@@ -297,6 +297,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             var name = GetString(counterGroup, "Name");
             var secondsInterval = GetInt(counterGroup, "SecondsInterval");
+            var refreshInstanceInterval = GetInt(counterGroup, "RefreshInstanceInterval", 0);
 
             var counters = counterGroup.GetElementsByTagName("Counter");
             var cts = new List<ICounter>();
@@ -311,24 +312,34 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 tags.Add(GetTag(tagElement));
             }
-            
-            return new CounterGroup(name, secondsInterval, cts, tags);
+
+            return new CounterGroup(name, secondsInterval, refreshInstanceInterval, cts, tags);
         }
 
-        private static string GetString(XmlElement element, string name)
+        private static string GetString(XmlElement element, string name, string defaultValue = null)
         {
             var attr = element.Attributes.GetNamedItem(name);
             if (attr == null || string.IsNullOrEmpty(attr.Value))
-                throw new InvalidOperationException(string.Format("No {0} attribute specified for the CounterGroup.", name));
+            {
+                if (defaultValue == null)
+                    throw new InvalidOperationException(string.Format("No {0} attribute specified for the CounterGroup.", name));
+                return defaultValue;
+            }
+
             return attr.Value;
         }
 
-        private static int GetInt(XmlElement element, string name)
+        private static int GetInt(XmlElement element, string name, int? defaultValue = null)
         {
-            var stringValue = GetString(element, name);
+            var stringValue = GetString(element, name, defaultValue != null ? defaultValue.ToString() : null);
             int value;
             if (!int.TryParse(stringValue, out value))
-                throw new InvalidOperationException(string.Format("Cannot parse attribute {0} value to integer.", name));
+            {
+                if (defaultValue == null)
+                    throw new InvalidOperationException(string.Format("Cannot parse attribute {0} value to integer.", name));
+                return defaultValue.Value;
+            }
+
             return value;
         }
 
@@ -337,6 +348,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string categoryName = null;
             string counterName = null;
             string instanceName = null;
+
             foreach (XmlElement item in counter.ChildNodes)
             {
                 switch (item.Name)
@@ -475,6 +487,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 var groupElement = document.CreateElement("CounterGroup");
                 groupElement.SetAttribute("Name", group.Name);
                 groupElement.SetAttribute("SecondsInterval", group.SecondsInterval.ToString());
+                groupElement.SetAttribute("RefreshInstanceInterval", group.RefreshInstanceInterval.ToString());
 
                 foreach (var counter in group.Counters)
                 {

@@ -52,8 +52,14 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var groupName = QueryParam<string>("Group Name", GetParam(paramList, index++));
             var secondsInterval = QueryParam<int>("Seconds Interval", GetParam(paramList, index++));
 
+            var refreshInstanceInterval = 0;
+            if (collectors.Any(x => x.InstanceName.Contains("*") || x.InstanceName.Contains("?")))
+            {
+                refreshInstanceInterval = QueryParam<int>("Refresh Instance Interval", GetParam(paramList, index++));
+            }
+
             var initaiteBusiness = new DataInitiator(_configBusiness, _counterBusiness);
-            var response = initaiteBusiness.CreateCounter(groupName, secondsInterval, collectors);
+            var response = initaiteBusiness.CreateCounter(groupName, secondsInterval, refreshInstanceInterval, collectors);
 
             OutputLine(response.Item2.Item1, response.Item2.Item2);
 

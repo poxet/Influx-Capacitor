@@ -17,7 +17,7 @@ You can configure any Performance Counter available to be monitored. When you ha
 ```
 <Influx-Capacitor>
   <CounterGroups>
-    <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]">
+    <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]" RefreshInstanceInterval="[RefreshInstanceInterval]">
       <Counter>
         <CategoryName>[CategoryName]</CategoryName>
         <CounterName>[CounterName]</CounterName>
@@ -30,6 +30,7 @@ You can configure any Performance Counter available to be monitored. When you ha
 
 - YourCounterGroupName - You own common name for the group of counters (This will be the table name in InfluxDB)
 - SecondsInterval - The interval in seconds that the group of counters will be collected.
+- RefreshInstanceInterval - An optional attribute for the interval used to refresh the list of instances for the counter. If set to 1, the counters are refreshed everytime. If set to 2, every other time and so on. To disable the refresh set this value to 0. The default value is 0, if the attribute is left out.
 - CategoryName - Category name of the performance counter (Ex. Processor)
 - CounterName - Name of the counter (Ex. % Processor Time). Wild cards such as * and ? can be used heres. Using * will use all counters.
 - InstanceName - Name of the instance (Ex. _Total). Wild cards such as * and ? can be used heres. For counters that does not have any instances, this element can be left out or left empty. Using * will give all instances. The instances are refreshed on every read so that new instances are added and obsolete ones removed.

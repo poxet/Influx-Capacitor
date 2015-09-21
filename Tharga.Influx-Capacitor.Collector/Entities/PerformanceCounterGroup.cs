@@ -19,9 +19,53 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             _counterLoader = counterLoader;
         }
 
-        public string Name { get { return _counterGroup.Name; } }
-        public int SecondsInterval { get { return _counterGroup.SecondsInterval; } }
-        public IEnumerable<ITag> Tags { get { return _counterGroup.Tags; } }
+        public string Name
+        {
+            get
+            {
+                return _counterGroup.Name;
+            }
+        }
+
+        public int SecondsInterval
+        {
+            get
+            {
+                return _counterGroup.SecondsInterval;
+            }
+        }
+
+        public int RefreshInstanceInterval
+        {
+            get
+            {
+                return _counterGroup.RefreshInstanceInterval;
+            }
+        }
+
+        public IEnumerable<ITag> Tags
+        {
+            get
+            {
+                return _counterGroup.Tags;
+            }
+        }
+
+        public IEnumerable<IPerformanceCounterInfo> GetCounters()
+        {
+            if (_performanceCounterInfos == null)
+            {
+                lock (_syncRoot)
+                {
+                    if (_performanceCounterInfos == null)
+                    {
+                        _performanceCounterInfos = _counterLoader(_counterGroup).ToList();
+                    }
+                }
+            }
+
+            return _performanceCounterInfos;
+        }
 
         public IEnumerable<IPerformanceCounterInfo> GetFreshCounters()
         {
@@ -51,6 +95,11 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
                 }
                 return _performanceCounterInfos;
             }
+        }
+
+        public void RemoveCounter(IPerformanceCounterInfo performanceCounterInfo)
+        {
+            _performanceCounterInfos.Remove(performanceCounterInfo);
         }
     }
 }

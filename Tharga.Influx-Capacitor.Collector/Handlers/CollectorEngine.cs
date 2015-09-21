@@ -25,6 +25,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         private DateTime? _timestamp;
         private long _counter;
         private int _missCounter;
+        private int _refreshCountdown = 0;
 
         public CollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader)
         {
@@ -84,7 +85,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     if (elapseOffset > _performanceCounterGroup.SecondsInterval)
                     {
                         _missCounter++;
-                        _counter = _counter + 1 + (int)elapseOffset;
+                        _counter = _counter + 1 + (int)(elapseOffset / _performanceCounterGroup.SecondsInterval);
                         OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, string.Format("Dropping {0} steps.", (int)elapseOffset), OutputLevel.Warning));
                         return -2;
                     }
@@ -115,7 +116,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 //TODO: Create a mutex lock here (So that two counters canno read the same signature at the same time, since the content of the _performanceCounterGroup might change during this process.
 
                 //Prepare read
-                var performanceCounterInfos = _performanceCounterGroup.GetFreshCounters().ToArray();
+                var performanceCounterInfos = PrepareCounters();
                 timeInfo.Add("Prepare", swMain.ElapsedSegment);
 
                 //Perform Read (This should be as fast and short as possible)
@@ -130,6 +131,10 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 _sendBusiness.Enqueue(points);
                 timeInfo.Add("Enque", swMain.ElapsedSegment);
 
+                //Cleanup
+                RemoveObsoleteCounters(values, performanceCounterInfos);
+                timeInfo.Add("Cleanup", swMain.ElapsedSegment);
+
                 OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, points.Count(), timeInfo, elapseOffset, OutputLevel.Default));
 
                 //TODO: Release mutex
@@ -141,6 +146,35 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(_name, exception));
                 return -1;
             }
+        }
+
+        private IPerformanceCounterInfo[] PrepareCounters()
+        {
+            if (_refreshCountdown == 0)
+            {
+                _refreshCountdown = _performanceCounterGroup.RefreshInstanceInterval - 1;
+                return _performanceCounterGroup.GetFreshCounters().ToArray();
+            }
+
+            _refreshCountdown--;
+
+            if (_refreshCountdown < 0)
+                _refreshCountdown = _performanceCounterGroup.RefreshInstanceInterval - 1;
+
+            return _performanceCounterGroup.GetCounters().ToArray();
+        }
+
+        private void RemoveObsoleteCounters(float?[] values, IPerformanceCounterInfo[] performanceCounterInfos)
+        {
+            if (!values.Any(x => !x.HasValue))
+                return;
+
+            for (var i = 0; i < values.Count(); i++)
+            {
+                _performanceCounterGroup.RemoveCounter(performanceCounterInfos[i]);
+            }
+
+            Trace.TraceInformation("Removed {0} counters.", values.Count());
         }
 
         private static float?[] ReadValues(IPerformanceCounterInfo[] performanceCounterInfos)
