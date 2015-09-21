@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Influx-Capacitor>
+
+  <CounterGroups>
+    <CounterGroup Name="perfmon.process" SecondsInterval="60" RefreshInstanceInterval="1">
+      <Counter>
+        <CategoryName>Process</CategoryName>
+        <CounterName>Working Set</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+      <Counter>
+        <CategoryName>Process</CategoryName>
+        <CounterName>% Processor Time</CounterName>
+        <InstanceName>*</InstanceName>
+      </Counter>
+    </CounterGroup>
+  </CounterGroups>
+
+</Influx-Capacitor>
