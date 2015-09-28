@@ -89,6 +89,7 @@
     <Compile Include="Business\TagLoader.cs" />
     <Compile Include="Entities\ApplicationConfig.cs" />
     <Compile Include="Entities\Tag.cs" />
+    <Compile Include="Handlers\CollectorEngineBase.cs" />
     <Compile Include="Handlers\DataInitiator.cs" />
     <Compile Include="Event\GetPerformanceCounterEventArgs.cs" />
     <Compile Include="Handlers\Crypto.cs" />
@@ -103,6 +104,8 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Event\EngineActionEventArgs.cs" />
     <Compile Include="Entities\PerformanceCounterInfo.cs" />
+    <Compile Include="Handlers\SafeCollectorEngine.cs" />
+    <Compile Include="Interface\ICollectorEngine.cs" />
     <Compile Include="Interface\IApplicationConfig.cs" />
     <Compile Include="Interface\IConfig.cs" />
     <Compile Include="Interface\IConfigBusiness.cs" />
@@ -111,7 +114,7 @@
     <Compile Include="Interface\ICounterGroup.cs" />
     <Compile Include="Interface\IDatabaseConfig.cs" />
     <Compile Include="Interface\IFileLoaderAgent.cs" />
-    <Compile Include="Handlers\CollectorEngine.cs" />
+    <Compile Include="Handlers\ExactCollectorEngine.cs" />
     <Compile Include="Entities\Config.cs" />
     <Compile Include="Entities\Counter.cs" />
     <Compile Include="Entities\CounterGroup.cs" />

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
 {
@@ -11,5 +12,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         IEnumerable<IPerformanceCounterInfo> GetCounters();
         IEnumerable<IPerformanceCounterInfo> GetFreshCounters();
         void RemoveCounter(IPerformanceCounterInfo performanceCounterInfo);
+        CollectorEngineType CollectorEngineType { get; }
     }
 }

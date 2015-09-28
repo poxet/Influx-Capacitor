@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Entities
@@ -48,6 +49,14 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             get
             {
                 return _counterGroup.Tags;
+            }
+        }
+
+        public CollectorEngineType CollectorEngineType
+        {
+            get
+            {
+                return _counterGroup.CollectorEngineType;
             }
         }
 

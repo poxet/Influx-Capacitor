@@ -46,7 +46,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             else
             {
                 var counterGroupsToRead = new[] { counterGroup };
-                processor.RunAsync(counterGroupsToRead);
+                await processor.RunAsync(counterGroupsToRead);
             }
 
             return true;
