@@ -45,7 +45,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 
                 addAnother = QueryParam("Add another counter?", GetParam(paramList, index++), new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } });
 
-                var collector = new Collector.Entities.Counter(categoryName, counterName, instanceName);
+                var collector = new Collector.Entities.Counter(categoryName, counterName, instanceName, null);
                 collectors.Add(collector);
             }
 

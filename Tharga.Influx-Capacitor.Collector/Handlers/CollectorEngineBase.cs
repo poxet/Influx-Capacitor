@@ -169,6 +169,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var categoryName = performanceCounterInfo.PerformanceCounter.CategoryName;
                     var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
                     var key = performanceCounterInfo.PerformanceCounter.InstanceName;
+                    var instanceAlias = performanceCounterInfo.Alias;
                     var tags = GetTags(Tags, categoryName, counterName);
                     var fields = new Dictionary<string, object>
                                      {
@@ -189,6 +190,10 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     if (!string.IsNullOrEmpty(key))
                     {
                         point.Tags.Add("instance", key);
+                        if (!string.IsNullOrEmpty(instanceAlias))
+                        {
+                            point.Tags.Add(instanceAlias, key);
+                        }
                     }
 
                     yield return point;

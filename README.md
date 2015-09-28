@@ -21,7 +21,7 @@ You can configure any Performance Counter available to be monitored. When you ha
       <Counter>
         <CategoryName>[CategoryName]</CategoryName>
         <CounterName>[CounterName]</CounterName>
-        <InstanceName>[InstanceName]</InstanceName>
+        <InstanceName Alias="[Alias]">[InstanceName]</InstanceName>
       </Counter>
     </CounterGroup>
   </CounterGroups>
@@ -35,6 +35,7 @@ You can configure any Performance Counter available to be monitored. When you ha
 - CategoryName - Category name of the performance counter (Ex. Processor)
 - CounterName - Name of the counter (Ex. % Processor Time). Wild cards such as * and ? can be used heres. Using * will use all counters.
 - InstanceName - Name of the instance (Ex. _Total). Wild cards such as * and ? can be used heres. For counters that does not have any instances, this element can be left out or left empty. Using * will give all instances. The instances are refreshed on every read so that new instances are added and obsolete ones removed.
+- Alias - This is an optional value that will be used as field name for the Instance specification. The value of this field will be the same as of the "instance" field.
 
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
 
@@ -103,6 +104,6 @@ The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided 
 The currently supported version of InfluxDB is 0.9x.
 
 ## Thanks to
-- [zeugfr(https://github.com/zeugfr)]
+- [zeugfr](https://github.com/zeugfr)
 - [discoduck2x](https://github.com/discoduck2x)
 - [ziyasal/InfluxDB.Net](https://github.com/ziyasal/InfluxDB.Net)

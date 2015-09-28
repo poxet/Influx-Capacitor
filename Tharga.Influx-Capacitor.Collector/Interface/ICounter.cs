@@ -6,5 +6,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string CategoryName { get; }
         string CounterName { get; }
         string InstanceName { get; }
+        string Alias { get; }
     }
 }

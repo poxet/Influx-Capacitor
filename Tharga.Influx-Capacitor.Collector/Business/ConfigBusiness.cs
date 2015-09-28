@@ -355,6 +355,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string categoryName = null;
             string counterName = null;
             string instanceName = null;
+            string instanceAlias = null;
 
             foreach (XmlElement item in counter.ChildNodes)
             {
@@ -368,11 +369,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         break;
                     case "InstanceName":
                         instanceName = item.InnerText;
+                        instanceAlias = item.GetAttribute("Alias");
                         break;
                 }
             }
 
-            return new Counter(categoryName, counterName, instanceName);
+            return new Counter(categoryName, counterName, instanceName, instanceAlias);
         }
 
         private static ApplicationConfig GetApplicationConfig(XmlDocument document)
