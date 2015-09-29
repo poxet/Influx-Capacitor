@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
@@ -7,5 +8,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string Name { get; }
         PerformanceCounter PerformanceCounter { get; }
         string Alias { get; }
+        IEnumerable<ITag> Tags { get; }
     }
 }

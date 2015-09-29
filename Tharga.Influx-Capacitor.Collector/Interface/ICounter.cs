@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface ICounter
@@ -7,5 +9,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string CounterName { get; }
         string InstanceName { get; }
         string Alias { get; }
+        IEnumerable<ITag> Tags { get; }
     }
 }

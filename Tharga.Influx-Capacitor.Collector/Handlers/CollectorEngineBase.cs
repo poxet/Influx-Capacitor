@@ -170,7 +170,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
                     var key = performanceCounterInfo.PerformanceCounter.InstanceName;
                     var instanceAlias = performanceCounterInfo.Alias;
-                    var tags = GetTags(Tags, categoryName, counterName);
+                    var tags = GetTags(Tags.Union(performanceCounterInfo.Tags), categoryName, counterName);
                     var fields = new Dictionary<string, object>
                                      {
                                          { "value", value },
@@ -200,6 +200,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 }
             }
         }
+
         private static Dictionary<string, string> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName)
         {
             var dictionary = new Dictionary<string, string>
@@ -208,10 +209,12 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                                      { "category", categoryName },
                                      { "counter", counterName },
                                  };
+
             foreach (var tag in globalTags)
             {
                 dictionary.Add(tag.Name, tag.Value);
             }
+
             return dictionary;
         }
 

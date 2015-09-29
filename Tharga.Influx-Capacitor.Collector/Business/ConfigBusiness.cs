@@ -270,10 +270,18 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         private IEnumerable<ITag> GetGlobalTags(XmlDocument document)
         {
-            var tags = document.GetElementsByTagName("Tag");
+            var tags = document.GetElementsByTagName("GlobalTag");
             foreach (XmlElement tag in tags)
             {
                 yield return GetTag(tag);
+            }
+            
+            foreach (XmlElement child in document.LastChild.ChildNodes)
+            {
+                if (child.Name == "Tag")
+                {
+                    yield return GetTag(child);
+                }
             }
         }
 
@@ -307,11 +315,23 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 cts.Add(GetCounter(counter));
             }
 
-            var tags = new List<ITag>(); 
-            var tagElements = counterGroup.GetElementsByTagName("GroupTag");           
-            foreach (XmlElement tagElement in tagElements)
+            var tags = new List<ITag>();
+            var tagElements1 = counterGroup.GetElementsByTagName("CounterGroupTag");
+            foreach (XmlElement tagElement in tagElements1)
             {
                 tags.Add(GetTag(tagElement));
+            }
+            var tagElements2 = counterGroup.GetElementsByTagName("GroupTag");
+            foreach (XmlElement tagElement in tagElements2)
+            {
+                tags.Add(GetTag(tagElement));
+            }
+            foreach (XmlElement child in counterGroup.ChildNodes)
+            {
+                if (child.Name == "Tag")
+                {
+                    tags.Add(GetTag(child));
+                }
             }
 
             CollectorEngineType cet;
@@ -357,6 +377,18 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string instanceName = null;
             string instanceAlias = null;
 
+            var tags = new List<ITag>();
+            var tagElements1 = counter.GetElementsByTagName("CounterTag");
+            foreach (XmlElement tagElement in tagElements1)
+            {
+                tags.Add(GetTag(tagElement));
+            }
+            var tagElements2 = counter.GetElementsByTagName("Tag");
+            foreach (XmlElement tagElement in tagElements2)
+            {
+                tags.Add(GetTag(tagElement));
+            }
+
             foreach (XmlElement item in counter.ChildNodes)
             {
                 switch (item.Name)
@@ -374,7 +406,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
             }
 
-            return new Counter(categoryName, counterName, instanceName, instanceAlias);
+            return new Counter(categoryName, counterName, instanceName, instanceAlias, tags);
         }
 
         private static ApplicationConfig GetApplicationConfig(XmlDocument document)

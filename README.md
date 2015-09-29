@@ -57,7 +57,7 @@ Global tags that will be added to all points sent to the database can be added l
 </Influx-Capacitor>
 ```
 
-It is also possible to add a tag for a specific counter group, these tags can be added like this.
+It is also possible to add a tags for a specific counter group, these tags can be added like this.
 ```
 <Influx-Capacitor>
   <CounterGroups>
@@ -76,7 +76,7 @@ It is also possible to add a tag for a specific counter group, these tags can be
 </Influx-Capacitor>
 ```
 
-And for a specific counter like this.
+Tags for a specific counter is added like this.
 ```
 <Influx-Capacitor>
   <CounterGroups>
