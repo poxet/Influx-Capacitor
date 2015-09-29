@@ -17,7 +17,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             _name = name;
             _performanceCounters = performanceCounters;
             _alias = alias;
-            _tags = tags.ToList();
+            _tags = (tags ?? new List<ITag>()).ToList();
         }
 
         public string Name { get { return _name; } }
