@@ -45,7 +45,7 @@ You can change settings directly in the file and restert the service, or you can
 It is also possible to have multiple database targets. Add another *Database* element in the config file and restart the service. When using multiple targets the console application cannot be used to change the confguration.
 
 ## Tags
-You can add constant tags on a global level or at counter group level. This can be done in any of the configuration files. The name of the tag has to be unique.
+You can add constant tags on a global, counter group and counter level. This can be done in any of the configuration files. The name of the tag has to be unique.
 
 Global tags that will be added to all points sent to the database can be added like this.
 ```
@@ -67,10 +67,29 @@ It is also possible to add a tag for a specific counter group, these tags can be
         <CounterName>[CounterName]</CounterName>
         <InstanceName>[InstanceName]</InstanceName>
       </Counter>
-	  <GroupTag>
+	  <Tag>
 		<Name>[TagName]</Name>
 		<Value>[TagValue]</Value>
-	  </GroupTag>
+	  </Tag>
+    </CounterGroup>
+  </CounterGroups>
+</Influx-Capacitor>
+```
+
+And for a specific counter like this.
+```
+<Influx-Capacitor>
+  <CounterGroups>
+    <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]">
+      <Counter>
+        <CategoryName>[CategoryName]</CategoryName>
+        <CounterName>[CounterName]</CounterName>
+        <InstanceName>[InstanceName]</InstanceName>
+	    <Tag>
+		  <Name>[TagName]</Name>
+		  <Value>[TagValue]</Value>
+	    </Tag>
+      </Counter>
     </CounterGroup>
   </CounterGroups>
 </Influx-Capacitor>

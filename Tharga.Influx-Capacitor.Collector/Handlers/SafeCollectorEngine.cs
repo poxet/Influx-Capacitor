@@ -9,7 +9,7 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Collector.Handlers
 {
-    internal class SafeCollectorEngine : CollectorEngineBase
+    public class SafeCollectorEngine : CollectorEngineBase
     {
         private readonly object _syncRoot = new object();
 
@@ -24,7 +24,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             {
                 try
                 {
-                    PauseTimer();
+                    StopTimer();
 
                     var swMain = new StopwatchHighPrecision();
                     var timeInfo = new Dictionary<string, long>();

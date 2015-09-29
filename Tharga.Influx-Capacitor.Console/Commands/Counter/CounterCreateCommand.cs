@@ -2,8 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Tharga.InfluxCapacitor.Collector.Business;
-using Tharga.InfluxCapacitor.Collector.Handlers;
+ using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter

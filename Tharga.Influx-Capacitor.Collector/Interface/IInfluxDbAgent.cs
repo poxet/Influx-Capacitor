@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using InfluxDB.Net;
 using InfluxDB.Net.Models;
@@ -11,5 +12,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         Task<string> VersionAsync();
         Task<InfluxDbApiResponse> WriteAsync(Point[] points);
         Task CreateDatabaseAsync(string databaseName);
+        Tuple<IFormatter, InfluxVersion> GetAgentInfo();
     }
 }

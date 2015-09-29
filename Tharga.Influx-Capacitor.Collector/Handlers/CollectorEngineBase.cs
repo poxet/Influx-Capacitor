@@ -11,7 +11,7 @@ using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Handlers
 {
-    internal abstract class CollectorEngineBase : ICollectorEngine
+    public abstract class CollectorEngineBase : ICollectorEngine, IDisposable
     {
         private readonly IPerformanceCounterGroup _performanceCounterGroup;
         private readonly ISendBusiness _sendBusiness;
@@ -70,7 +70,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             _timer.Start();
         }
 
-        protected void PauseTimer()
+        public void StopTimer()
         {
             _timer.Stop();
         }
@@ -213,6 +213,11 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 dictionary.Add(tag.Name, tag.Value);
             }
             return dictionary;
+        }
+
+        public void Dispose()
+        {
+            _timer.Stop();
         }
     }
 }

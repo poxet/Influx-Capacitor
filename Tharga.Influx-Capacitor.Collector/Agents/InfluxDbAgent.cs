@@ -48,6 +48,11 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
             await _influxDb.CreateDatabaseAsync(databaseName);
         }
 
+        public Tuple<IFormatter, InfluxVersion> GetAgentInfo()
+        {
+            return new Tuple<IFormatter, InfluxVersion>(_influxDb.GetFormatter(), _influxDb.GetClientVersion());
+        }
+
         public async Task<InfluxDbApiResponse> AuthenticateDatabaseUserAsync()
         {
             return await _influxDb.AuthenticateDatabaseUserAsync(_databaseConfig.Name, _databaseConfig.Username, _databaseConfig.Password);
