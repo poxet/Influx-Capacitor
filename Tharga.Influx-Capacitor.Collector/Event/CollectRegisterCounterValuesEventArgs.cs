@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Collector.Event
@@ -27,7 +28,7 @@ namespace Tharga.InfluxCapacitor.Collector.Event
         public CollectRegisterCounterValuesEventArgs(string engineName, int counters, Dictionary<string, long> timeInfo, double elapseOffset, OutputLevel outputLevel)
         {
             _engineName = engineName;
-            _message = string.Format("Read {0} metrics in {1}ms. ElapseOffset: {2}ms", counters, new TimeSpan(timeInfo["read"]).TotalMilliseconds.ToString("0.####"), elapseOffset.ToString("0.####"));
+            _message = string.Format("Read {0} metrics in {1}ms. ElapseOffset: {2}ms", counters, new TimeSpan(timeInfo[TimerConstants.Read]).TotalMilliseconds.ToString("0.####"), elapseOffset.ToString("0.####"));
             _outputLevel = outputLevel;
         }
 

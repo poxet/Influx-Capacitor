@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using InfluxDB.Net;
 using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -40,33 +41,33 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var timestamp = DateTime.UtcNow;
 
                     var precision = TimeUnit.Seconds;
-                    timeInfo.Add("synchronize", swMain.ElapsedSegment);
+                    timeInfo.Add(TimerConstants.Synchronize, swMain.ElapsedSegment);
 
                     //TODO: Create a mutex lock here (So that two counters canno read the same signature at the same time, since the content of the _performanceCounterGroup might change during this process.
 
                     //Prepare read
                     var performanceCounterInfos = PrepareCounters();
-                    timeInfo.Add("prepare", swMain.ElapsedSegment);
+                    timeInfo.Add(TimerConstants.Prepare, swMain.ElapsedSegment);
 
                     //Perform Read (This should be as fast and short as possible)
                     var values = ReadValues(performanceCounterInfos);
-                    timeInfo.Add("read", swMain.ElapsedSegment);
+                    timeInfo.Add(TimerConstants.Read, swMain.ElapsedSegment);
 
                     //Prepare result                
                     var points = FormatResult(performanceCounterInfos, values, precision, timestamp).ToArray();
-                    timeInfo.Add("format", swMain.ElapsedSegment);
+                    timeInfo.Add(TimerConstants.Format, swMain.ElapsedSegment);
 
                     //Queue result
                     Enqueue(points);
-                    timeInfo.Add("enque", swMain.ElapsedSegment);
+                    timeInfo.Add(TimerConstants.Enque, swMain.ElapsedSegment);
 
                     //Cleanup
                     RemoveObsoleteCounters(values, performanceCounterInfos);
-                    timeInfo.Add("cleanup", swMain.ElapsedSegment);
+                    timeInfo.Add(TimerConstants.Cleanup, swMain.ElapsedSegment);
 
                     if (_metadata)
                     {
-                        Enqueue(new[] { MetaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, 0) });
+                        Enqueue(new[] { MetaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, null) });
                     }
 
                     OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Length, timeInfo, 0, OutputLevel.Default));

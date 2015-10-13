@@ -73,7 +73,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return point;
         }
 
-        public static Point GetCollectorPoint(string engineName, string performanceCounterGroup, int counters, Dictionary<string, long> timeInfo, double elapseOffsetSeconds)
+        public static Point GetCollectorPoint(string engineName, string performanceCounterGroup, int counters, Dictionary<string, long> timeInfo, double? elapseOffsetSeconds)
         {
             var tags = new Dictionary<string, string>
             {
@@ -86,12 +86,16 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var fields = new Dictionary<string, object>
             {
                 { "value", counters },
-                { "elapseOffsetTimeMs", (double)(elapseOffsetSeconds / 1000) },
             };
+
+            if (elapseOffsetSeconds != null)
+            {
+                fields.Add("elapseOffsetTimeMs", elapseOffsetSeconds.Value / 1000);
+            }
 
             foreach (var ti in timeInfo)
             {
-                fields.Add(ti.Key + "TimeMs", (double)new TimeSpan(ti.Value).TotalMilliseconds);
+                fields.Add(ti.Key + "TimeMs", new TimeSpan(ti.Value).TotalMilliseconds);
             }
 
             var point = new Point

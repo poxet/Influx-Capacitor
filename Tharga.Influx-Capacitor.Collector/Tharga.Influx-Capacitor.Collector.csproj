@@ -94,6 +94,7 @@
     <Compile Include="Entities\ApplicationConfig.cs" />
     <Compile Include="Entities\NullDatabaseConfig.cs" />
     <Compile Include="Entities\Tag.cs" />
+    <Compile Include="TimerConstants.cs" />
     <Compile Include="Handlers\CollectorEngineBase.cs" />
     <Compile Include="Handlers\DataInitiator.cs" />
     <Compile Include="Event\GetPerformanceCounterEventArgs.cs" />
