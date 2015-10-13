@@ -7,7 +7,7 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
-    public class DataSender
+    internal class InfluxDataSender : IDataSender
     {
         private readonly IDatabaseConfig _databaseConfig;
         private readonly object _syncRoot = new object();
@@ -16,13 +16,13 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         private readonly Queue<Point[]> _queue = new Queue<Point[]>();
         private readonly Lazy<IInfluxDbAgent> _client;
 
-        public DataSender(IInfluxDbAgentLoader influxDbAgentLoader, IDatabaseConfig databaseConfig)
+        public InfluxDataSender(IInfluxDbAgentLoader influxDbAgentLoader, IDatabaseConfig databaseConfig)
         {
             _databaseConfig = databaseConfig;
             _client = new Lazy<IInfluxDbAgent>(() => influxDbAgentLoader.GetAgent(databaseConfig));
         }
 
-        internal void Send()
+        public void Send()
         {
             lock (_syncRoot)
             {
@@ -70,6 +70,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 _queue.Enqueue(points);
             }
         }
+
+        public string TargetServer { get { return _databaseConfig.Url; } }
+        public string TargetDatabase { get { return _databaseConfig.Name; } }
+        public int QueueCount { get { return _queue.Count; } }
 
         protected virtual void OnSendBusinessEvent(SendBusinessEventArgs e)
         {

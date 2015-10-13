@@ -18,17 +18,15 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
 
         public async override Task<bool> InvokeAsync(string paramList)
         {
-
-
             var configs = _configBusiness.OpenDatabaseConfig().ToArray();
-            if (configs.Count() > 1)
+            if (configs.Length > 1)
             {
-                OutputWarning("There are {0} databases configured. When using multiple targets you will have to update the config files manually.", configs.Count());
+                OutputWarning("There are {0} databases configured. When using multiple targets you will have to update the config files manually.", configs.Length);
                 return false;
             }
 
             var currentConfig = configs.First();
-            var config = new DatabaseConfig(currentConfig.Url, string.Empty, string.Empty, string.Empty);
+            var config = new InfluxDatabaseConfig(currentConfig.Url, string.Empty, string.Empty, string.Empty);
 
             var index = 0;
             var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_database");

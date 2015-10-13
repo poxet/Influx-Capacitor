@@ -14,7 +14,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
 
         private readonly Timer _timer;
-        private readonly List<DataSender> _dataSenders;
+        private readonly List<IDataSender> _dataSenders;
+        private readonly bool _metadata;
 
         public SendBusiness(IConfigBusiness configBusiness, IInfluxDbAgentLoader influxDbAgentLoader)
         {
@@ -27,18 +28,37 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 _timer.Elapsed += Elapsed;
             }
 
-            _dataSenders = config.Databases.Select(x => new DataSender(influxDbAgentLoader, x)).ToList();
+            _dataSenders = config.Databases.Select(x => x.GetDataSender(influxDbAgentLoader)).ToList();
             foreach (var dataSender in _dataSenders)
             {
                 dataSender.SendBusinessEvent += OnSendBusinessEvent;
             }
+
+            _metadata = config.Application.Metadata;
         }
 
         private void Elapsed(object sender, ElapsedEventArgs e)
         {
+            var metaPoints = new List<Point>();
+
             foreach(var dataSender in _dataSenders)
             {
+                var previousQueueCount = dataSender.QueueCount;
                 dataSender.Send();
+                var postQueueCount = dataSender.QueueCount;
+
+                if (_metadata)
+                {
+                    metaPoints.Add(MetaDataBusiness.GetQueueCountPoints("Send", dataSender.TargetServer, dataSender.TargetDatabase, previousQueueCount, postQueueCount - previousQueueCount + _dataSenders.Count));
+                }
+            }
+
+            if (_metadata)
+            {
+                foreach (var dataSender in _dataSenders)
+                {
+                    dataSender.Enqueue(metaPoints.ToArray());
+                }
             }
         }
 
@@ -60,6 +80,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 _timer.Start();
             }
 
+            //Prepare metadata information about the queue and add that to the points to be sent.
+            if (_metadata)
+            {
+                var metaPoints = _dataSenders.Select(x => MetaDataBusiness.GetQueueCountPoints("Enqueue", x.TargetServer, x.TargetDatabase, x.QueueCount, points.Length + _dataSenders.Count)).ToArray();
+                points = points.Union(metaPoints).ToArray();
+            }
 
             foreach (var dataSender in _dataSenders)
             {

@@ -99,7 +99,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             if (application == null)
             {
-                application = new ApplicationConfig(10, false);
+                application = new ApplicationConfig(10, false, true);
             }
 
             var config = new Config(databases, application, groups, tags);
@@ -142,7 +142,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
-                return new List<DatabaseConfig> { new DatabaseConfig(Constants.NoConfigUrl, null, null, null) };
+                return new List<InfluxDatabaseConfig> { new InfluxDatabaseConfig(Constants.NoConfigUrl, null, null, null) };
             }
 
             var config = LoadFile(databaseConfigFilePath);
@@ -152,18 +152,18 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         public void SaveDatabaseUrl(string url)
         {
             var config = OpenDatabaseConfig().First();
-            var newDbConfig = new DatabaseConfig(url, config.Username, config.Password, config.Name);
+            var newDbConfig = new InfluxDatabaseConfig(url, config.Username, config.Password, config.Name);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
         public void SaveDatabaseConfig(string databaseName, string username, string password)
         {
             var config = OpenDatabaseConfig().First();
-            var newDbConfig = new DatabaseConfig(config.Url, username, password, databaseName);
+            var newDbConfig = new InfluxDatabaseConfig(config.Url, username, password, databaseName);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
-        private void SaveDatabaseConfigEx(DatabaseConfig newDbConfig)
+        private void SaveDatabaseConfigEx(InfluxDatabaseConfig newDbConfig)
         {
             var path = GetAppDataFolder();
             var databaseConfigFilePath = path + "\\database.xml";
@@ -195,9 +195,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _fileLoaderAgent.WriteAllText(databaseConfigFilePath, xmlData);
         }
 
-        public void SaveApplicationConfig(int flushSecondsInterval, bool debugMode)
+        public void SaveApplicationConfig(int flushSecondsInterval, bool debugMode, bool metadata)
         {
-            var newDbConfig = new ApplicationConfig(flushSecondsInterval, debugMode);
+            var newDbConfig = new ApplicationConfig(flushSecondsInterval, debugMode, metadata);
             SaveApplicationConfigEx(newDbConfig);
         }
 
@@ -209,7 +209,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             if (File.Exists(applicationConfigFilePath))
                 return;
 
-            SaveApplicationConfig(10, false);
+            SaveApplicationConfig(10, false, true);
         }
 
         private void SaveApplicationConfigEx(ApplicationConfig applicationConfig)
@@ -417,6 +417,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             var flushSecondsInterval = 10;
             var debugMode = false;
+            var metadata = true;
             foreach (XmlElement item in databases[0].ChildNodes)
             {
                 switch (item.Name)
@@ -433,49 +434,95 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                             debugMode = false;
                         }
                         break;
+                    case "Metadata":
+                        if (!bool.TryParse(item.InnerText, out metadata))
+                        {
+                            metadata = false;
+                        }
+                        break;
                     case "":
                         break;
                 }
             }
 
-            var database = new ApplicationConfig(flushSecondsInterval, debugMode);
+            var database = new ApplicationConfig(flushSecondsInterval, debugMode, metadata);
             return database;
         }
 
-        private static IEnumerable<DatabaseConfig> GetDatabaseConfig(XmlDocument document)
+        private static IEnumerable<IDatabaseConfig> GetDatabaseConfig(XmlDocument document)
         {
-            var databases = document.GetElementsByTagName("Database");
+            var databases = document.GetElementsByTagName("Database");            
             foreach (XmlNode database in databases)
             {
-
-                string url = null;
-                string username = null;
-                string password = null;
-                string name = null;
-                foreach (XmlElement item in database.ChildNodes)
+                var databaseType = GetDatabaseType(database);
+                switch (databaseType)
                 {
-                    switch (item.Name)
-                    {
-                        case "Url":
-                            url = item.InnerText;
-                            break;
-                        case "Username":
-                            username = item.InnerText;
-                            break;
-                        case "Password":
-                            password = Decrypt(item.InnerText);
-                            break;
-                        case "Name":
-                            name = item.InnerText;
-                            break;
-                        case "":
-                            break;
-                    }
+                    case "null":
+                        yield return GetNullDatabaseConfig(database);
+                        break;
+                    case "acc":
+                        yield return GetAccDatabaseConfig(database);
+                        break;
+                    default:
+                        yield return GetInfluxDatabaseConfig(database);
+                        break;
                 }
-
-                var db = new DatabaseConfig(url, username, password, name);
-                yield return db;
             }
+        }
+
+        private static IDatabaseConfig GetNullDatabaseConfig(XmlNode database)
+        {
+            return new NullDatabaseConfig();
+        }
+
+        private static IDatabaseConfig GetAccDatabaseConfig(XmlNode database)
+        {
+            return new AccDatabaseConfig();
+        }
+
+        private static IDatabaseConfig GetInfluxDatabaseConfig(XmlNode database)
+        {
+            string url = null;
+            string username = null;
+            string password = null;
+            string name = null;
+            foreach (XmlElement item in database.ChildNodes)
+            {
+                switch (item.Name)
+                {
+                    case "Url":
+                        url = item.InnerText;
+                        break;
+                    case "Username":
+                        username = item.InnerText;
+                        break;
+                    case "Password":
+                        password = Decrypt(item.InnerText);
+                        break;
+                    case "Name":
+                        name = item.InnerText;
+                        break;
+                    case "":
+                        break;
+                }
+            }
+
+            var db = new InfluxDatabaseConfig(url, username, password, name);
+            return db;
+        }
+
+        private static string GetDatabaseType(XmlNode database)
+        {
+            if (database.Attributes != null)
+            {
+                var dt = database.Attributes.GetNamedItem("Type");
+                if (dt != null)
+                {
+                    return dt.Value.ToLower();
+                }
+            }
+
+            return string.Empty;
         }
 
         public IEnumerable<string> GetConfigFiles()

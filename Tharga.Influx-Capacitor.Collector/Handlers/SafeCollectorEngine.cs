@@ -79,6 +79,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 finally
                 {
                     ResumeTimer();
+                    //TOOD: Record metadata here
                 }
             }
         }

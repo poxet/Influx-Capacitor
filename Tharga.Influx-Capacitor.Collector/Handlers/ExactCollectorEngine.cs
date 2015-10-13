@@ -121,6 +121,10 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, exception));
                     return -1;
                 }
+                finally
+                {
+                    //TOOD: Record metadata here
+                }
             }
         }
     }

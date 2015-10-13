@@ -13,7 +13,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public Config(List<IDatabaseConfig> databases, IApplicationConfig application, List<ICounterGroup> groups, List<ITag> tags)
         {
             _databases = databases;
-            _application = application ?? new ApplicationConfig(10, false);
+            _application = application ?? new ApplicationConfig(10, false, true);
             _groups = groups;
             _tags = tags;
         }

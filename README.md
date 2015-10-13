@@ -39,6 +39,24 @@ You can configure any Performance Counter available to be monitored. When you ha
 
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
 
+## Application configuration
+
+There are some application settings that can be configured. The configuration can be made in any xml-config file in the programdata folder.
+The default location of this configuration is *application.xml*.
+
+- FlushSecondsInterval - The interval that data is sent to the database. This is an optional value, default is 10 seconds.
+- Metadata - Metadata about Influx-Capacitor is sent to the measurement named *Influx-Capacitor*. This feature can be turned off by setting Metadata to false, by default this feature is on.
+
+```
+<Influx-Capacitor>
+  <Application>
+    <FlushSecondsInterval>20</FlushSecondsInterval>
+    <Metadata>true</Metadata>
+  </Application>
+</Influx-Capacitor>
+```
+
+
 ## Database connection settings
 The settings are typically stored in the file database.xml located in hte ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). The settings can be located in any other xml configuration file, but then you will not be able to manage the settings using the management console.
 You can change settings directly in the file and restert the service, or you can use the command "setup change" in the console application, and the service will be restarted for you.

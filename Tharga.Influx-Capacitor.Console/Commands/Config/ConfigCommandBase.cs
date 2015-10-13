@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Reflection;
 using System.Threading.Tasks;
 using InfluxDB.Net;
-using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector;
+using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -27,7 +26,6 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
         protected async Task<string> GetServerUrlAsync(string paramList, int index, string defaultUrl)
         {
             var urlParam = GetParam(paramList, index++);
-            //var versionParam = GetParam(paramList, index++);
 
             var url = defaultUrl;
 
@@ -36,7 +34,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             {
                 try
                 {
-                    client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwerty"));
+                    client = _influxDbAgentLoader.GetAgent(new InfluxDatabaseConfig(url, "root", "qwerty", "qwerty"));
                 }
                 catch (Exception exception)
                 {
@@ -67,7 +65,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     {
                         url = QueryParam<string>("Url", urlParam);
                         urlParam = null;
-                        client = _influxDbAgentLoader.GetAgent(new DatabaseConfig(url, "root", "qwerty", "qwert"));
+                        client = _influxDbAgentLoader.GetAgent(new InfluxDatabaseConfig(url, "root", "qwerty", "qwert"));
 
                         connectionConfirmed = await client.CanConnect();
                     }
@@ -88,26 +86,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
         }
 
         protected async Task<IDatabaseConfig> GetUsernameAsync(string paramList, int index, IDatabaseConfig config, string action)
-        {
-            var points = new[]
-            {
-                new Point
-                {
-                    Name = Constants.ServiceName, 
-                    Tags = new Dictionary<string, string>
-                    {
-                        { "hostname", Environment.MachineName },
-                        { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
-                        { "action", action },
-                    },
-                    Fields = new Dictionary<string, object>
-                    {
-                        { "value", 1 }
-                    },
-                    Precision = TimeUnit.Microseconds,
-                    Timestamp = DateTime.UtcNow
-                },
-            };
+        {            
             var dataChanged = false;
 
             var url = config.Url;
@@ -119,7 +98,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 if (!string.IsNullOrEmpty(config.Name) && !string.IsNullOrEmpty(config.Username) && !string.IsNullOrEmpty(config.Password))
                 {
                     client = _influxDbAgentLoader.GetAgent(config);
-                    response = await client.WriteAsync(points);
+                    response = await MetaDataBusiness.TestWriteAccess(client, action);
                 }
             }
             catch (Exception exception)
@@ -138,10 +117,10 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     database = QueryParam<string>("DatabaseName", GetParam(paramList, index++));
                     var user = QueryParam<string>("Username", GetParam(paramList, index++));
                     var password = QueryParam<string>("Password", GetParam(paramList, index++));
-                    config = new DatabaseConfig(url, user, password, database);
+                    config = new InfluxDatabaseConfig(url, user, password, database);
 
                     client = _influxDbAgentLoader.GetAgent(config);
-                    response = await client.WriteAsync(points);
+                    response = await MetaDataBusiness.TestWriteAccess(client, action);
                     dataChanged = true;
                 }
                 catch (CommandEscapeException)
@@ -156,7 +135,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                         if (create)
                         {
                             client.CreateDatabaseAsync(database);
-                            response = client.WriteAsync(points).Result;
+                            response = MetaDataBusiness.TestWriteAccess(client, action).Result;
                             dataChanged = true;
                         }
                     }

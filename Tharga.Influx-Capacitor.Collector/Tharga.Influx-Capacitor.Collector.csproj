@@ -85,9 +85,14 @@
     </Compile>
     <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
-    <Compile Include="Business\DataSender.cs" />
+    <Compile Include="Business\AccDataSender.cs" />
+    <Compile Include="Business\InfluxDataSender.cs" />
+    <Compile Include="Business\MetaDataBusinessBusiness.cs" />
+    <Compile Include="Business\NullDataSender.cs" />
     <Compile Include="Business\TagLoader.cs" />
+    <Compile Include="Entities\AccDatabaseConfig.cs" />
     <Compile Include="Entities\ApplicationConfig.cs" />
+    <Compile Include="Entities\NullDatabaseConfig.cs" />
     <Compile Include="Entities\Tag.cs" />
     <Compile Include="Handlers\CollectorEngineBase.cs" />
     <Compile Include="Handlers\DataInitiator.cs" />
@@ -113,15 +118,17 @@
     <Compile Include="Interface\ICounterBusiness.cs" />
     <Compile Include="Interface\ICounterGroup.cs" />
     <Compile Include="Interface\IDatabaseConfig.cs" />
+    <Compile Include="Interface\IDataSender.cs" />
     <Compile Include="Interface\IFileLoaderAgent.cs" />
     <Compile Include="Handlers\ExactCollectorEngine.cs" />
     <Compile Include="Entities\Config.cs" />
     <Compile Include="Entities\Counter.cs" />
     <Compile Include="Entities\CounterGroup.cs" />
-    <Compile Include="Entities\DatabaseConfig.cs" />
+    <Compile Include="Entities\InfluxDatabaseConfig.cs" />
     <Compile Include="Entities\PerformanceCounterGroup.cs" />
     <Compile Include="Interface\IInfluxDbAgent.cs" />
     <Compile Include="Interface\IInfluxDbAgentLoader.cs" />
+    <Compile Include="Interface\IMetaDataBusiness.cs" />
     <Compile Include="Interface\IPerformanceCounterGroup.cs" />
     <Compile Include="Interface\IPerformanceCounterInfo.cs" />
     <Compile Include="Interface\ISendBusiness.cs" />

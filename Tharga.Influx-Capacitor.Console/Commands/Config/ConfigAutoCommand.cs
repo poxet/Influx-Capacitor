@@ -29,9 +29,9 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 var index = 0;
 
                 var configs = _configBusiness.OpenDatabaseConfig().ToArray();
-                if (configs.Count() > 1)
+                if (configs.Length > 1)
                 {
-                    OutputWarning("There are {0} database targets configured. When using multiple targets you will have to update the config files manually.", configs.Count());
+                    OutputWarning("There are {0} database targets configured. When using multiple targets you will have to update the config files manually.", configs.Length);
                     return false;
                 }
 

@@ -21,9 +21,9 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             var index = 0;
 
             var configs = _configBusiness.OpenDatabaseConfig().ToArray();
-            if (configs.Count() > 1)
+            if (configs.Length > 1)
             {
-                OutputWarning("There are {0} database targets configured. When using multiple targets you will have to update the config files manually.", configs.Count());
+                OutputWarning("There are {0} database targets configured. When using multiple targets you will have to update the config files manually.", configs.Length);
                 return false;
             }
 
@@ -31,7 +31,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             if (string.IsNullOrEmpty(response))
                 return false;
 
-            var config = new DatabaseConfig(response, null, null, null);
+            var config = new InfluxDatabaseConfig(response, null, null, null);
             var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_change");
             if (logonInfo == null)
                 return false;
