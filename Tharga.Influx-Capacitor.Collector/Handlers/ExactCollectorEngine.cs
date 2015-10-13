@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InfluxDB.Net;
+using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -108,6 +109,11 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     RemoveObsoleteCounters(values, performanceCounterInfos);
                     timeInfo.Add("Cleanup", swMain.ElapsedSegment);
 
+                    if (_metadata)
+                    {
+                        Enqueue(new[] { MetaDataBusiness.GetCollectorPoint(Name, points.Length, timeInfo, elapseOffset) });
+                    }
+
                     OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Count(), timeInfo, elapseOffset, OutputLevel.Default));
 
                     //TODO: Release mutex
@@ -120,10 +126,6 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 {
                     OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, exception));
                     return -1;
-                }
-                finally
-                {
-                    //TOOD: Record metadata here
                 }
             }
         }

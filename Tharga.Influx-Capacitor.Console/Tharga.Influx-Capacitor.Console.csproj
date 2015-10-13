@@ -107,6 +107,7 @@
     <Compile Include="Commands\Counter\CounterRawCommand.cs" />
     <Compile Include="Commands\Counter\CounterReadCommand.cs" />
     <Compile Include="Commands\Counter\CounterStartCommand.cs" />
+    <Compile Include="Commands\Sender\SenderCommands.cs" />
     <Compile Include="Commands\Service\ServiceAction.cs" />
     <Compile Include="Commands\Service\ServiceStatusCommand.cs" />
     <Compile Include="Commands\Service\ServiceCommands.cs" />

@@ -17,6 +17,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "hostname", Environment.MachineName },
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
                 { "action", action },
+                { "area", "accesstest" },
             };
 
             var fields = new Dictionary<string, object>
@@ -46,6 +47,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "hostname", Environment.MachineName },
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
                 { "action", action },
+                { "area", "queue" },
                 { "targetServer", targetServer },
                 { "targetDatabase", targetDatabase },
             };
@@ -64,7 +66,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             if (response.Item2 != null)
             {
-                fields.Add("elapsed", response.Item2);
+                fields.Add("elapsed", response.Item2.Value);
             }
 
             var point = new Point
@@ -81,7 +83,36 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public static Point GetCollectorPoint(string engineName, int counters, Dictionary<string, long> timeInfo, double elapseOffset)
         {
-            throw new NotImplementedException();
+            var tags = new Dictionary<string, string>
+            {
+                { "hostname", Environment.MachineName },
+                { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
+                { "engineName", engineName },
+                { "action", "collect" },
+                { "area", "counter" },
+            };
+
+            var fields = new Dictionary<string, object>
+            {
+                { "value", counters },
+                { "elapseOffset", elapseOffset },
+            };
+
+            foreach (var ti in timeInfo)
+            {
+                fields.Add(ti.Key, (double)ti.Value);
+            }
+
+            var point = new Point
+            {
+                Name = Constants.ServiceName,
+                Tags = tags,
+                Fields = fields,
+                Precision = TimeUnit.Milliseconds,
+                Timestamp = DateTime.UtcNow
+            };
+
+            return point;
         }
     }
 }

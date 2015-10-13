@@ -40,29 +40,29 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var timestamp = DateTime.UtcNow;
 
                     var precision = TimeUnit.Seconds;
-                    timeInfo.Add("Synchronize", swMain.ElapsedSegment);
+                    timeInfo.Add("synchronize", swMain.ElapsedSegment);
 
                     //TODO: Create a mutex lock here (So that two counters canno read the same signature at the same time, since the content of the _performanceCounterGroup might change during this process.
 
                     //Prepare read
                     var performanceCounterInfos = PrepareCounters();
-                    timeInfo.Add("Prepare", swMain.ElapsedSegment);
+                    timeInfo.Add("prepare", swMain.ElapsedSegment);
 
                     //Perform Read (This should be as fast and short as possible)
                     var values = ReadValues(performanceCounterInfos);
-                    timeInfo.Add("Read", swMain.ElapsedSegment);
+                    timeInfo.Add("read", swMain.ElapsedSegment);
 
                     //Prepare result                
                     var points = FormatResult(performanceCounterInfos, values, precision, timestamp).ToArray();
-                    timeInfo.Add("Format", swMain.ElapsedSegment);
+                    timeInfo.Add("format", swMain.ElapsedSegment);
 
                     //Queue result
                     Enqueue(points);
-                    timeInfo.Add("Enque", swMain.ElapsedSegment);
+                    timeInfo.Add("enque", swMain.ElapsedSegment);
 
                     //Cleanup
                     RemoveObsoleteCounters(values, performanceCounterInfos);
-                    timeInfo.Add("Cleanup", swMain.ElapsedSegment);
+                    timeInfo.Add("cleanup", swMain.ElapsedSegment);
 
                     if (_metadata)
                     {

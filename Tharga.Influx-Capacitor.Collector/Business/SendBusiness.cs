@@ -12,6 +12,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
     public class SendBusiness : ISendBusiness
     {
         public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
+        public IEnumerable<Tuple<string, int>> GetQueueInfo()
+        {
+            return _dataSenders.Select(x => new Tuple<string, int>(x.TargetDatabase, x.QueueCount));
+        }
 
         private readonly Timer _timer;
         private readonly List<IDataSender> _dataSenders;
