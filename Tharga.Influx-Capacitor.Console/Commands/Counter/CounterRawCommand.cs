@@ -30,7 +30,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var index = 0;
             var counterGroup = QueryParam("Group", GetParam(paramList, index++), counterGroups.Select(x => new KeyValuePair<IPerformanceCounterGroup, string>(x, x.Name)));
 
-            using (var oneTimeDryRunCollectorEngine = new SafeCollectorEngine(counterGroup, new ConsoleSendBusiness(_configBusiness, new InfluxDbAgentLoader(), ShowOutput), new TagLoader(_configBusiness)))
+            using (var oneTimeDryRunCollectorEngine = new SafeCollectorEngine(counterGroup, new ConsoleSendBusiness(_configBusiness, new InfluxDbAgentLoader(), ShowOutput), new TagLoader(_configBusiness), config.Application.Metadata))
             {
                 oneTimeDryRunCollectorEngine.CollectRegisterCounterValuesEvent += CollectRegisterCounterValuesEvent;
                 await oneTimeDryRunCollectorEngine.CollectRegisterCounterValuesAsync();

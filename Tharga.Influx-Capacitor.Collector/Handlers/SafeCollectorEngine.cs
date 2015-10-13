@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InfluxDB.Net;
+using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -13,8 +14,8 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
     {
         private readonly object _syncRoot = new object();
 
-        public SafeCollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader)
-            : base(performanceCounterGroup, sendBusiness, tagLoader)
+        public SafeCollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader, bool metadata)
+            : base(performanceCounterGroup, sendBusiness, tagLoader, metadata)
         {
         }
 
@@ -63,7 +64,12 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     RemoveObsoleteCounters(values, performanceCounterInfos);
                     timeInfo.Add("Cleanup", swMain.ElapsedSegment);
 
-                    OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Count(), timeInfo, 0, OutputLevel.Default));
+                    if (_metadata)
+                    {
+                        Enqueue(new[] { MetaDataBusiness.GetCollectorPoint(Name, points.Length, timeInfo, 0) });
+                    }
+
+                    OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Length, timeInfo, 0, OutputLevel.Default));
 
                     //TODO: Release mutex
 
@@ -79,7 +85,6 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 finally
                 {
                     ResumeTimer();
-                    //TOOD: Record metadata here
                 }
             }
         }

@@ -17,13 +17,14 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         private readonly ISendBusiness _sendBusiness;
         private readonly string _name;
         private readonly ITag[] _tags;
-        private int _refreshCountdown = 0;
+        private int _refreshCountdown;
         private readonly Timer _timer;
 
         //TODO: Cleanup
+        protected readonly bool _metadata;
         protected DateTime? _timestamp; //TODO: Rename to first Read
 
-        protected CollectorEngineBase(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader)
+        protected CollectorEngineBase(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader, bool metadata)
         {
             _performanceCounterGroup = performanceCounterGroup;
             _name = _performanceCounterGroup.Name;
@@ -35,6 +36,8 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 _timer = new Timer(1000 * performanceCounterGroup.SecondsInterval);
                 _timer.Elapsed += Elapsed;
             }
+
+            _metadata = metadata;
         }
 
         public event EventHandler<CollectRegisterCounterValuesEventArgs> CollectRegisterCounterValuesEvent;
@@ -55,7 +58,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             }
         }
 
-        protected ITag[] Tags
+        private ITag[] Tags
         {
             get
             {

@@ -40,7 +40,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var count = 0;
             foreach (var cg in counterGroupsToRead)
             {
-                count += await processor.CollectAssync(cg);
+                count += await processor.CollectAssync(cg, config.Application.Metadata);
             }
             //OutputInformation("Totally {0} metrics points where collected and sent to the database.", count);
 

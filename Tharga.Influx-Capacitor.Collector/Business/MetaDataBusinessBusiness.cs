@@ -78,5 +78,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             
             return point;
         }
+
+        public static Point GetCollectorPoint(string engineName, int counters, Dictionary<string, long> timeInfo, double elapseOffset)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

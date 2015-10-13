@@ -24,11 +24,11 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             _tagLoader = tagLoader;
         }
 
-        public async Task RunAsync(IPerformanceCounterGroup[] counterGroups)
+        public async Task RunAsync(IPerformanceCounterGroup[] counterGroups, bool metadata)
         {
             foreach (var counterGroup in counterGroups)
             {
-                var engine = GetCollectorEngine(counterGroup, counterGroup.CollectorEngineType);
+                var engine = GetCollectorEngine(counterGroup, counterGroup.CollectorEngineType, metadata);
                 engine.CollectRegisterCounterValuesEvent += CollectRegisterCounterValuesEvent;
                 await engine.StartAsync();
             }
@@ -38,24 +38,24 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         {
             var config = _configBusiness.LoadFiles(configFileNames);
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
-            await RunAsync(counterGroups);
+            await RunAsync(counterGroups, config.Application.Metadata);
         }
 
-        public async Task<int> CollectAssync(IPerformanceCounterGroup counterGroup)
+        public async Task<int> CollectAssync(IPerformanceCounterGroup counterGroup, bool metadata)
         {
-            var engine = GetCollectorEngine(counterGroup, counterGroup.CollectorEngineType);
+            var engine = GetCollectorEngine(counterGroup, counterGroup.CollectorEngineType, metadata);
             engine.CollectRegisterCounterValuesEvent += CollectRegisterCounterValuesEvent;
             return await engine.CollectRegisterCounterValuesAsync();
         }
 
-        private ICollectorEngine GetCollectorEngine(IPerformanceCounterGroup counterGroup, CollectorEngineType collectorEngineType)
+        private ICollectorEngine GetCollectorEngine(IPerformanceCounterGroup counterGroup, CollectorEngineType collectorEngineType, bool metadata)
         {
             switch (collectorEngineType)
             {
                 case CollectorEngineType.Exact:
-                    return new ExactCollectorEngine(counterGroup, _sendBusiness, _tagLoader);
+                    return new ExactCollectorEngine(counterGroup, _sendBusiness, _tagLoader, metadata);
                 case CollectorEngineType.Safe:
-                    return new SafeCollectorEngine(counterGroup, _sendBusiness, _tagLoader);
+                    return new SafeCollectorEngine(counterGroup, _sendBusiness, _tagLoader, metadata);
                 default:
                     throw new ArgumentOutOfRangeException(string.Format("Unknown collector engine type {0}.", collectorEngineType));
             }            

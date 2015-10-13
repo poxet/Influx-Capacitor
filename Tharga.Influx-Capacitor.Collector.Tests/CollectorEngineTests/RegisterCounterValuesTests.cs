@@ -27,7 +27,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             sendBusinessMock.Setup(x => x.Enqueue(It.IsAny<Point[]>()));
             var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
             tagLaoderMock.Setup(x => x.GetGlobalTags()).Returns(new[] { Mock.Of<ITag>(x => x.Name == "B") });
-            var collectorEngine = new ExactCollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
+            var collectorEngine = new ExactCollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object, false);
 
             //Act
             var response = collectorEngine.CollectRegisterCounterValuesAsync().Result;
@@ -53,7 +53,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             sendBusinessMock.Setup(x => x.Enqueue(It.IsAny<Point[]>()));
             var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
             tagLaoderMock.Setup(x => x.GetGlobalTags()).Returns(new[] { Mock.Of<ITag>(x => x.Name == "B") });
-            var collectorEngine = new ExactCollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object);
+            var collectorEngine = new ExactCollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object, false);
 
             //Act
             var response = collectorEngine.CollectRegisterCounterValuesAsync().Result;

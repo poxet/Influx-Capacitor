@@ -16,8 +16,8 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         private long _counter;
         private int _missCounter;
 
-        public ExactCollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader)
-            : base(performanceCounterGroup, sendBusiness, tagLoader)
+        public ExactCollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader, bool metadata)
+            : base(performanceCounterGroup, sendBusiness, tagLoader, metadata)
         {
         }
 
