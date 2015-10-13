@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using InfluxDB.Net;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
@@ -22,8 +23,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _client = new Lazy<IInfluxDbAgent>(() => influxDbAgentLoader.GetAgent(databaseConfig));
         }
 
-        public void Send()
+        public Tuple<string, double?> Send()
         {
+            string responseMessage = null;
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             lock (_syncRoot)
             {
                 var pts = new List<Point>();
@@ -35,32 +40,32 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         pts.AddRange(points);
                     }
 
-                    if (pts.Count == 0)
+                    if (pts.Count != 0)
                     {
-                        return;
-                    }
-
-                    //TODO: Possible to log what is sent
-
-                    //Send all theese points to influx
-                    var client = _client.Value;
-                    if (client != null)
-                    {
-                        client.WriteAsync(pts.ToArray());
-                        OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Sending {0} points to server.", pts.Count), pts.Count, OutputLevel.Information));
-                    }
-                    else
-                    {
-                        OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, "There is no client configured for sending data to the database, or the client has invalid settings.", pts.Count, OutputLevel.Error));
+                        var client = _client.Value;
+                        if (client != null)
+                        {
+                            //TODO: Possible to log what is sent
+                            client.WriteAsync(pts.ToArray());
+                            OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Sending {0} points to server.", pts.Count), pts.Count, OutputLevel.Information));
+                        }
+                        else
+                        {
+                            responseMessage = "There is no client configured for sending data to the database, or the client has invalid settings.";
+                            OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, responseMessage, pts.Count, OutputLevel.Error));
+                        }
                     }
                 }
                 catch (Exception exception)
                 {
+                    responseMessage = exception.Message;
                     OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, exception));
                     OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Putting {0} points back in the queue.", pts.Count), pts.Count, OutputLevel.Warning));
                     _queue.Enqueue(pts.ToArray()); //Put the points back in the queue to be sent later.
                 }
             }
+
+            return new Tuple<string, double?>(responseMessage, stopWatch.Elapsed.TotalMilliseconds);
         }
 
         public void Enqueue(Point[] points)

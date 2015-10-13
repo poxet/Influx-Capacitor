@@ -44,12 +44,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             foreach(var dataSender in _dataSenders)
             {
                 var previousQueueCount = dataSender.QueueCount;
-                dataSender.Send();
+                var success = dataSender.Send();
                 var postQueueCount = dataSender.QueueCount;
 
                 if (_metadata)
                 {
-                    metaPoints.Add(MetaDataBusiness.GetQueueCountPoints("Send", dataSender.TargetServer, dataSender.TargetDatabase, previousQueueCount, postQueueCount - previousQueueCount + _dataSenders.Count));
+                    metaPoints.Add(MetaDataBusiness.GetQueueCountPoints("Send", dataSender.TargetServer, dataSender.TargetDatabase, previousQueueCount, postQueueCount - previousQueueCount + _dataSenders.Count, success));
                 }
             }
 
@@ -83,7 +83,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             //Prepare metadata information about the queue and add that to the points to be sent.
             if (_metadata)
             {
-                var metaPoints = _dataSenders.Select(x => MetaDataBusiness.GetQueueCountPoints("Enqueue", x.TargetServer, x.TargetDatabase, x.QueueCount, points.Length + _dataSenders.Count)).ToArray();
+                var metaPoints = _dataSenders.Select(x => MetaDataBusiness.GetQueueCountPoints("Enqueue", x.TargetServer, x.TargetDatabase, x.QueueCount, points.Length + _dataSenders.Count, new Tuple<string, double?>(null, null))).ToArray();
                 points = points.Union(metaPoints).ToArray();
             }
 

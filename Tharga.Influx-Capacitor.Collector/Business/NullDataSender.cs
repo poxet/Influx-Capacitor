@@ -10,9 +10,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         private int _count;
         public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
 
-        public void Send()
+        public Tuple<string, double?> Send()
         {
             _count = 0;
+            return new Tuple<string, double?>("null", null);
         }
 
         public void Enqueue(Point[] points)
