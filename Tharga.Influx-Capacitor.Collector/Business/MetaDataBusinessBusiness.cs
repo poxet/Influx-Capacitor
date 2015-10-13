@@ -17,7 +17,6 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "hostname", Environment.MachineName },
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
                 { "action", action },
-                { "area", "accesstest" },
             };
 
             var fields = new Dictionary<string, object>
@@ -29,7 +28,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 new Point
                     {
-                        Name = Constants.ServiceName, 
+                        Name = Constants.ServiceName + "-Config", 
                         Tags = tags,
                         Fields = fields,
                         Precision = TimeUnit.Milliseconds,
@@ -47,7 +46,6 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "hostname", Environment.MachineName },
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
                 { "action", action },
-                { "area", "queue" },
                 { "targetServer", targetServer },
                 { "targetDatabase", targetDatabase },
             };
@@ -60,18 +58,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var fields = new Dictionary<string, object>
             {
                 { "value", previousQueueCount + queueCountChange },
-                { "change", queueCountChange },
-                { "previousQueueCount", previousQueueCount },
+                { "countChanged", queueCountChange },
             };
-
-            if (response.Item2 != null)
-            {
-                fields.Add("elapsed", response.Item2.Value);
-            }
 
             var point = new Point
             {
-                Name = Constants.ServiceName,
+                Name = Constants.ServiceName + "-Queue",
                 Tags = tags,
                 Fields = fields,
                 Precision = TimeUnit.Milliseconds,
@@ -81,7 +73,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return point;
         }
 
-        public static Point GetCollectorPoint(string engineName, string performanceCounterGroup, int counters, Dictionary<string, long> timeInfo, double elapseOffset)
+        public static Point GetCollectorPoint(string engineName, string performanceCounterGroup, int counters, Dictionary<string, long> timeInfo, double elapseOffsetSeconds)
         {
             var tags = new Dictionary<string, string>
             {
@@ -89,24 +81,22 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
                 { "performanceCounterGroup", performanceCounterGroup },
                 { "engineName", engineName },
-                { "action", "collect" },
-                { "area", "counter" },
             };
 
             var fields = new Dictionary<string, object>
             {
                 { "value", counters },
-                { "elapseOffset", elapseOffset },
+                { "elapseOffsetTimeMs", (double)(elapseOffsetSeconds / 1000) },
             };
 
             foreach (var ti in timeInfo)
             {
-                fields.Add(ti.Key, (double)ti.Value);
+                fields.Add(ti.Key + "TimeMs", (double)new TimeSpan(ti.Value).TotalMilliseconds);
             }
 
             var point = new Point
             {
-                Name = Constants.ServiceName,
+                Name = Constants.ServiceName + "-Counter",
                 Tags = tags,
                 Fields = fields,
                 Precision = TimeUnit.Milliseconds,

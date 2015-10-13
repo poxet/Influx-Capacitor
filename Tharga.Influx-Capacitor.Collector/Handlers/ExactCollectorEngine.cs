@@ -31,7 +31,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var swMain = new StopwatchHighPrecision();
                     var timeInfo = new Dictionary<string, long>();
 
-                    double elapseOffset = 0;
+                    double elapseOffsetSeconds = 0;
                     if (_timestamp == null)
                     {
                         _sw = new StopwatchHighPrecision();
@@ -43,7 +43,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     {
                         var elapsedTotal = _sw.ElapsedTotal;
 
-                        elapseOffset = new TimeSpan(elapsedTotal).TotalSeconds - SecondsInterval * _counter;
+                        elapseOffsetSeconds = new TimeSpan(elapsedTotal).TotalSeconds - SecondsInterval * _counter;
 
                         if (_missCounter >= 6)
                         {
@@ -56,25 +56,25 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                             return -4;
                         }
 
-                        if (elapseOffset > SecondsInterval)
+                        if (elapseOffsetSeconds > SecondsInterval)
                         {
                             _missCounter++;
-                            _counter = _counter + 1 + (int)(elapseOffset / SecondsInterval);
-                            OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, string.Format("Dropping {0} steps.", (int)elapseOffset), OutputLevel.Warning));
+                            _counter = _counter + 1 + (int)(elapseOffsetSeconds / SecondsInterval);
+                            OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, string.Format("Dropping {0} steps.", (int)elapseOffsetSeconds), OutputLevel.Warning));
                             return -2;
                         }
 
-                        if (elapseOffset < SecondsInterval * -1)
+                        if (elapseOffsetSeconds < SecondsInterval * -1)
                         {
                             _missCounter++;
-                            OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, string.Format("Jumping 1 step. ({0} = new TimeSpan({1}).TotalSeconds - {2} * {3})", (int)elapseOffset, elapsedTotal, SecondsInterval, _counter), OutputLevel.Warning));
+                            OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, string.Format("Jumping 1 step. ({0} = new TimeSpan({1}).TotalSeconds - {2} * {3})", (int)elapseOffsetSeconds, elapsedTotal, SecondsInterval, _counter), OutputLevel.Warning));
                             return -3;
                         }
 
                         _missCounter = 0;
 
                         //Adjust interval
-                        var next = 1000 * (SecondsInterval - elapseOffset);
+                        var next = 1000 * (SecondsInterval - elapseOffsetSeconds);
                         if (next > 0)
                         {
                             SetTimerInterval(next);
@@ -111,10 +111,10 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                     if (_metadata)
                     {
-                        Enqueue(new[] { MetaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, elapseOffset) });
+                        Enqueue(new[] { MetaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, elapseOffsetSeconds) });
                     }
 
-                    OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Count(), timeInfo, elapseOffset, OutputLevel.Default));
+                    OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Count(), timeInfo, elapseOffsetSeconds, OutputLevel.Default));
 
                     //TODO: Release mutex
 
