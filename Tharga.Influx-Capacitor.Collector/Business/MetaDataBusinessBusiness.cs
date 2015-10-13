@@ -81,12 +81,13 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return point;
         }
 
-        public static Point GetCollectorPoint(string engineName, int counters, Dictionary<string, long> timeInfo, double elapseOffset)
+        public static Point GetCollectorPoint(string engineName, string performanceCounterGroup, int counters, Dictionary<string, long> timeInfo, double elapseOffset)
         {
             var tags = new Dictionary<string, string>
             {
                 { "hostname", Environment.MachineName },
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
+                { "performanceCounterGroup", performanceCounterGroup },
                 { "engineName", engineName },
                 { "action", "collect" },
                 { "area", "counter" },

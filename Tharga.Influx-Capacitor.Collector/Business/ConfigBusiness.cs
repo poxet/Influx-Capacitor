@@ -99,7 +99,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             if (application == null)
             {
-                application = new ApplicationConfig(10, false, true);
+                application = new ApplicationConfig(10, false, true, 20000);
             }
 
             var config = new Config(databases, application, groups, tags);
@@ -195,9 +195,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _fileLoaderAgent.WriteAllText(databaseConfigFilePath, xmlData);
         }
 
-        public void SaveApplicationConfig(int flushSecondsInterval, bool debugMode, bool metadata)
+        public void SaveApplicationConfig(int flushSecondsInterval, bool debugMode, bool metadata, int maxQueueSize)
         {
-            var newDbConfig = new ApplicationConfig(flushSecondsInterval, debugMode, metadata);
+            var newDbConfig = new ApplicationConfig(flushSecondsInterval, debugMode, metadata, maxQueueSize);
             SaveApplicationConfigEx(newDbConfig);
         }
 
@@ -209,7 +209,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             if (File.Exists(applicationConfigFilePath))
                 return;
 
-            SaveApplicationConfig(10, false, true);
+            SaveApplicationConfig(10, false, true, 20000);
         }
 
         private void SaveApplicationConfigEx(ApplicationConfig applicationConfig)
@@ -233,6 +233,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 xmeDebug.InnerText = applicationConfig.DebugMode.ToString();
                 dme.AppendChild(xmeDebug);
             }
+
+            var xmeMetadata = xml.CreateElement("Metadata");
+            xmeMetadata.InnerText = applicationConfig.Metadata.ToString();
+            dme.AppendChild(xmeMetadata);
+
+            var xmeMaxQueueSize = xml.CreateElement("MaxQueueSize");
+            xmeMaxQueueSize.InnerText = applicationConfig.MaxQueueSize.ToString();
+            dme.AppendChild(xmeMaxQueueSize);
 
             var xmlData = xml.ToFormattedString();
 
@@ -418,6 +426,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var flushSecondsInterval = 10;
             var debugMode = false;
             var metadata = true;
+            var maxQueueSize = 20000;
             foreach (XmlElement item in databases[0].ChildNodes)
             {
                 switch (item.Name)
@@ -440,12 +449,18 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                             metadata = false;
                         }
                         break;
+                    case "MaxQueueSize":
+                        if (!int.TryParse(item.InnerText, out maxQueueSize))
+                        {
+                            maxQueueSize = 20000;
+                        }
+                        break;
                     case "":
                         break;
                 }
             }
 
-            var database = new ApplicationConfig(flushSecondsInterval, debugMode, metadata);
+            var database = new ApplicationConfig(flushSecondsInterval, debugMode, metadata, maxQueueSize);
             return database;
         }
 

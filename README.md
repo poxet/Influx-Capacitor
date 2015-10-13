@@ -46,12 +46,14 @@ The default location of this configuration is *application.xml*.
 
 - FlushSecondsInterval - The interval that data is sent to the database. This is an optional value, default is 10 seconds.
 - Metadata - Metadata about Influx-Capacitor is sent to the measurement named *Influx-Capacitor*. This feature can be turned off by setting Metadata to false, by default this feature is on.
+- MaxQueueSize - The largest size allowed for the queue. If Influx-Capacitor is not able to send the queued data to the server, it will not keep collecting forever. The limit can be set to an optional value, default is 20000.
 
 ```
 <Influx-Capacitor>
   <Application>
-    <FlushSecondsInterval>20</FlushSecondsInterval>
+    <FlushSecondsInterval>10</FlushSecondsInterval>
     <Metadata>true</Metadata>
+    <MaxQueueSize>20000</MaxQueueSize>
   </Application>
 </Influx-Capacitor>
 ```

@@ -21,7 +21,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             var flushSecondsInterval = QueryParam<int>("Flush Seconds Interval", GetParam(paramList, index++));
             var debugMode = QueryParam("Debug Mode", GetParam(paramList, index++), new Dictionary<bool, string> { { false, "No" }, { true, "Yes" } });
 
-            _configBusiness.SaveApplicationConfig(flushSecondsInterval, debugMode, true);
+            _configBusiness.SaveApplicationConfig(flushSecondsInterval, debugMode, true, 20000);
 
             var result = await ServiceCommands.GetServiceStatusAsync();
             if (result != null)

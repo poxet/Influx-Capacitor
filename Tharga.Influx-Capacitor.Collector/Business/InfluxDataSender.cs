@@ -11,15 +11,17 @@ namespace Tharga.InfluxCapacitor.Collector.Business
     internal class InfluxDataSender : IDataSender
     {
         private readonly IDatabaseConfig _databaseConfig;
+        private readonly int _maxQueueSize;
         private readonly object _syncRoot = new object();
         public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
 
         private readonly Queue<Point[]> _queue = new Queue<Point[]>();
         private readonly Lazy<IInfluxDbAgent> _client;
 
-        public InfluxDataSender(IInfluxDbAgentLoader influxDbAgentLoader, IDatabaseConfig databaseConfig)
+        public InfluxDataSender(IInfluxDbAgentLoader influxDbAgentLoader, IDatabaseConfig databaseConfig, int maxQueueSize)
         {
             _databaseConfig = databaseConfig;
+            _maxQueueSize = maxQueueSize;
             _client = new Lazy<IInfluxDbAgent>(() => influxDbAgentLoader.GetAgent(databaseConfig));
         }
 
@@ -72,6 +74,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             lock (_syncRoot)
             {
+                if (_maxQueueSize - _queue.Count < points.Length)
+                {
+                    OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Queue will reach max limit, cannot add more points. Have {0} points, want to add {1} more. The limit is {2}.", _queue.Count, points.Length, _maxQueueSize), _queue.Count, OutputLevel.Error));
+                    return;
+                }
+                
                 _queue.Enqueue(points);
             }
         }

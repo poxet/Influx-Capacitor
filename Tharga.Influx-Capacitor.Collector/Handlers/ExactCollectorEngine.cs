@@ -111,7 +111,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                     if (_metadata)
                     {
-                        Enqueue(new[] { MetaDataBusiness.GetCollectorPoint(Name, points.Length, timeInfo, elapseOffset) });
+                        Enqueue(new[] { MetaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, elapseOffset) });
                     }
 
                     OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Count(), timeInfo, elapseOffset, OutputLevel.Default));

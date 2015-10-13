@@ -11,7 +11,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         IEnumerable<IDatabaseConfig> OpenDatabaseConfig();
         void SaveDatabaseUrl(string url);
         void SaveDatabaseConfig(string databaseName, string username, string password);
-        void SaveApplicationConfig(int flushSecondsInterval, bool debugMode, bool metadata);
+        void SaveApplicationConfig(int flushSecondsInterval, bool debugMode, bool metadata, int maxQueueSize);
         void InitiateApplicationConfig();
         IEnumerable<string> GetConfigFiles();
         bool CreateConfig(string fileName, List<ICounterGroup> counterGroups);

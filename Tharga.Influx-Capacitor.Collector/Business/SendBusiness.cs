@@ -32,7 +32,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 _timer.Elapsed += Elapsed;
             }
 
-            _dataSenders = config.Databases.Select(x => x.GetDataSender(influxDbAgentLoader)).ToList();
+            _dataSenders = config.Databases.Select(x => x.GetDataSender(influxDbAgentLoader, config.Application.MaxQueueSize)).ToList();
             foreach (var dataSender in _dataSenders)
             {
                 dataSender.SendBusinessEvent += OnSendBusinessEvent;

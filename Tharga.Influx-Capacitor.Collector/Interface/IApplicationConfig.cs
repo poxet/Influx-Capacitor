@@ -5,5 +5,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         int FlushSecondsInterval { get; }
         bool DebugMode { get; }
         bool Metadata { get; }
+        int MaxQueueSize { get; }
     }
 }

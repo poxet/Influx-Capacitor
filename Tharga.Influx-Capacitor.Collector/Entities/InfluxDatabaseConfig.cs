@@ -26,9 +26,9 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public string Password { get { return _password; } }
         public string Name { get { return _name; } }
 
-        public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader)
+        public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
         {
-            return new InfluxDataSender(influxDbAgentLoader, this);
+            return new InfluxDataSender(influxDbAgentLoader, this, maxQueueSize);
         }
     }
 }

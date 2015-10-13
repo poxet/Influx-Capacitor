@@ -19,13 +19,15 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         private readonly ITag[] _tags;
         private int _refreshCountdown;
         private readonly Timer _timer;
+        protected readonly bool _metadata;
 
         //TODO: Cleanup
-        protected readonly bool _metadata;
         protected DateTime? _timestamp; //TODO: Rename to first Read
+        private readonly string _engineName;
 
         protected CollectorEngineBase(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader, bool metadata)
         {
+            _engineName = GetType().Name;
             _performanceCounterGroup = performanceCounterGroup;
             _name = _performanceCounterGroup.Name;
             _sendBusiness = sendBusiness;
@@ -41,6 +43,14 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         }
 
         public event EventHandler<CollectRegisterCounterValuesEventArgs> CollectRegisterCounterValuesEvent;
+
+        protected string EngineName
+        {
+            get
+            {
+                return _engineName;
+            }
+        }
 
         protected int SecondsInterval
         {
