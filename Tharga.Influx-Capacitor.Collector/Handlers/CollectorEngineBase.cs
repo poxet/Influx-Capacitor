@@ -185,20 +185,20 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var instanceAlias = performanceCounterInfo.Alias;
                     var tags = GetTags(Tags.Union(performanceCounterInfo.Tags), categoryName, counterName);
                     var fields = new Dictionary<string, object>
-                                     {
-                                         { "value", value },
-                                         //{ "readSpan", readSpan }, //Time in ms from the first, to the lats counter read in the group.
-                                         //{ "timeOffset", (float)(timeOffset * 1000) } //Time difference in ms from reported time, to when read actually started.
-                                     };
+                    {
+                        { "value", value },
+                        //{ "readSpan", readSpan }, //Time in ms from the first, to the lats counter read in the group.
+                        //{ "timeOffset", (float)(timeOffset * 1000) } //Time difference in ms from reported time, to when read actually started.
+                    };
 
                     var point = new Point
-                                    {
-                                        Name = Name,
-                                        Tags = tags,
-                                        Fields = fields,
-                                        Precision = precision,
-                                        Timestamp = timestamp
-                                    };
+                    {
+                        Name = Name,
+                        Tags = tags,
+                        Fields = fields,
+                        Precision = precision,
+                        Timestamp = timestamp
+                    };
 
                     if (!string.IsNullOrEmpty(key))
                     {
@@ -217,11 +217,11 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         private static Dictionary<string, string> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName)
         {
             var dictionary = new Dictionary<string, string>
-                                 {
-                                     { "hostname", Environment.MachineName },
-                                     { "category", categoryName },
-                                     { "counter", counterName },
-                                 };
+            {
+                { "hostname", Environment.MachineName },
+                { "category", categoryName },
+                { "counter", counterName },
+            };
 
             foreach (var tag in globalTags)
             {
