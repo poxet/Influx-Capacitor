@@ -23,7 +23,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.CounterBusinessTests
             //Act
             try
             {
-                result = counterBusiness.GetPerformanceCounterGroups(config);
+                result = counterBusiness.GetPerformanceCounterGroups(config).ToList();
             }
             catch (Exception exp)
             {
@@ -50,7 +50,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.CounterBusinessTests
             //Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(exception, Is.Null);
-            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result.Count(), Is.EqualTo(2));
         }
     }
 }

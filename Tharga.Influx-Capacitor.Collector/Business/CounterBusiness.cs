@@ -22,19 +22,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
         }
 
-        public List<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
+        public IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
         {
             if (config.Groups == null) throw new NullReferenceException("No groups in config.");
 
-            var counterGroups = new List<IPerformanceCounterGroup>();
-
             foreach (var group in config.Groups)
             {
-                var performanceCounterGroup = new PerformanceCounterGroup(group, GetPerformanceCounterInfos);
-                counterGroups.Add(performanceCounterGroup);
+                yield return new PerformanceCounterGroup(group, GetPerformanceCounterInfos);
             }
-
-            return counterGroups;
         }
 
         private IEnumerable<IPerformanceCounterInfo> GetPerformanceCounterInfos(ICounterGroup group)

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using InfluxDB.Net;
 using Tharga.InfluxCapacitor.Collector.Business;
-using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;

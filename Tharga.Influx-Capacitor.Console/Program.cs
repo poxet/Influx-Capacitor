@@ -2,6 +2,7 @@
 using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Console.Commands.Config;
 using Tharga.InfluxCapacitor.Console.Commands.Counter;
+using Tharga.InfluxCapacitor.Console.Commands.Publish;
 using Tharga.InfluxCapacitor.Console.Commands.Sender;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
 using Tharga.Toolkit.Console;
@@ -22,6 +23,7 @@ namespace Tharga.InfluxCapacitor.Console
             command.RegisterCommand(new ConfigCommands(compositeRoot));
             command.RegisterCommand(new ServiceCommands(compositeRoot));
             command.RegisterCommand(new CounterCommands(compositeRoot));
+            command.RegisterCommand(new PublishCommands(compositeRoot));
             command.RegisterCommand(new SenderCommands(compositeRoot));
 
            new CommandEngine(command).Run(args);

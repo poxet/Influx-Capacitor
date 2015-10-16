@@ -9,5 +9,6 @@ namespace Tharga.InfluxCapacitor.Console
         ICounterBusiness CounterBusiness { get; }
         ISendBusiness SendBusiness { get; }
         ITagLoader TagLoader { get; }
+        IPublisherBusiness PublisherBusiness { get; }
     }
 }

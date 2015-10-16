@@ -9,6 +9,8 @@ using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Extensions;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Collector.Publishers;
+using Random = Tharga.InfluxCapacitor.Collector.Publishers.Random;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
@@ -42,6 +44,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             var databases = new List<IDatabaseConfig>();
             var groups = new List<ICounterGroup>();
+            var publishers = new List<ICounterPublisher>();
             IApplicationConfig application = null;
             var tags = new List<ITag>();
 
@@ -54,6 +57,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
                 var dbs = GetDatabaseConfig(document);
                 var grps = GetCounterGroups(document).ToList();
+                var pbs = GetPublishers(document).ToList();
                 var app = GetApplicationConfig(document);
                 var tgs = GetGlobalTags(document);
 
@@ -71,6 +75,18 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     else
                     {
                         groups.Add(grp);
+                    }
+                }
+
+                foreach (var pb in pbs)
+                {
+                    if (publishers.Any(x => pb.CounterName == x.CounterName))
+                    {
+                        OnInvalidConfigEvent(pb.CounterName, null, configurationFilename);
+                    }
+                    else
+                    {
+                        publishers.Add(pb);
                     }
                 }
 
@@ -102,7 +118,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 application = new ApplicationConfig(10, false, true, 20000);
             }
 
-            var config = new Config(databases, application, groups, tags);
+            var config = new Config(databases, application, groups, publishers, tags);
             return config;
         }
 
@@ -302,11 +318,36 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
         }
 
+        private IEnumerable<ICounterPublisher> GetPublishers(XmlDocument document)
+        {
+            var counterPublishers = document.GetElementsByTagName("CounterPublisher");
+            foreach (XmlElement counterPublisher in counterPublishers)
+            {
+                yield return GetCounterPublisher(counterPublisher);
+            }
+        }
+
         private ITag GetTag(XmlElement tag)
         {
             var name = tag.GetElementsByTagName("Name")[0].InnerText;
             var value = tag.GetElementsByTagName("Value")[0].InnerText;
             return new Tag(name, value);
+        }
+
+        private ICounterPublisher GetCounterPublisher(XmlElement counterPublisher)
+        {
+            var name = GetString(counterPublisher, "Name");
+            var secondsInterval = GetInt(counterPublisher, "SecondsInterval");
+
+            switch (name)
+            {
+                case "TotalMemory":
+                    return new TotalMemory(secondsInterval);
+                case "Random":
+                    return new Random(secondsInterval);
+                default:
+                    throw new ArgumentOutOfRangeException(string.Format("Unknown counter publisher {0}.", name));
+            }
         }
 
         private ICounterGroup GetCounterGroup(XmlElement counterGroup)

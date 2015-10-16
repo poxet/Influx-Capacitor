@@ -89,11 +89,17 @@
     <Compile Include="Business\InfluxDataSender.cs" />
     <Compile Include="Business\MetaDataBusinessBusiness.cs" />
     <Compile Include="Business\NullDataSender.cs" />
+    <Compile Include="Business\PublisherBusiness.cs" />
     <Compile Include="Business\TagLoader.cs" />
     <Compile Include="Entities\AccDatabaseConfig.cs" />
     <Compile Include="Entities\ApplicationConfig.cs" />
     <Compile Include="Entities\NullDatabaseConfig.cs" />
     <Compile Include="Entities\Tag.cs" />
+    <Compile Include="Event\PublishRegisterCounterValuesEventArgs.cs" />
+    <Compile Include="Interface\ICounterPublisher.cs" />
+    <Compile Include="Interface\IPublisherBusiness.cs" />
+    <Compile Include="Publishers\Random.cs" />
+    <Compile Include="Publishers\TotalMemory.cs" />
     <Compile Include="TimerConstants.cs" />
     <Compile Include="Handlers\CollectorEngineBase.cs" />
     <Compile Include="Handlers\DataInitiator.cs" />
@@ -143,6 +149,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

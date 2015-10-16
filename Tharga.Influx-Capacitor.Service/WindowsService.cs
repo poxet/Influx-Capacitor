@@ -32,11 +32,12 @@ namespace Tharga.InfluxCapacitor.Service
             configBusiness.InvalidConfigEvent += InvalidConfigEvent;
             var influxDbAgentLoader = new InfluxDbAgentLoader();
             var counterBusiness = new CounterBusiness();
+            var publisherBusiness = new PublisherBusiness();
             counterBusiness.GetPerformanceCounterEvent += GetPerformanceCounterEvent;
             var sendBusiness = new SendBusiness(configBusiness, influxDbAgentLoader);
             sendBusiness.SendBusinessEvent += SendBusinessEvent;
             var tagLoader = new TagLoader(configBusiness);
-            _processor = new Processor(configBusiness, counterBusiness, sendBusiness, tagLoader);
+            _processor = new Processor(configBusiness, counterBusiness, publisherBusiness, sendBusiness, tagLoader);
             _processor.EngineActionEvent += _processor_EngineActionEvent;
 
             // These Flags set whether or not to handle that specific
@@ -92,7 +93,8 @@ namespace Tharga.InfluxCapacitor.Service
                 {
                     throw new InvalidOperationException("Cannot start service.");
                 }
-                var message = string.Format("Service " + Constants.ServiceName + " version " + Assembly.GetExecutingAssembly().GetName().Version + " started.");
+
+                var message = string.Format("Service {0} version {1} started.", Constants.ServiceName, Assembly.GetExecutingAssembly().GetName().Version);
                 _console.WriteLine(message, OutputLevel.Information, null);
                 Trace.TraceInformation(message);
 

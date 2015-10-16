@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
@@ -13,24 +14,39 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
         private readonly IConfigBusiness _configBusiness;
         private readonly ICounterBusiness _counterBusiness;
+        private readonly IPublisherBusiness _publisherBusiness;
         private readonly ISendBusiness _sendBusiness;
         private readonly ITagLoader _tagLoader;
 
-        public Processor(IConfigBusiness configBusiness, ICounterBusiness counterBusiness, ISendBusiness sendBusiness, ITagLoader tagLoader)
+        public Processor(IConfigBusiness configBusiness, ICounterBusiness counterBusiness, IPublisherBusiness publisherBusiness, ISendBusiness sendBusiness, ITagLoader tagLoader)
         {
             _configBusiness = configBusiness;
             _counterBusiness = counterBusiness;
             _sendBusiness = sendBusiness;
             _tagLoader = tagLoader;
+            _publisherBusiness = publisherBusiness;
         }
 
-        public async Task RunAsync(IPerformanceCounterGroup[] counterGroups, bool metadata)
+        public async Task RunAsync(IPerformanceCounterGroup[] counterGroups, ICounterPublisher[] counterPublishers, bool metadata)
         {
-            foreach (var counterGroup in counterGroups)
+            if (counterGroups != null)
             {
-                var engine = GetCollectorEngine(counterGroup, counterGroup.CollectorEngineType, metadata);
-                engine.CollectRegisterCounterValuesEvent += CollectRegisterCounterValuesEvent;
-                await engine.StartAsync();
+                foreach (var counterGroup in counterGroups)
+                {
+                    var engine = GetCollectorEngine(counterGroup, counterGroup.CollectorEngineType, metadata);
+                    engine.CollectRegisterCounterValuesEvent += CollectRegisterCounterValuesEvent;
+                    await engine.StartAsync();
+                }
+            }
+
+            if (counterPublishers != null)
+            {
+                foreach (var counterPublisher in counterPublishers)
+                {
+                    var engine = GetPublisherEngine(counterPublisher);
+                    engine.PublishRegisterCounterValuesEvent += PublishRegisterCounterValuesEvent;
+                    await engine.StartAsync();
+                }
             }
         }
 
@@ -38,7 +54,8 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         {
             var config = _configBusiness.LoadFiles(configFileNames);
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
-            await RunAsync(counterGroups, config.Application.Metadata);
+            var counterPublishers = _publisherBusiness.GetCounterPublishers(config).ToArray();
+            await RunAsync(counterGroups, counterPublishers, config.Application.Metadata);
         }
 
         public async Task<int> CollectAssync(IPerformanceCounterGroup counterGroup, bool metadata)
@@ -46,6 +63,11 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             var engine = GetCollectorEngine(counterGroup, counterGroup.CollectorEngineType, metadata);
             engine.CollectRegisterCounterValuesEvent += CollectRegisterCounterValuesEvent;
             return await engine.CollectRegisterCounterValuesAsync();
+        }
+
+        private IPublisherEngine GetPublisherEngine(ICounterPublisher counterPublisher)
+        {
+            return new PublisherEngine(counterPublisher, _sendBusiness, _tagLoader);
         }
 
         private ICollectorEngine GetCollectorEngine(IPerformanceCounterGroup counterGroup, CollectorEngineType collectorEngineType, bool metadata)
@@ -59,6 +81,11 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 default:
                     throw new ArgumentOutOfRangeException(string.Format("Unknown collector engine type {0}.", collectorEngineType));
             }            
+        }
+
+        private void PublishRegisterCounterValuesEvent(object sender, PublishRegisterCounterValuesEventArgs e)
+        {
+            OnEngineActionEvent(new EngineActionEventArgs(e.EngineName, e.Message, e.OutputLevel));
         }
 
         private void CollectRegisterCounterValuesEvent(object sender, CollectRegisterCounterValuesEventArgs e)
