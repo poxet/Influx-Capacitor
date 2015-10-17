@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using InfluxDB.Net;
@@ -14,6 +15,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             var tags = new Dictionary<string, string>
             {
+                { "counter", "configuration" },
                 { "hostname", Environment.MachineName },
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
                 { "action", action },
@@ -21,14 +23,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             var fields = new Dictionary<string, object>
             {
-                { "value", 1 }
+                { "value", (decimal)1.0 },
             };
 
             var points = new[]
             {
                 new Point
                     {
-                        Name = Constants.ServiceName + "-Config", 
+                        Name = Constants.ServiceName + "-Metadata", 
                         Tags = tags,
                         Fields = fields,
                         Precision = TimeUnit.Milliseconds,
@@ -43,6 +45,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             var tags = new Dictionary<string, string>
             {
+                { "counter", "queueCount" },
                 { "hostname", Environment.MachineName },
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
                 { "action", action },
@@ -57,13 +60,19 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             var fields = new Dictionary<string, object>
             {
-                { "value", previousQueueCount + queueCountChange },
-                { "countChanged", queueCountChange },
+                { "value", (decimal)(previousQueueCount + queueCountChange) },
+                //{ "queueCount", previousQueueCount + queueCountChange },
+                { "queueCountChange", queueCountChange },
             };
+
+            if (response.Item2 != null)
+            {
+                fields.Add("sendTimeMs", (decimal)response.Item2.Value);
+            }
 
             var point = new Point
             {
-                Name = Constants.ServiceName + "-Queue",
+                Name = Constants.ServiceName + "-Metadata",
                 Tags = tags,
                 Fields = fields,
                 Precision = TimeUnit.Milliseconds,
@@ -73,41 +82,74 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return point;
         }
 
-        public static Point GetCollectorPoint(string engineName, string performanceCounterGroup, int counters, Dictionary<string, long> timeInfo, double? elapseOffsetSeconds)
+        public static IEnumerable<Point> GetCollectorPoint(string engineName, string performanceCounterGroup, int counters, Dictionary<string, long> timeInfo, double? elapseOffsetMs)
         {
             var tags = new Dictionary<string, string>
             {
+                { "counter", "readCount" },
                 { "hostname", Environment.MachineName },
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
+                { "action", "collect" },
                 { "performanceCounterGroup", performanceCounterGroup },
                 { "engineName", engineName },
             };
 
             var fields = new Dictionary<string, object>
             {
-                { "value", counters },
+                { "value", (decimal)counters },
+                //{ "readCount", counters }
             };
 
-            if (elapseOffsetSeconds != null)
+            if (elapseOffsetMs != null)
             {
-                fields.Add("elapseOffsetTimeMs", elapseOffsetSeconds.Value / 1000);
+                fields.Add("elapseOffsetTimeMs", (decimal)elapseOffsetMs.Value);
             }
 
-            foreach (var ti in timeInfo)
-            {
-                fields.Add(ti.Key + "TimeMs", new TimeSpan(ti.Value).TotalMilliseconds);
-            }
+            var totalTimeMs = timeInfo.Sum(x => x.Value);
+            fields.Add("totalTimeMs", (decimal)new TimeSpan(totalTimeMs).TotalMilliseconds);
 
-            var point = new Point
+            var now = DateTime.UtcNow;
+
+            yield return new Point
             {
-                Name = Constants.ServiceName + "-Counter",
+                Name = Constants.ServiceName + "-Metadata",
                 Tags = tags,
                 Fields = fields,
                 Precision = TimeUnit.Milliseconds,
-                Timestamp = DateTime.UtcNow
+                Timestamp = now
             };
 
-            return point;
+            var index = 0;
+            foreach (var ti in timeInfo)
+            {
+                index++;
+
+                fields = new Dictionary<string, object>
+                {
+                    { "value", (decimal)new TimeSpan(ti.Value).TotalMilliseconds },
+                    //{ "readTime", (decimal)new TimeSpan(ti.Value).TotalMilliseconds }
+                };
+
+                tags = new Dictionary<string, string>
+                {
+                    { "counter", "readTime" },
+                    { "hostname", Environment.MachineName },
+                    { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
+                    { "action", "collect" },
+                    { "performanceCounterGroup", performanceCounterGroup },
+                    { "engineName", engineName },
+                    { "step", index + "-" + ti.Key },
+                };
+
+                yield return new Point
+                {
+                    Name = Constants.ServiceName + "-Metadata",
+                    Tags = tags,
+                    Fields = fields,
+                    Precision = TimeUnit.Milliseconds,
+                    Timestamp = now
+                };
+            }
         }
     }
 }

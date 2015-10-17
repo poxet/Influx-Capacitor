@@ -187,8 +187,6 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var fields = new Dictionary<string, object>
                     {
                         { "value", value },
-                        //{ "readSpan", readSpan }, //Time in ms from the first, to the lats counter read in the group.
-                        //{ "timeOffset", (float)(timeOffset * 1000) } //Time difference in ms from reported time, to when read actually started.
                     };
 
                     var point = new Point

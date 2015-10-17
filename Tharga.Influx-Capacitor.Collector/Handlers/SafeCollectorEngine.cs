@@ -40,7 +40,8 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var timestamp = DateTime.UtcNow;
 
                     var precision = TimeUnit.Seconds;
-                    timeInfo.Add(TimerConstants.Synchronize, swMain.ElapsedSegment);
+                    //No synchronization when running the safe collector engine
+                    //timeInfo.Add(TimerConstants.Synchronize, swMain.ElapsedSegment);
 
                     //TODO: Create a mutex lock here (So that two counters canno read the same signature at the same time, since the content of the _performanceCounterGroup might change during this process.
 
@@ -66,7 +67,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                     if (_metadata)
                     {
-                        Enqueue(new[] { MetaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, null) });
+                        Enqueue(MetaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, null).ToArray());
                     }
 
                     OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Length, timeInfo, 0, OutputLevel.Default));

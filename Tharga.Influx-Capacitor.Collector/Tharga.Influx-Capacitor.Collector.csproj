@@ -96,6 +96,7 @@
     <Compile Include="Entities\NullDatabaseConfig.cs" />
     <Compile Include="Entities\Tag.cs" />
     <Compile Include="Event\PublishRegisterCounterValuesEventArgs.cs" />
+    <Compile Include="Handlers\PublisherEngine.cs" />
     <Compile Include="Interface\ICounterPublisher.cs" />
     <Compile Include="Interface\IPublisherBusiness.cs" />
     <Compile Include="Publishers\Random.cs" />

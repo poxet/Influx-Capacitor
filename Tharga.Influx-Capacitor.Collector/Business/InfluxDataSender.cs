@@ -67,7 +67,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         if (client != null)
                         {
                             //TODO: Possible to log what is sent. To an output file or similar.
-                            client.WriteAsync(points);
+                            var response = client.WriteAsync(points).Result;
                             _canSucceed = true;
                             OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Sending {0} points to server.", points.Length), points.Length, OutputLevel.Information));
                         }
@@ -80,14 +80,20 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
                 catch (Exception exception)
                 {
+                    if (exception is AggregateException)
+                    {
+                        exception = exception.InnerException;
+                        //    if (exception.InnerException is InfluxDbApiException)
+                        //    {
+                        //        if (exception.InnerException.Message.Contains("input field \"value\" on measurement \"Influx-Capacitor\" is type float64, already exists as type integer"))
+                        //        {
+                        //            //DROP MEASUREMENT "???"
+                        //        }
+                        //    }
+                    }
+
                     responseMessage = exception.Message;
                     OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, exception));
-                    //TODO: Also check the type of issue. Perhals the points are misformatted, in that case they will never arrive correctly to the server.
-                    //Only put the items back in the fail queue if...
-                    //1. The issue is a connection error (Any issue is not good enough)
-                    //2. Points has been previously successfully sent in the session (This means sending is acually possible)
-                    //3. The retry count for that specific set of points is not too large
-
                     if (points != null)
                     {
                         if (!_dropOnFail)
@@ -126,17 +132,36 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         private string IsExceptionValidForPutBack(Exception exception)
         {
-            var aggregateException = exception.InnerException as AggregateException;
-            if (aggregateException == null) return exception.GetType().ToString();
-            var tp = aggregateException.InnerException;
+            var exceptionToUse = exception;
+            //var exceptionToUse = GetInnerMostException(exception);
+            //else
+            //{
+            //    var agg = exceptionToUse as AggregateException;
+            //    if (agg != null)
+            //    {
+            //        exceptionToUse = agg.InnerException;
+            //    }
+            //    //return exception.GetType().ToString();
+            //}
 
             //Allowed request types returns null
-            if (tp is HttpRequestException)
+            if (exceptionToUse is HttpRequestException)
             {
                 return null;
             }
 
-            return tp.GetType().ToString();
+            return exceptionToUse.GetType().ToString();
+        }
+
+        private static Exception GetInnerMostException(Exception exception)
+        {
+            var inner = exception;
+            while (inner.InnerException != null)
+            {
+                inner = inner.InnerException;
+            }
+
+            return inner;
         }
 
         public void Enqueue(Point[] points)

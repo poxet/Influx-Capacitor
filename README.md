@@ -115,7 +115,6 @@ Tags for a specific counter is added like this.
 </Influx-Capacitor>
 ```
 
-
 ## Running the console application
 The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided together with the installation. The program can be started with command parameters, or you can type the commands you want in the program.
 
@@ -141,6 +140,82 @@ The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided 
 
 ## Versions
 The currently supported version of InfluxDB is 0.9x.
+
+## Metadata
+By default metadata is sent fron Influx-Capacitor to influxDB. (There is an Application that can turn this off if you do not want it)
+The data is register as measurement named *Influx-Capacitor-Metadata*.
+
+Mainly the collecting of data and the status of the queue is what can be monitored.
+Use the *counter* tag in the where statement to select the metadata you want to analyze.
+
+####Tags that appears for all metadata measurements
+- hostname - Name of the machine that collects the data
+- version - Version of Influx-Capacitor
+- counter - Name of the metadata counter (queueCount, readCount, readTime or configuration)
+- action - Action that triggered metadata measurement
+
+### queueCount
+For measurements where *counter* = queueCount
+
+Use this measurement to monitor the queue. How data is piled up and how it is sent to the server.
+If you have more than one server you are sending data to, you can see all servers metadata on all servers.
+This makes it easy to see if the queue is increasing because data cannot be sent to one of the servers.
+
+####Tags
+- action - Triggered when one of the following actions occurred (Enqueue, Send)
+- targetServer - Url to the server where data is sent
+- targetDatabase - Name of the database where data is sent
+- failMessage - Error message when sending data. (Only messages that does not prevent metadata from beeing sent)
+
+####Values
+- value - Total number of items in queue
+- queueCountChange - Number of items added or removed from the queue
+- sendTimeMs - The time in milliseconds it took to send data to the server
+
+### readCount
+For measurements where *counter* = readCount
+
+This one can be used to monitor the collection of data. Number of data and how long it takes.
+
+####Tags
+- action - always the value *collect*
+- performanceCounterGroup - Name of the performace counter group
+- engineName - name of the engine collecting data (SafeCollectorEngine or ExactCollectorEngine)
+
+####Values
+- value - Number of counters read
+- elapseOffsetTimeMs - If the *ExactCollectorEngine* is used, the offset time from when the read was supposed to happen.
+- totalTimeMs - Total time it took for all reader steps; synchronize, prepare, read, format, enque and cleanup.
+
+### readTime
+For measurements where *counter* = readTime
+
+The collecting of data involves several steps. Here you can monitor the time it takes for each step.
+- synchronize - When using the *ExactCollectorEngine*, Influx-Capacitor tries to read data at the exact same time. This value shows how long it takes to compensate for the actual time it takes to read the data.
+- prepare - Shows the time it takes to prepare the counters. The counters are refreshed using *RefreshInstanceInterval*, the time it takes will show up here.
+- read - This is the time it takes for the actual read of all counters. If there are many counters to read, this will take longer.
+- format - The time it takes to format the data that is to be sent to influxDB.
+- enque - This is the time it takes to put the data in the queue.
+- cleanup - The final step times the removal of obsolete counters. An example of this could be a counter for a SqlDatabase that has been removed or a process that does no longer exist.
+
+####Tags
+- action - always the value *collect*
+- performanceCounterGroup - Name of the performace counter group
+- engineName - name of the engine collecting data (SafeCollectorEngine or ExactCollectorEngine)
+- step - Name of the step (with order number) for the data collector (Hint. Use this in graphana for grouping and stack the values)
+
+####Values
+- value - Time in milliseconds for each step (Use the total sum to get the total time for the collector)
+
+### configuration
+For measurements where *counter* = configuration
+
+####Tags
+action - The action that performed the configuration test (config_auto, config_database, config_change)
+
+####Values
+value - The value 1
+
 
 ## Thanks to
 - [zeugfr](https://github.com/zeugfr)
