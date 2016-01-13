@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using InfluxDB.Net.Models;
-using Tharga.InfluxCapacitor.Collector.Event;
+using Tharga.InfluxCapacitor.Entities;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface ISendBusiness
     {
         void Enqueue(Point[] points);
-        event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
+        event EventHandler<SendCompleteEventArgs> SendBusinessEvent;
         IEnumerable<Tuple<string, int>> GetQueueInfo();
     }
 }

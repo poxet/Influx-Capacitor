@@ -1,7 +1,9 @@
+using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Entities;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console
@@ -22,12 +24,12 @@ namespace Tharga.InfluxCapacitor.Console
             TagLoader = new TagLoader(ConfigBusiness);
         }
 
-        void SendBusinessEvent(object sender, SendBusinessEventArgs e)
+        private void SendBusinessEvent(object sender, SendCompleteEventArgs e)
         {
-            ClientConsole.WriteLine(e.Message, e.OutputLevel, null);
+            ClientConsole.WriteLine(e.Message, e.Level.ToOutputLevel(), null);
         }
 
-        void InvalidConfigEvent(object sender, InvalidConfigEventArgs e)
+        private void InvalidConfigEvent(object sender, InvalidConfigEventArgs e)
         {
             ClientConsole.WriteLine(e.Message, OutputLevel.Warning, null);
         }

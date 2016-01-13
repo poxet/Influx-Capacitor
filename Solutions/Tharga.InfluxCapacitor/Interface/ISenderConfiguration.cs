@@ -4,5 +4,7 @@ namespace Tharga.InfluxCapacitor.Interface
     {
         bool IsEnabled { get; }
         string Type { get; }
+        int MaxQueueSize { get; }
+        dynamic Properties { get; }
     }
 }

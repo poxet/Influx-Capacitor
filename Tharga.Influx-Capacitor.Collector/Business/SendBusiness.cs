@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using InfluxDB.Net.Models;
-using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
-using Tharga.Toolkit.Console.Command.Base;
-using SendBusinessEventArgs = Tharga.InfluxCapacitor.Collector.Event.SendBusinessEventArgs;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class SendBusiness : ISendBusiness
     {
-        public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
+        public event EventHandler<SendCompleteEventArgs> SendBusinessEvent;
 
         public IEnumerable<Tuple<string, int>> GetQueueInfo()
         {
@@ -39,17 +36,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _dataSenders = config.Databases.Where(x => x.IsEnabled).Select(x => x.GetDataSender(influxDbAgentLoader, config.Application.MaxQueueSize)).ToList();
             foreach (var dataSender in _dataSenders)
             {
-                dataSender.SendBusinessEvent += DataSender_SendBusinessEvent;
+                dataSender.SendCompleteEvent += OnSendBusinessEvent;
             }
 
             _metadata = config.Application.Metadata;
-        }
-
-        private void DataSender_SendBusinessEvent(object sender, SendEventArgs e)
-        {
-            //TODO: Fire!
-            throw new NotImplementedException();
-            //OnSendBusinessEvent(sender, new SendBusinessEventArgs());
         }
 
         private void Elapsed(object sender, ElapsedEventArgs e)
@@ -109,7 +99,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
         }
 
-        protected virtual void OnSendBusinessEvent(object sender, SendBusinessEventArgs e)
+        protected virtual void OnSendBusinessEvent(object sender, SendCompleteEventArgs e)
         {
             var handler = SendBusinessEvent;
             handler?.Invoke(this, e);

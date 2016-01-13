@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using InfluxDB.Net;
 using InfluxDB.Net.Models;
-using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Entities;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter
@@ -47,7 +47,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             }
         }
 
-        public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
+        public event EventHandler<SendCompleteEventArgs> SendBusinessEvent;
         public IEnumerable<Tuple<string, int>> GetQueueInfo()
         {
             throw new NotImplementedException();

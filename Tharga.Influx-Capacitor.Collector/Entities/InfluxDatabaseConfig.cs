@@ -1,7 +1,7 @@
 using System;
-using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Interface;
+using Tharga.InfluxCapacitor.Sender;
 
 namespace Tharga.InfluxCapacitor.Collector.Entities
 {
@@ -31,7 +31,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 
         public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
         {
-            return new InfluxDataSender(influxDbAgentLoader, this, maxQueueSize);
+            return new InfluxDataSender(new InfluxDataSenderConfiguration(IsEnabled, maxQueueSize, Url, Name, Username, Password));
         }
     }
 }

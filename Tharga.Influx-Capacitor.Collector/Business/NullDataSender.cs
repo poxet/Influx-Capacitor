@@ -15,7 +15,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _maxQueueSize = maxQueueSize;
         }
 
-        public event EventHandler<SendEventArgs> SendBusinessEvent;
+        public event EventHandler<SendCompleteEventArgs> SendCompleteEvent;
 
         public SendResponse Send()
         {

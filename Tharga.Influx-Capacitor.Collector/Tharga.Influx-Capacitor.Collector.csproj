@@ -97,7 +97,7 @@
     <Compile Include="Business\MetaDataBusinessBusiness.cs" />
     <Compile Include="Business\NullDataSender.cs" />
     <Compile Include="Business\PublisherBusiness.cs" />
-    <Compile Include="Extensions\SenderExceptionExtension.cs" />
+    <Compile Include="Extensions\OutputLevelExtension.cs" />
     <Compile Include="Business\TagLoader.cs" />
     <Compile Include="Entities\AccDatabaseConfig.cs" />
     <Compile Include="Entities\ApplicationConfig.cs" />
@@ -105,6 +105,7 @@
     <Compile Include="Entities\NullDatabaseConfig.cs" />
     <Compile Include="Entities\Tag.cs" />
     <Compile Include="Event\PublishRegisterCounterValuesEventArgs.cs" />
+    <Compile Include="Extensions\SenderExceptionExtension.cs" />
     <Compile Include="Handlers\PublisherEngine.cs" />
     <Compile Include="Interface\ICounterPublisher.cs" />
     <Compile Include="Interface\IPublisherBusiness.cs" />

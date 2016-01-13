@@ -83,13 +83,17 @@
     <Compile Include="..\..\Build\AssemblyVersionInfo.cs">
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Interface\IDataSender.cs" />
+    <Compile Include="Interface\IInfluxDbAgent.cs" />
     <Compile Include="Interface\ISendBusiness.cs" />
     <Compile Include="Interface\ISenderConfiguration.cs" />
-    <Compile Include="Entities\SendEventArgs.cs" />
+    <Compile Include="Entities\SendCompleteEventArgs.cs" />
     <Compile Include="Entities\SendResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sender\KafkaDataSender.cs" />
+    <Compile Include="Sender\InfluxDataSender.cs" />
+    <Compile Include="Sender\InfluxDataSenderConfiguration.cs" />
+    <Compile Include="Extensions\SenderExceptionExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

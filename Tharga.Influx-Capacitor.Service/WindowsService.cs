@@ -7,6 +7,7 @@ using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
+using Tharga.InfluxCapacitor.Entities;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Service
@@ -57,10 +58,10 @@ namespace Tharga.InfluxCapacitor.Service
             Trace.WriteLine(e.Message, e.OutputLevel.ToString());
         }
 
-        private void SendBusinessEvent(object sender, SendBusinessEventArgs e)
+        private void SendBusinessEvent(object sender, SendCompleteEventArgs e)
         {
-            _console.WriteLine(e.Message, e.OutputLevel, null);
-            Trace.WriteLine(e.Message, e.OutputLevel.ToString());
+            _console.WriteLine(e.Message, e.Level.ToOutputLevel(), null);
+            Trace.WriteLine(e.Message, e.Level.ToString());
         }
 
         private void GetPerformanceCounterEvent(object sender, GetPerformanceCounterEventArgs e)

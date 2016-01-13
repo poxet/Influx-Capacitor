@@ -10,7 +10,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
     {
         private readonly int _maxQueueSize;
         private readonly List<Point> _points = new List<Point>();
-        public event EventHandler<SendEventArgs> SendBusinessEvent;
+        public event EventHandler<SendCompleteEventArgs> SendCompleteEvent;
 
         public AccDataSender(int maxQueueSize)
         {

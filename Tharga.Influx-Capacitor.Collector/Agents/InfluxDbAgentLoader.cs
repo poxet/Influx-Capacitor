@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using Tharga.InfluxCapacitor.Agents;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Agents
 {
@@ -13,7 +15,7 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
                 return null;
             }
 
-            return new InfluxDbAgent(database);
+            return new InfluxDbAgent(database.Url, database.Name, database.Username, database.Password);
         }
     }
 }

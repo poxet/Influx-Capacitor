@@ -7,8 +7,6 @@ using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
-using Tharga.Toolkit.Console.Command.Base;
-using SendBusinessEventArgs = Tharga.InfluxCapacitor.Collector.Event.SendBusinessEventArgs;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
@@ -23,7 +21,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         private readonly bool _dropOnFail;
         private bool _canSucceed;
 
-        public event EventHandler<SendEventArgs> SendBusinessEvent;
+        public event EventHandler<SendCompleteEventArgs> SendCompleteEvent;
 
         public KafkaDataSender(IDatabaseConfig databaseConfig, int maxQueueSize)
         {
@@ -139,9 +137,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         public string TargetDatabase => "Kafka";
         public int QueueCount { get { return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length); } }
 
-        protected virtual void OnSendBusinessEvent(SendEventArgs e)
+        protected virtual void OnSendBusinessEvent(SendCompleteEventArgs e)
         {
-            var handler = SendBusinessEvent;
+            var handler = SendCompleteEvent;
             handler?.Invoke(this, e);
         }
     }

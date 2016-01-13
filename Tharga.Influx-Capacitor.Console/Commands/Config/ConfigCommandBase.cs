@@ -7,6 +7,7 @@ using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Config

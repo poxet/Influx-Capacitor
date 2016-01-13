@@ -124,6 +124,7 @@
     <Compile Include="Commands\Config\ConfigShowCommand.cs" />
     <Compile Include="CompositeRoot.cs" />
     <Compile Include="ICompositeRoot.cs" />
+    <Compile Include="OutputLevelExtension.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -132,6 +133,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Solutions\Tharga.InfluxCapacitor\Tharga.InfluxCapacitor.csproj">
+      <Project>{6E83A503-4094-48A7-A2AA-F6B46461C075}</Project>
+      <Name>Tharga.InfluxCapacitor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tharga.Influx-Capacitor.Collector\Tharga.Influx-Capacitor.Collector.csproj">
       <Project>{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}</Project>
       <Name>Tharga.Influx-Capacitor.Collector</Name>
