@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using InfluxDB.Net;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -32,7 +33,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _client = new Lazy<IInfluxDbAgent>(() => influxDbAgentLoader.GetAgent(databaseConfig));
         }
 
-        public Tuple<string, double?> Send()
+        public SendResponse Send()
         {
             string responseMessage = null;
             var stopWatch = new Stopwatch();
@@ -127,7 +128,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
             }
 
-            return new Tuple<string, double?>(responseMessage, stopWatch.Elapsed.TotalMilliseconds);
+            return new SendResponse(responseMessage, stopWatch.Elapsed.TotalMilliseconds);
         }
 
         private string IsExceptionValidForPutBack(Exception exception)

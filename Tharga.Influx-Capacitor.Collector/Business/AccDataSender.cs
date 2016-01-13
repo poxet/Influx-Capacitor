@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
@@ -17,9 +18,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _maxQueueSize = maxQueueSize;
         }
 
-        public Tuple<string, double?> Send()
+        public SendResponse Send()
         {
-            return new Tuple<string, double?>("Keeping", null);
+            return new SendResponse("Keeping", null);
         }
 
         public void Enqueue(Point[] points)

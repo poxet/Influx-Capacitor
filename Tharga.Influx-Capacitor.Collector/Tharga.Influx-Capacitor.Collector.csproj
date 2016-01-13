@@ -106,6 +106,7 @@
     <Compile Include="Handlers\PublisherEngine.cs" />
     <Compile Include="Interface\ICounterPublisher.cs" />
     <Compile Include="Interface\IPublisherBusiness.cs" />
+    <Compile Include="Entities\SendResponse.cs" />
     <Compile Include="Publishers\Random.cs" />
     <Compile Include="Publishers\TotalMemory.cs" />
     <Compile Include="TimerConstants.cs" />

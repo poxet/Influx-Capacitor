@@ -1,5 +1,6 @@
 using System;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
@@ -17,10 +18,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
 
-        public Tuple<string, double?> Send()
+        public SendResponse Send()
         {
             _count = 0;
-            return new Tuple<string, double?>("null", null);
+            return new SendResponse("null", null);
         }
 
         public void Enqueue(Point[] points)

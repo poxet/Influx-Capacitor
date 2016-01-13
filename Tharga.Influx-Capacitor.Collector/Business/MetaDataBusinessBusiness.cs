@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using InfluxDB.Net;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
@@ -41,7 +42,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return await client.WriteAsync(points);
         }
 
-        public static Point GetQueueCountPoints(string action, string targetServer, string targetDatabase, int previousQueueCount, int queueCountChange, Tuple<string,double?> response)
+        public static Point GetQueueCountPoints(string action, string targetServer, string targetDatabase, int previousQueueCount, int queueCountChange, SendResponse response)
         {
             var tags = new Dictionary<string, string>
             {
@@ -53,9 +54,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "targetDatabase", targetDatabase },
             };
 
-            if (!string.IsNullOrEmpty(response.Item1))
+            if (!string.IsNullOrEmpty(response.Message))
             {
-                tags.Add("failMessage", response.Item1);
+                tags.Add("failMessage", response.Message);
             }
 
             var fields = new Dictionary<string, object>
@@ -65,9 +66,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "queueCountChange", queueCountChange },
             };
 
-            if (response.Item2 != null)
+            if (response.Elapsed != null)
             {
-                fields.Add("sendTimeMs", (decimal)response.Item2.Value);
+                fields.Add("sendTimeMs", (decimal)response.Elapsed.Value);
             }
 
             var point = new Point

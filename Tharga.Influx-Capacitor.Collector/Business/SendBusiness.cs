@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -12,6 +13,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
     public class SendBusiness : ISendBusiness
     {
         public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
+
         public IEnumerable<Tuple<string, int>> GetQueueInfo()
         {
             return _dataSenders.Select(x => new Tuple<string, int>(x.TargetDatabase, x.QueueCount));
@@ -45,7 +47,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             var metaPoints = new List<Point>();
 
-            foreach(var dataSender in _dataSenders)
+            foreach (var dataSender in _dataSenders)
             {
                 var previousQueueCount = dataSender.QueueCount;
                 var success = dataSender.Send();
@@ -87,7 +89,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             //Prepare metadata information about the queue and add that to the points to be sent.
             if (_metadata)
             {
-                var metaPoints = _dataSenders.Select(x => MetaDataBusiness.GetQueueCountPoints("Enqueue", x.TargetServer, x.TargetDatabase, x.QueueCount, points.Length + _dataSenders.Count, new Tuple<string, double?>(null, null))).ToArray();
+                var metaPoints = _dataSenders.Select(x => MetaDataBusiness.GetQueueCountPoints("Enqueue", x.TargetServer, x.TargetDatabase, x.QueueCount, points.Length + _dataSenders.Count, new SendResponse(null, null))).ToArray();
                 points = points.Union(metaPoints).ToArray();
             }
 

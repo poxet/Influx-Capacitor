@@ -1,6 +1,7 @@
 using System;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Agents;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
@@ -16,7 +17,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _agent = new KafkaAgent();
         }
 
-        public Tuple<string, double?> Send()
+        public SendResponse Send()
         {
             throw new NotImplementedException();
         }
