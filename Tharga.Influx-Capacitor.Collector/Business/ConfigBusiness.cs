@@ -158,7 +158,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
-                return new List<InfluxDatabaseConfig> { new InfluxDatabaseConfig(Constants.NoConfigUrl, null, null, null) };
+                return new List<InfluxDatabaseConfig> { new InfluxDatabaseConfig(true, Constants.NoConfigUrl, null, null, null) };
             }
 
             var config = LoadFile(databaseConfigFilePath);
@@ -168,14 +168,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         public void SaveDatabaseUrl(string url)
         {
             var config = OpenDatabaseConfig().First();
-            var newDbConfig = new InfluxDatabaseConfig(url, config.Username, config.Password, config.Name);
+            var newDbConfig = new InfluxDatabaseConfig(true, url, config.Username, config.Password, config.Name);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
         public void SaveDatabaseConfig(string databaseName, string username, string password)
         {
             var config = OpenDatabaseConfig().First();
-            var newDbConfig = new InfluxDatabaseConfig(config.Url, username, password, databaseName);
+            var newDbConfig = new InfluxDatabaseConfig(true, config.Url, username, password, databaseName);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
@@ -519,25 +519,60 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     case "acc":
                         yield return GetAccDatabaseConfig(database);
                         break;
-                    default:
+                    case "kafka":
+                        yield return GetKafkaDatabaseConfig(database);
+                        break;
+                    case "":
                         yield return GetInfluxDatabaseConfig(database);
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(string.Format("There is no database type with name {0}.", databaseType));
                 }
             }
         }
 
+        private static bool IsDatabaseEnabled(XmlNode database)
+        {
+            bool enabled;
+
+            var attr = database.Attributes.GetNamedItem("Enabled");
+            if (attr == null)
+            {
+                enabled = true;
+            }
+            else if (!bool.TryParse(attr.Value, out enabled))
+            {
+                enabled = true;
+            }
+
+            return enabled;
+        }
+
         private static IDatabaseConfig GetNullDatabaseConfig(XmlNode database)
         {
-            return new NullDatabaseConfig();
+            var enabled = IsDatabaseEnabled(database);
+
+            return new NullDatabaseConfig(enabled);
         }
 
         private static IDatabaseConfig GetAccDatabaseConfig(XmlNode database)
         {
-            return new AccDatabaseConfig();
+            var enabled = IsDatabaseEnabled(database);
+
+            return new AccDatabaseConfig(enabled);
+        }
+
+        private static IDatabaseConfig GetKafkaDatabaseConfig(XmlNode database)
+        {
+            var enabled = IsDatabaseEnabled(database);
+
+            return new KafkaDatabaseConfig(enabled);
         }
 
         private static IDatabaseConfig GetInfluxDatabaseConfig(XmlNode database)
         {
+            var enabled = IsDatabaseEnabled(database);
+
             string url = null;
             string username = null;
             string password = null;
@@ -563,7 +598,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
             }
 
-            var db = new InfluxDatabaseConfig(url, username, password, name);
+            var db = new InfluxDatabaseConfig(enabled, url, username, password, name);
             return db;
         }
 

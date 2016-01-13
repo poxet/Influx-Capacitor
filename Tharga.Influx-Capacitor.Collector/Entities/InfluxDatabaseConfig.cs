@@ -11,16 +11,18 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         private readonly string _password;
         private readonly string _name;
 
-        public InfluxDatabaseConfig(string url, string username, string password, string name)
+        public InfluxDatabaseConfig(bool enabled, string url, string username, string password, string name)
         {
             if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url", "No url to influxDB provided.");
 
+            IsEnabled = enabled;
             _url = url;
             _username = username;
             _password = password;
             _name = name;
         }
 
+        public bool IsEnabled { get; }
         public string Url { get { return _url; } }
         public string Username { get { return _username; } }
         public string Password { get { return _password; } }

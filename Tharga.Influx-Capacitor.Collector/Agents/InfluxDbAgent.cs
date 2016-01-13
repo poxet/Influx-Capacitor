@@ -43,11 +43,6 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
             return await _influxDb.WriteAsync(_databaseConfig.Name, points);
         }
 
-        //public void x()
-        //{
-        //    _influxDb.
-        //}
-
         public async Task CreateDatabaseAsync(string databaseName)
         {
             await _influxDb.CreateDatabaseAsync(databaseName);

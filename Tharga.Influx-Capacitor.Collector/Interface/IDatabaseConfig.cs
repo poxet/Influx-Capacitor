@@ -2,6 +2,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface IDatabaseConfig
     {
+        bool IsEnabled { get; }
         string Url { get; }
         string Username { get; }
         string Password { get; }

@@ -45,6 +45,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Solutions\packages\InfluxDB.Net-Main.1.0.0.24\lib\net45\InfluxDB.Net.dll</HintPath>
     </Reference>
+    <Reference Include="kafka-net, Version=0.9.0.65, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Solutions\packages\kafka-net.0.9.0.65\lib\net45\kafka-net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Threading.Tasks">
       <HintPath>..\Solutions\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
     </Reference>
@@ -85,14 +89,17 @@
     </Compile>
     <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
+    <Compile Include="Agents\KafkaAgent.cs" />
     <Compile Include="Business\AccDataSender.cs" />
     <Compile Include="Business\InfluxDataSender.cs" />
+    <Compile Include="Business\KafkaDataSender.cs" />
     <Compile Include="Business\MetaDataBusinessBusiness.cs" />
     <Compile Include="Business\NullDataSender.cs" />
     <Compile Include="Business\PublisherBusiness.cs" />
     <Compile Include="Business\TagLoader.cs" />
     <Compile Include="Entities\AccDatabaseConfig.cs" />
     <Compile Include="Entities\ApplicationConfig.cs" />
+    <Compile Include="Entities\KafkaDatabaseConfig.cs" />
     <Compile Include="Entities\NullDatabaseConfig.cs" />
     <Compile Include="Entities\Tag.cs" />
     <Compile Include="Event\PublishRegisterCounterValuesEventArgs.cs" />
@@ -148,6 +155,7 @@
     <Compile Include="Handlers\StopwatchHighPrecision.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
