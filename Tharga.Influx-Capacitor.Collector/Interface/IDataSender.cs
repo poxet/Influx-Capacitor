@@ -8,7 +8,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
     public interface IDataSender
     {
         event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
-        //Tuple<string, double?> Send();
         SendResponse Send();
         void Enqueue(Point[] points);
         string TargetServer { get; }

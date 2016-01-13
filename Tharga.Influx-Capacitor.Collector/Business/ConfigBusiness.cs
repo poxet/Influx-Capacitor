@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Xml;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
-using Tharga.InfluxCapacitor.Collector.Extensions;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Collector.Publishers;
@@ -566,7 +565,20 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             var enabled = IsDatabaseEnabled(database);
 
-            return new KafkaDatabaseConfig(enabled);
+            string url = null;
+            foreach (XmlElement item in database.ChildNodes)
+            {
+                switch (item.Name)
+                {
+                    case "Url":
+                        url = item.InnerText;
+                        break;
+                    case "":
+                        break;
+                }
+            }
+
+            return new KafkaDatabaseConfig(enabled, url);
         }
 
         private static IDatabaseConfig GetInfluxDatabaseConfig(XmlNode database)

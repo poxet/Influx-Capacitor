@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Xml;
 
-namespace Tharga.InfluxCapacitor.Collector.Extensions
+namespace Tharga.InfluxCapacitor.Collector
 {
     public static class XmlDocumentExtensions
     {

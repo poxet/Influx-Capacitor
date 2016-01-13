@@ -58,8 +58,9 @@
     <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop">
       <HintPath>..\Solutions\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\Solutions\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -96,6 +97,7 @@
     <Compile Include="Business\MetaDataBusinessBusiness.cs" />
     <Compile Include="Business\NullDataSender.cs" />
     <Compile Include="Business\PublisherBusiness.cs" />
+    <Compile Include="Extensions\SenderExceptionExtension.cs" />
     <Compile Include="Business\TagLoader.cs" />
     <Compile Include="Entities\AccDatabaseConfig.cs" />
     <Compile Include="Entities\ApplicationConfig.cs" />

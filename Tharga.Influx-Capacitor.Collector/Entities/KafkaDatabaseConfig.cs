@@ -1,3 +1,4 @@
+using System;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
@@ -5,20 +6,21 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 {
     public class KafkaDatabaseConfig : IDatabaseConfig
     {
-        public bool IsEnabled { get; }
-        public string Url { get; }
-        public string Username { get; }
-        public string Password { get; }
-        public string Name { get; }
-
-        public KafkaDatabaseConfig(bool enabled)
+        public KafkaDatabaseConfig(bool enabled, string url)
         {
             IsEnabled = enabled;
+            Url = url;
         }
+
+        public bool IsEnabled { get; }
+        public string Url { get; }
+        public string Username { get { throw new NotSupportedException(); } }
+        public string Password { get { throw new NotSupportedException(); } }
+        public string Name { get { return "N/A"; } }
 
         public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
         {
-            return new KafkaDataSender();
+            return new KafkaDataSender(this, maxQueueSize);
         }
     }
 }

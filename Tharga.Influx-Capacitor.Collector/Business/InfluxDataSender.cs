@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.Linq;
 using InfluxDB.Net;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Entities;
@@ -20,7 +20,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         private readonly Queue<Point[]> _queue = new Queue<Point[]>();
         private readonly Queue<Tuple<int, Point[]>> _failQueue = new Queue<Tuple<int, Point[]>>();
         private readonly Lazy<IInfluxDbAgent> _client;
-        public bool _canSucceed = false;
+        private bool _canSucceed;
 
         public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
 
@@ -42,7 +42,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             lock (_syncRoot)
             {
                 Point[] points = null;
-                int retryCount = 0;
+                var retryCount = 0;
                 try
                 {
                     while (_queue.Count + _failQueue.Count > 0)
@@ -84,13 +84,6 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     if (exception is AggregateException)
                     {
                         exception = exception.InnerException;
-                        //    if (exception.InnerException is InfluxDbApiException)
-                        //    {
-                        //        if (exception.InnerException.Message.Contains("input field \"value\" on measurement \"Influx-Capacitor\" is type float64, already exists as type integer"))
-                        //        {
-                        //            //DROP MEASUREMENT "???"
-                        //        }
-                        //    }
                     }
 
                     responseMessage = exception.Message;
@@ -99,7 +92,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     {
                         if (!_dropOnFail)
                         {
-                            var invalidExceptionType = IsExceptionValidForPutBack(exception);
+                            var invalidExceptionType = exception.IsExceptionValidForPutBack();
 
                             if (invalidExceptionType != null)
                             {
@@ -131,29 +124,6 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return new SendResponse(responseMessage, stopWatch.Elapsed.TotalMilliseconds);
         }
 
-        private string IsExceptionValidForPutBack(Exception exception)
-        {
-            var exceptionToUse = exception;
-            //var exceptionToUse = GetInnerMostException(exception);
-            //else
-            //{
-            //    var agg = exceptionToUse as AggregateException;
-            //    if (agg != null)
-            //    {
-            //        exceptionToUse = agg.InnerException;
-            //    }
-            //    //return exception.GetType().ToString();
-            //}
-
-            //Allowed request types returns null
-            if (exceptionToUse is HttpRequestException)
-            {
-                return null;
-            }
-
-            return exceptionToUse.GetType().ToString();
-        }
-
         private static Exception GetInnerMostException(Exception exception)
         {
             var inner = exception;
@@ -181,7 +151,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public string TargetServer { get { return _databaseConfig.Url; } }
         public string TargetDatabase { get { return _databaseConfig.Name; } }
-        public int QueueCount { get { return _queue.Count + _failQueue.Count; } }
+        public int QueueCount { get { return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length); } }
 
         protected virtual void OnSendBusinessEvent(SendBusinessEventArgs e)
         {
