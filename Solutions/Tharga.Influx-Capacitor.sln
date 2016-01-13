@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.Influx-Capacitor.Console", "..\Tharga.Influx-Capacitor.Console\Tharga.Influx-Capacitor.Console.csproj", "{840B45F9-F50E-449A-B132-63B80FCF1337}"
 EndProject
@@ -57,6 +57,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{1477
 		..\Samples\ssrs.xml = ..\Samples\ssrs.xml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.InfluxCapacitor", "Tharga.InfluxCapacitor\Tharga.InfluxCapacitor.csproj", "{6E83A503-4094-48A7-A2AA-F6B46461C075}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CI|Any CPU = CI|Any CPU
@@ -94,6 +96,12 @@ Global
 		{33DCFFDC-8E5A-4A4E-942F-A3F5B42FB8D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33DCFFDC-8E5A-4A4E-942F-A3F5B42FB8D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33DCFFDC-8E5A-4A4E-942F-A3F5B42FB8D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E83A503-4094-48A7-A2AA-F6B46461C075}.CI|Any CPU.ActiveCfg = CI|Any CPU
+		{6E83A503-4094-48A7-A2AA-F6B46461C075}.CI|Any CPU.Build.0 = CI|Any CPU
+		{6E83A503-4094-48A7-A2AA-F6B46461C075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E83A503-4094-48A7-A2AA-F6B46461C075}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E83A503-4094-48A7-A2AA-F6B46461C075}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E83A503-4094-48A7-A2AA-F6B46461C075}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

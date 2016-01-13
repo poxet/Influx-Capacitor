@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using InfluxDB.Net;
 using InfluxDB.Net.Models;
-using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
@@ -22,7 +22,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         private readonly Lazy<IInfluxDbAgent> _client;
         private bool _canSucceed;
 
-        public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
+        public event EventHandler<SendEventArgs> SendBusinessEvent;
 
         public InfluxDataSender(IInfluxDbAgentLoader influxDbAgentLoader, IDatabaseConfig databaseConfig, int maxQueueSize)
         {
@@ -70,12 +70,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                             //TODO: Possible to log what is sent. To an output file or similar.
                             var response = client.WriteAsync(points).Result;
                             _canSucceed = true;
-                            OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Sending {0} points to server.", points.Length), points.Length, OutputLevel.Information));
+                            //TODO: Fire!
+                            //OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Sending {0} points to server.", points.Length), points.Length, OutputLevel.Information));
                         }
                         else
                         {
                             responseMessage = "There is no client configured for sending data to the database, or the client has invalid settings.";
-                            OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, responseMessage, points.Length, OutputLevel.Error));
+                            //TODO: Fire!
+                            //OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, responseMessage, points.Length, OutputLevel.Error));
                         }
                     }
                 }
@@ -87,37 +89,38 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     }
 
                     responseMessage = exception.Message;
-                    OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, exception));
-                    if (points != null)
-                    {
-                        if (!_dropOnFail)
-                        {
-                            var invalidExceptionType = exception.IsExceptionValidForPutBack();
+                    //TODO: Fire!
+                    //OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, exception));
+                    //if (points != null)
+                    //{
+                    //    if (!_dropOnFail)
+                    //    {
+                    //        var invalidExceptionType = exception.IsExceptionValidForPutBack();
 
-                            if (invalidExceptionType != null)
-                            {
-                                OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Dropping {0} since the exception type {1} is not allowed for resend.", points.Length, invalidExceptionType), points.Length, OutputLevel.Warning));
-                            }
-                            else if (!_canSucceed)
-                            {
-                                OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Dropping {0} points because there have never yet been a successful send.", points.Length), points.Length, OutputLevel.Warning));
-                            }
-                            else if (retryCount > 5)
-                            {
-                                OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Dropping {0} points after {1} retries.", points.Length, retryCount), points.Length, OutputLevel.Warning));
-                            }
-                            else
-                            {
-                                OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Putting {0} points back in the queue.", points.Length), points.Length, OutputLevel.Warning));
-                                retryCount++;
-                                _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points));
-                            }
-                        }
-                        else
-                        {
-                            OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Dropping {0} points.", points.Length), points.Length, OutputLevel.Warning));
-                        }
-                    }
+                    //        if (invalidExceptionType != null)
+                    //        {
+                    //            OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Dropping {0} since the exception type {1} is not allowed for resend.", points.Length, invalidExceptionType), points.Length, OutputLevel.Warning));
+                    //        }
+                    //        else if (!_canSucceed)
+                    //        {
+                    //            OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Dropping {0} points because there have never yet been a successful send.", points.Length), points.Length, OutputLevel.Warning));
+                    //        }
+                    //        else if (retryCount > 5)
+                    //        {
+                    //            OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Dropping {0} points after {1} retries.", points.Length, retryCount), points.Length, OutputLevel.Warning));
+                    //        }
+                    //        else
+                    //        {
+                    //            OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Putting {0} points back in the queue.", points.Length), points.Length, OutputLevel.Warning));
+                    //            retryCount++;
+                    //            _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points));
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Dropping {0} points.", points.Length), points.Length, OutputLevel.Warning));
+                    //    }
+                    //}
                 }
             }
 
@@ -141,7 +144,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 if (_maxQueueSize - QueueCount < points.Length)
                 {
-                    OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Queue will reach max limit, cannot add more points. Have {0} points, want to add {1} more. The limit is {2}.", QueueCount, points.Length, _maxQueueSize), QueueCount, OutputLevel.Error));
+                    //TODO: Fire!
+                    //OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Queue will reach max limit, cannot add more points. Have {0} points, want to add {1} more. The limit is {2}.", QueueCount, points.Length, _maxQueueSize), QueueCount, OutputLevel.Error));
                     return;
                 }
                 
@@ -153,13 +157,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         public string TargetDatabase { get { return _databaseConfig.Name; } }
         public int QueueCount { get { return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length); } }
 
-        protected virtual void OnSendBusinessEvent(SendBusinessEventArgs e)
+        protected virtual void OnSendBusinessEvent(SendEventArgs e)
         {
             var handler = SendBusinessEvent;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            handler?.Invoke(this, e);
         }
     }
 }

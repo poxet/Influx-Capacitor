@@ -1,8 +1,6 @@
 using System;
 using InfluxDB.Net.Models;
-using Tharga.InfluxCapacitor.Collector.Entities;
-using Tharga.InfluxCapacitor.Collector.Event;
-using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
@@ -16,7 +14,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _maxQueueSize = maxQueueSize;
         }
 
-        public event EventHandler<SendBusinessEventArgs> SendBusinessEvent;
+        public event EventHandler<SendEventArgs> SendBusinessEvent;
 
         public SendResponse Send()
         {
