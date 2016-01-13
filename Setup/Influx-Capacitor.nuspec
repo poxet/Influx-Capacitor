@@ -11,7 +11,7 @@
     <language>en-US</language>
     <description>Influx Capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana.</description>
     <projectUrl>http://influx-capacitor.com</projectUrl>
-    <tags>Influx Capacitor collect metrics influx influxdb performance counter grafana time series tharga</tags>
+    <tags>influx capacitor kapacitor collect metrics influx influxdb performance counter grafana time series windows server kafka</tags>
     <copyright></copyright>
     <licenseUrl>https://github.com/poxet/Influx-Capacitor/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

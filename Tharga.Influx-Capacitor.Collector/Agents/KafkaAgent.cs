@@ -13,21 +13,26 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
     public class KafkaAgent : IDisposable
     {
         private readonly BrokerRouter _router;
+        private readonly IFormatter _formatter;
 
         public KafkaAgent(Uri[] kafkaServers)
         {
             var options = new KafkaOptions(kafkaServers);
             _router = new BrokerRouter(options);
+
+            var influxDbClient = new InfluxDb("http://localhost", "reapadda", "qwerty", InfluxVersion.v09x);
+            _formatter = influxDbClient.GetFormatter();
         }
 
         public void Send(Point[] points)
         {
             using (var client = new Producer(_router))
             {
-                //TODO: Convert to json
-                var messages = points.Select(x => new Message(x.Name)).ToArray();
-                //var messages = points.Select(x => new Message(x.ToJson())).ToArray();
-                //var messages = points.Select(x => new Message(x.ToString())).ToArray();
+                var messages = points.Select(x =>
+                    {
+                        var pointToString = _formatter.PointToString(x);
+                        return new Message(pointToString);
+                    }).ToArray();
                 client.SendMessageAsync("InfluxCapacitor", messages).Wait();
             }
         }

@@ -34,6 +34,7 @@
         <File Name="Microsoft.Threading.Tasks.dll" />
         <File Name="Newtonsoft.Json.dll" />
         <File Name="Tharga.Toolkit.Console.dll" />
+        <File Name="kafka-net.dll" />        
       </Component>
     </DirectoryRef>
 

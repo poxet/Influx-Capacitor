@@ -8,6 +8,9 @@ Data is collected and sent to a [InfluxDB](https://github.com/influxdb/influxdb)
 Install using chocolatey
 https://chocolatey.org/packages/Influx-Capacitor
 
+Visit the main site for more information
+http://influx-capacitor.com/
+
 ## Performance Counters
 
 By default configurations for a few Performance Counters are provided. Setup for counters are stored in xml-files in the same folder as the executables, or in the ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor) and are named with the file extension xml.
@@ -63,6 +66,66 @@ The default location of this configuration is *application.xml*.
 The settings are typically stored in the file database.xml located in hte ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). The settings can be located in any other xml configuration file, but then you will not be able to manage the settings using the management console.
 You can change settings directly in the file and restert the service, or you can use the command "setup change" in the console application, and the service will be restarted for you.
 It is also possible to have multiple database targets. Add another *Database* element in the config file and restart the service. When using multiple targets the console application cannot be used to change the confguration.
+
+There are several different types of databases supported. Each of them is configured differently. Set the type attribute in the Database element to select what database provider to use.
+The attributes *Type* defaults to *InfluxDB*, and *Enabled* is default *true*.
+
+Supported types are
+- InfluxDB (default)
+- Kafka
+
+### InfluxDB
+
+- Url - The location of the InfluxDB server
+- Username - Login username
+- Password - password
+- Name - Name of the database
+
+```
+<Influx-Capacitor>
+  <Database Type="InfluxDB" Enabled="true">
+    <Url>http://localhost:8086</Url>
+    <Username>MyUser</Username>
+    <Password>qwerty</Password>
+    <Name>InfluxDbName</Name>
+  </Database>
+</Influx-Capacitor>
+```
+
+### Kafka
+
+This is actually not a database, this type sends data to *Kafka* (http://kafka.apache.org/). The message is formatted for influxDB version 0.9.x.
+
+- Url - Url to the Kafka server. It is possible to provide a list of servers with *;* as separator.
+
+```
+<Influx-Capacitor>
+  <Database Type="Kafka">
+	<Url>http://server1;http://server2</Url>
+  </Database>
+</Influx-Capacitor>
+```
+
+### Null
+
+This type is for development only. It collects points and sends them to no where.
+
+```
+<Influx-Capacitor>
+  <Database Type="null" />
+</Influx-Capacitor>
+```
+
+### Acc
+
+This type is for development only. It collects and accumulates points but never sends them anywhere.
+
+```
+<Influx-Capacitor>
+  <Database Type="acc" />
+</Influx-Capacitor>
+```
+
 
 ## Tags
 You can add constant tags on a global, counter group and counter level. This can be done in any of the configuration files. The name of the tag has to be unique.
