@@ -5,6 +5,7 @@ using InfluxDB.Net;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 

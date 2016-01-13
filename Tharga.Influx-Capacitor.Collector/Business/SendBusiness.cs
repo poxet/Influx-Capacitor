@@ -5,6 +5,7 @@ using System.Timers;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 using SendBusinessEventArgs = Tharga.InfluxCapacitor.Collector.Event.SendBusinessEventArgs;
