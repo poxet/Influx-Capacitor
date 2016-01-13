@@ -8,7 +8,7 @@ namespace Tharga.InfluxCapacitor.Entities
             Elapsed = elapsed;
         }
 
-        public string Message { get; }
-        public double? Elapsed { get; }
+        public string Message { get; private set; }
+        public double? Elapsed { get; private set; }
     }
 }

@@ -133,14 +133,22 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
         }
 
-        public string TargetServer => _databaseConfig.Url;
-        public string TargetDatabase => "Kafka";
+        public string TargetServer
+        {
+            get { return _databaseConfig.Url; }
+        }
+
+        public string TargetDatabase
+        {
+            get { return "Kafka"; }
+        }
+
         public int QueueCount { get { return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length); } }
 
         protected virtual void OnSendBusinessEvent(SendCompleteEventArgs e)
         {
             var handler = SendCompleteEvent;
-            handler?.Invoke(this, e);
+            if (handler != null) handler.Invoke(this, e);
         }
     }
 }

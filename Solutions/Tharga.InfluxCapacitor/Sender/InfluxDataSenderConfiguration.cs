@@ -14,9 +14,9 @@ namespace Tharga.InfluxCapacitor.Sender
             Properties.Password = password;
         }
 
-        public bool IsEnabled { get; }
-        public string Type => "InfluxDB";
-        public int MaxQueueSize { get; }
-        public dynamic Properties { get; }
+        public bool IsEnabled { get; private set; }
+        public string Type { get { return "InfluxDB"; } }
+        public int MaxQueueSize { get; private set; }
+        public dynamic Properties { get; private set; }
     }
 }

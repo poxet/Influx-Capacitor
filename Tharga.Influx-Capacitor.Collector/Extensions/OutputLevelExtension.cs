@@ -17,7 +17,7 @@ namespace Tharga.InfluxCapacitor.Collector
                 case SendCompleteEventArgs.OutputLevel.Error:
                     return OutputLevel.Error;
                 default:
-                    throw new ArgumentOutOfRangeException($"Inknown output level {item}.");
+                    throw new ArgumentOutOfRangeException(string.Format("Inknown output level {0}.", item));
 
             }
         }

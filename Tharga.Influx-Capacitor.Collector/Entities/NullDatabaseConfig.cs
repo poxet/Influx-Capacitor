@@ -6,7 +6,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 {
     public class NullDatabaseConfig : IDatabaseConfig
     {
-        public bool IsEnabled { get; }
+        public bool IsEnabled { get; private set; }
         public string Url { get; private set; }
         public string Username { get; private set; }
         public string Password { get; private set; }

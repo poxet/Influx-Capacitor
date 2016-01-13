@@ -65,7 +65,7 @@ namespace Tharga.InfluxCapacitor.Sender
                             //TODO: Possible to log what is sent. To an output file or similar.
                             var response = client.WriteAsync(points).Result;
                             _canSucceed = true;
-                            OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, $"Sending {points.Length} points to server.", points.Length, SendCompleteEventArgs.OutputLevel.Information));
+                            OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, string.Format("Sending {0} points to server.", points.Length), points.Length, SendCompleteEventArgs.OutputLevel.Information));
                         }
                         else
                         {
@@ -91,26 +91,26 @@ namespace Tharga.InfluxCapacitor.Sender
 
                             if (invalidExceptionType != null)
                             {
-                                OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, $"Dropping {points.Length} since the exception type {invalidExceptionType} is not allowed for resend.", points.Length, SendCompleteEventArgs.OutputLevel.Warning));
+                                OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, String.Format("Dropping {0} since the exception type {1} is not allowed for resend.", points.Length, invalidExceptionType), points.Length, SendCompleteEventArgs.OutputLevel.Warning));
                             }
                             else if (!_canSucceed)
                             {
-                                OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, $"Dropping {points.Length} points because there have never yet been a successful send.", points.Length, SendCompleteEventArgs.OutputLevel.Warning));
+                                OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, String.Format("Dropping {0} points because there have never yet been a successful send.", points.Length), points.Length, SendCompleteEventArgs.OutputLevel.Warning));
                             }
                             else if (retryCount > 5)
                             {
-                                OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, $"Dropping {points.Length} points after {retryCount} retries.", points.Length, SendCompleteEventArgs.OutputLevel.Warning));
+                                OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, String.Format("Dropping {0} points after {1} retries.", points.Length, retryCount), points.Length, SendCompleteEventArgs.OutputLevel.Warning));
                             }
                             else
                             {
-                                OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, $"Putting {points.Length} points back in the queue.", points.Length, SendCompleteEventArgs.OutputLevel.Warning));
+                                OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, String.Format("Putting {0} points back in the queue.", points.Length), points.Length, SendCompleteEventArgs.OutputLevel.Warning));
                                 retryCount++;
                                 _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points));
                             }
                         }
                         else
                         {
-                            OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, $"Dropping {points.Length} points.", points.Length, SendCompleteEventArgs.OutputLevel.Warning));
+                            OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, String.Format("Dropping {0} points.", points.Length), points.Length, SendCompleteEventArgs.OutputLevel.Warning));
                         }
                     }
                 }
@@ -125,7 +125,7 @@ namespace Tharga.InfluxCapacitor.Sender
             {
                 if (_senderConfiguration.MaxQueueSize - QueueCount < points.Length)
                 {
-                    OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, $"Queue will reach max limit, cannot add more points. Have {QueueCount} points, want to add {points.Length} more. The limit is {_senderConfiguration.MaxQueueSize}.", QueueCount, SendCompleteEventArgs.OutputLevel.Error));
+                    OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, String.Format("Queue will reach max limit, cannot add more points. Have {0} points, want to add {1} more. The limit is {2}.", QueueCount, points.Length, _senderConfiguration.MaxQueueSize), QueueCount, SendCompleteEventArgs.OutputLevel.Error));
                     return;
                 }
 
@@ -133,15 +133,22 @@ namespace Tharga.InfluxCapacitor.Sender
             }
         }
 
-        public string TargetServer => _senderConfiguration.Properties.Url;
-        public string TargetDatabase => _senderConfiguration.Properties.DatabaseName;
+        public string TargetServer
+        {
+            get { return _senderConfiguration.Properties.Url; }
+        }
+
+        public string TargetDatabase
+        {
+            get { return _senderConfiguration.Properties.DatabaseName; }
+        }
 
         public int QueueCount { get { return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length); } }
 
         protected virtual void OnSendBusinessEvent(SendCompleteEventArgs e)
         {
             var handler = SendCompleteEvent;
-            handler?.Invoke(this, e);
+            if (handler != null) handler.Invoke(this, e);
         }
     }
 }

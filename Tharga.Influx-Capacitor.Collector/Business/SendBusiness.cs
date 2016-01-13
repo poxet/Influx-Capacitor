@@ -102,7 +102,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         protected virtual void OnSendBusinessEvent(object sender, SendCompleteEventArgs e)
         {
             var handler = SendBusinessEvent;
-            handler?.Invoke(this, e);
+            if (handler != null ) handler.Invoke(this, e);
         }
     }
 }

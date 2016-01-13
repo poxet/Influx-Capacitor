@@ -13,8 +13,8 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             Url = url;
         }
 
-        public bool IsEnabled { get; }
-        public string Url { get; }
+        public bool IsEnabled { get; private set; }
+        public string Url { get; private set; }
         public string Username { get { throw new NotSupportedException(); } }
         public string Password { get { throw new NotSupportedException(); } }
         public string Name { get { return "N/A"; } }

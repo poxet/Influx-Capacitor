@@ -30,8 +30,8 @@ namespace Tharga.InfluxCapacitor.Entities
             Level = outputLevel;
         }
 
-        public OutputLevel Level { get; }
-        public string Message => _exception?.Message ?? _message;
+        public OutputLevel Level { get; private set; }
+        public string Message { get { return _exception != null ? _exception.Message : _message; } }
         //public string Message { get { return "Database " + _databaseConfig.Url + "/" + _databaseConfig.Name + ". " + (_exception != null ? _exception.Message : _message); } }
     }
 }

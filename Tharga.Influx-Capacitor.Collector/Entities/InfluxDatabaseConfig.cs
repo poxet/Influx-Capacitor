@@ -23,7 +23,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             _name = name;
         }
 
-        public bool IsEnabled { get; }
+        public bool IsEnabled { get; private set; }
         public string Url { get { return _url; } }
         public string Username { get { return _username; } }
         public string Password { get { return _password; } }
