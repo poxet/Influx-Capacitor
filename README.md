@@ -63,7 +63,7 @@ The default location of this configuration is *application.xml*.
 
 
 ## Database connection settings
-The settings are typically stored in the file database.xml located in hte ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). The settings can be located in any other xml configuration file, but then you will not be able to manage the settings using the management console.
+The settings are typically stored in the file database.xml located in the ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). The settings can be located in any other xml configuration file, but then you will not be able to manage the settings using the management console.
 You can change settings directly in the file and restert the service, or you can use the command "setup change" in the console application, and the service will be restarted for you.
 It is also possible to have multiple database targets. Add another *Database* element in the config file and restart the service. When using multiple targets the console application cannot be used to change the confguration.
 
