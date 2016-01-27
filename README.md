@@ -17,7 +17,7 @@ By default configurations for a few Performance Counters are provided. Setup for
 
 You can configure any Performance Counter available to be monitored. When you have added or changed a configuration file you need to restart the service for it to take effect. You can test and run manually using the console application.
 
-```
+```xml
 <Influx-Capacitor>
   <CounterGroups>
     <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]" RefreshInstanceInterval="[RefreshInstanceInterval]" CollectorEngineType="[CollectorEngineType]">
@@ -51,7 +51,7 @@ The default location of this configuration is *application.xml*.
 - Metadata - Metadata about Influx-Capacitor is sent to the measurement named *Influx-Capacitor*. This feature can be turned off by setting Metadata to false, by default this feature is on.
 - MaxQueueSize - The largest size allowed for the queue. If Influx-Capacitor is not able to send the queued data to the server, it will not keep collecting forever. The limit can be set to an optional value, default is 20000.
 
-```
+```xml
 <Influx-Capacitor>
   <Application>
     <FlushSecondsInterval>10</FlushSecondsInterval>
@@ -63,7 +63,7 @@ The default location of this configuration is *application.xml*.
 
 
 ## Database connection settings
-The settings are typically stored in the file database.xml located in hte ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). The settings can be located in any other xml configuration file, but then you will not be able to manage the settings using the management console.
+The settings are typically stored in the file database.xml located in the ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor). The settings can be located in any other xml configuration file, but then you will not be able to manage the settings using the management console.
 You can change settings directly in the file and restert the service, or you can use the command "setup change" in the console application, and the service will be restarted for you.
 It is also possible to have multiple database targets. Add another *Database* element in the config file and restart the service. When using multiple targets the console application cannot be used to change the confguration.
 
@@ -81,7 +81,7 @@ Supported types are
 - Password - password
 - Name - Name of the database
 
-```
+```xml
 <Influx-Capacitor>
   <Database Type="InfluxDB" Enabled="true">
     <Url>http://localhost:8086</Url>
@@ -98,7 +98,7 @@ This is actually not a database, this type sends data to *Kafka* (http://kafka.a
 
 - Url - Url to the Kafka server. It is possible to provide a list of servers with *;* as separator.
 
-```
+```xml
 <Influx-Capacitor>
   <Database Type="Kafka">
 	<Url>http://server1;http://server2</Url>
@@ -110,7 +110,7 @@ This is actually not a database, this type sends data to *Kafka* (http://kafka.a
 
 This type is for development only. It collects points and sends them to no where.
 
-```
+```xml
 <Influx-Capacitor>
   <Database Type="null" />
 </Influx-Capacitor>
@@ -120,7 +120,7 @@ This type is for development only. It collects points and sends them to no where
 
 This type is for development only. It collects and accumulates points but never sends them anywhere.
 
-```
+```xml
 <Influx-Capacitor>
   <Database Type="acc" />
 </Influx-Capacitor>
@@ -131,7 +131,7 @@ This type is for development only. It collects and accumulates points but never 
 You can add constant tags on a global, counter group and counter level. This can be done in any of the configuration files. The name of the tag has to be unique.
 
 Global tags that will be added to all points sent to the database can be added like this.
-```
+```xml
 <Influx-Capacitor>
   <Tag>
 	<Name>[TagName]</Name>
@@ -141,7 +141,7 @@ Global tags that will be added to all points sent to the database can be added l
 ```
 
 It is also possible to add a tags for a specific counter group, these tags can be added like this.
-```
+```xml
 <Influx-Capacitor>
   <CounterGroups>
     <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]">
@@ -160,7 +160,7 @@ It is also possible to add a tags for a specific counter group, these tags can b
 ```
 
 Tags for a specific counter is added like this.
-```
+```xml
 <Influx-Capacitor>
   <CounterGroups>
     <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]">
