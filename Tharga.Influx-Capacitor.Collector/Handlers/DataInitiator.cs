@@ -35,7 +35,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         {
             var name = "processor";
 
-            var counters = new List<ICounter> { new Counter("Processor", "% Processor Time", "*", null, null) };
+            var counters = new List<ICounter> { new Counter("Processor", "% Processor Time", "*", null, null, null) };
             var response = new CounterGroup(name, 10, 0, counters, new ITag[] { }, CollectorEngineType.Safe);
             return ConvertErrorsToWarnings(CreateFile(name, response));
         }

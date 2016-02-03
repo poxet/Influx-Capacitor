@@ -8,6 +8,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string CategoryName { get; }
         string CounterName { get; }
         string InstanceName { get; }
+        string FieldName { get; }
         string Alias { get; }
         IEnumerable<ITag> Tags { get; }
     }

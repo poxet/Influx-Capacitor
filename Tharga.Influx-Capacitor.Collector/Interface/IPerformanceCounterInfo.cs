@@ -7,6 +7,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
     {
         string Name { get; }
         PerformanceCounter PerformanceCounter { get; }
+        string FieldName { get; }
         string Alias { get; }
         IEnumerable<ITag> Tags { get; }
     }
