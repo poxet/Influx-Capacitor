@@ -172,12 +172,27 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
         protected IEnumerable<Point> FormatResult(IPerformanceCounterInfo[] performanceCounterInfos, float?[] values, TimeUnit precision, DateTime timestamp)
         {
-            for (var i = 0; i < values.Count(); i++)
+            var namedFields = new Dictionary<string, object>();
+            IPerformanceCounterInfo namedPerformanceCounter = null;
+
+            for (var i = 0; i < values.Length; i++)
             {
                 var value = values[i];
                 if (value != null)
                 {
                     var performanceCounterInfo = performanceCounterInfos[i];
+
+                    // if a field name is specified, then we store this value in a specific
+                    // dictionary, store the first performanceCounterInfos then skip the default processing.
+                    // We will send all named fields in one point at the end of the method.//
+                    // Using a named field will ignore all counter tags and the instance tag (and therefore the instance alias)
+                    if (!string.IsNullOrEmpty(performanceCounterInfo.FieldName))
+                    {
+                        namedFields[performanceCounterInfo.FieldName] = value;
+                        if (namedPerformanceCounter == null)
+                            namedPerformanceCounter = performanceCounterInfo;
+                        continue;
+                    }
 
                     var categoryName = performanceCounterInfo.PerformanceCounter.CategoryName;
                     var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
@@ -210,16 +225,48 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     yield return point;
                 }
             }
+
+            if (namedFields.Count != 0 && namedPerformanceCounter != null)
+            {
+                var point = new Point
+                {
+                    Name = Name,
+                    Tags = GetTags(Tags.Union(namedPerformanceCounter.Tags), null, null),
+                    Fields = namedFields,
+                    Precision = precision,
+                    Timestamp = timestamp
+                };
+
+                var key = namedPerformanceCounter.PerformanceCounter.InstanceName;
+                if (!string.IsNullOrEmpty(key))
+                {
+                    point.Tags.Add("instance", key);
+                    if (!string.IsNullOrEmpty(namedPerformanceCounter.Alias))
+                    {
+                        point.Tags.Add(namedPerformanceCounter.Alias, key);
+                    }
+                }
+
+                yield return point;
+            }
         }
 
         private static Dictionary<string, string> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName)
         {
             var dictionary = new Dictionary<string, string>
             {
-                { "hostname", Environment.MachineName },
-                { "category", categoryName },
-                { "counter", counterName },
+                { "hostname", Environment.MachineName }
             };
+
+            if (categoryName != null)
+            {
+                dictionary.Add("category", categoryName);
+            }
+
+            if (counterName != null)
+            {
+                dictionary.Add("counter", counterName);
+            }
 
             foreach (var tag in globalTags)
             {
