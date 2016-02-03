@@ -25,6 +25,7 @@ You can configure any Performance Counter available to be monitored. When you ha
         <CategoryName>[CategoryName]</CategoryName>
         <CounterName>[CounterName]</CounterName>
         <InstanceName Alias="[Alias]">[InstanceName]</InstanceName>
+		<FieldName>[FieldName]</FieldName>
       </Counter>
     </CounterGroup>
   </CounterGroups>
@@ -39,6 +40,7 @@ You can configure any Performance Counter available to be monitored. When you ha
 - CounterName - Name of the counter (Ex. % Processor Time). Wild cards such as * and ? can be used heres. Using * will use all counters.
 - InstanceName - Name of the instance (Ex. _Total). Wild cards such as * and ? can be used heres. For counters that does not have any instances, this element can be left out or left empty. Using * will give all instances. The instances are refreshed on every read so that new instances are added and obsolete ones removed.
 - Alias - This is an optional value that will be used as field name for the Instance specification. The value of this field will be the same as of the "instance" field.
+- FieldName - This optional value will be used to name the field value instead of the default "value" one. You can use this value to merge points together. Note that when you use this option, counter tags are ignored (only countergroup tags are used).
 
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
 
@@ -279,7 +281,65 @@ action - The action that performed the configuration test (config_auto, config_d
 ####Values
 value - The value 1
 
+## Point format and measurements schema
 
+By default, InfluxDB points are created with a "counter" and a "category" tag, and an unique field "value".
+You have the possibility to use alias for instances, and assign specific tag to each counter.
+
+```xml
+<CounterGroup Name="perfmon.memory" SecondsInterval="5">
+    <Counter>
+		<CategoryName>Memory</CategoryName>
+		<CounterName>Available Bytes</CounterName>
+    </Counter>
+    <Counter>
+		<CategoryName>Memory</CategoryName>
+		<CounterName>Committed Bytes</CounterName>
+    </Counter>
+</CounterGroup>
+```
+Datas send with this configuration will result in this schema in InfluxDB:
+
+    > select * from perfmon.memory
+
+    time              category  counter          instance  hostname     value
+	20150203002300  Memory    Available Bytes  _Total    SERVER1   15766000
+	20150203002300  Memory    Committed Bytes  _Total    SERVER1     460000
+	20150203004300  Memory    Available Bytes  _Total    SERVER1   15966000
+	20150203004300  Memory    Committed Bytes  _Total    SERVER1     440000
+
+This schema has the advantage of being very flexible and powerfull, but has the disavantage of consuming more memory (see [official doc, when do I need more RAM](https://docs.influxdata.com/influxdb/v0.9/guides/hardware_sizing/#when-do-i-need-more-ram))
+If you do not want to use counter's specific tags, or have simplier requirements, you can compact points and gain memory by using the FieldName config element:
+
+```xml
+<CounterGroup Name="perfmon.memory" SecondsInterval="5">
+    <Counter>
+		<CategoryName>Memory</CategoryName>
+		<CounterName>Available Bytes</CounterName>
+		<FieldName>free_bytes</FieldName>
+    </Counter>
+    <Counter>
+		<CategoryName>Memory</CategoryName>
+		<CounterName>Committed Bytes</CounterName>
+		<FieldName>committed_bytes</FieldName>
+    </Counter>
+</CounterGroup>
+```
+Will give the following result in InfluxDB:
+
+    > select * from perfmon.memory
+
+    time              hostname  free_bytes  committed_bytes
+	2015020311002300  SERVER1     15766000           460000
+	2015020311004300  SERVER1     15966000           440000
+
+This compact mode suffers from some limitations you have to be aware of:
+
+* You can not use wildcards for instances or counters, since the field name must be unique
+* You can not use counter tags, are they could conflict with other tags defined in other counters of the same group. Only counter group tags can be used.
+* The instance alias is ignored, since the instance tag is ignored. But you can still use instance specific counter: you have to add a counter element for each of them, with a different fieldname.
+* Schema is less self-descriptive, as you have to know which field name corresponds to which performance counter by yourself.
+ 
 ## Thanks to
 - [zeugfr](https://github.com/zeugfr)
 - [discoduck2x](https://github.com/discoduck2x)
