@@ -42,9 +42,11 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
                     instanceName = QueryParam("Instance", GetParam(paramList, index++), instanceNames.Select(x => new KeyValuePair<string, string>(x, x)));
                 }
 
+                var fieldName = QueryParam<string>("FieldName", GetParam(paramList, index++));
+
                 addAnother = QueryParam("Add another counter?", GetParam(paramList, index++), new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } });
 
-                var collector = new Collector.Entities.Counter(categoryName, counterName, instanceName, null, null);
+                var collector = new Collector.Entities.Counter(categoryName, counterName, instanceName, fieldName, null, null);
                 collectors.Add(collector);
             }
 
