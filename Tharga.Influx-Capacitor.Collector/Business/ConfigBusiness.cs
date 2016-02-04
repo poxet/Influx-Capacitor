@@ -424,6 +424,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string counterName = null;
             string instanceName = null;
             string instanceAlias = null;
+            string fieldName = null;
 
             var tags = new List<ITag>();
             var tagElements1 = counter.GetElementsByTagName("CounterTag");
@@ -451,10 +452,13 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         instanceName = item.InnerText;
                         instanceAlias = item.GetAttribute("Alias");
                         break;
+                    case "FieldName":
+                        fieldName = item.InnerText;
+                        break;
                 }
             }
 
-            return new Counter(categoryName, counterName, instanceName, instanceAlias, tags);
+            return new Counter(categoryName, counterName, instanceName, fieldName, instanceAlias, tags);
         }
 
         private static ApplicationConfig GetApplicationConfig(XmlDocument document)
@@ -697,6 +701,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     var instanceName = document.CreateElement("InstanceName");
                     instanceName.InnerText = counter.InstanceName;
                     counterElement.AppendChild(instanceName);
+
+                    // we add the "FieldName" element only if a value is specified
+                    if (!string.IsNullOrEmpty(counter.FieldName))
+                    {
+                        var fieldName = document.CreateElement("FieldName");
+                        fieldName.InnerText = counter.FieldName;
+                        counterElement.AppendChild(fieldName);
+                    }
                 }
             }
 

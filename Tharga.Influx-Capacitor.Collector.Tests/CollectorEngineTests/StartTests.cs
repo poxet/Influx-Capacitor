@@ -43,7 +43,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             var performanceCounterGroupMock = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroupMock.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
-            performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total"), null, null) });
+            performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total"), null, null, null) });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
             var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
             var collectorEngine = new ExactCollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object, false);
@@ -64,7 +64,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             var performanceCounterGroupMock = new Mock<IPerformanceCounterGroup>(MockBehavior.Strict);
             performanceCounterGroupMock.SetupGet(x => x.SecondsInterval).Returns(1);
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("A");
-            performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total"), null, null) });
+            performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo> { new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total"), null, null, null) });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
             var tagLaoderMock = new Mock<ITagLoader>(MockBehavior.Strict);
             var collectorEngine = new ExactCollectorEngine(performanceCounterGroupMock.Object, sendBusinessMock.Object, tagLaoderMock.Object, false);

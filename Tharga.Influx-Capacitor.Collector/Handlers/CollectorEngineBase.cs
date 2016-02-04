@@ -172,6 +172,76 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
         protected IEnumerable<Point> FormatResult(IPerformanceCounterInfo[] performanceCounterInfos, float?[] values, TimeUnit precision, DateTime timestamp)
         {
+            if (performanceCounterInfos.Any(i => !string.IsNullOrEmpty(i.FieldName)))
+            {
+                // WIDE SCHEMA
+                // If at least one field name is specified, then we use the "wide" schema format, where all values are stored as different fields.
+                // We will try to generate as few points as possible (only one per instance)
+                return FormatResultWide(performanceCounterInfos, values, precision, timestamp);
+            }
+            else
+            {
+                // LONG SCHEMA
+                // If no field name is specified we use the default format which result in each counter being sent as one point.
+                // Each point as counter, category and instance specified as tags
+                return FormatResultLong(performanceCounterInfos, values, precision, timestamp);
+            }
+        }
+
+        private IEnumerable<Point> FormatResultWide(IPerformanceCounterInfo[] performanceCounterInfos, float?[] values, TimeUnit precision, DateTime timestamp)
+        {
+            var valuesByInstance = new Dictionary<string, Dictionary<string, object>>();
+            
+            // first pass: we group all values by instance name
+            // if no field name is specified, we store the value in default "value" field
+            // if no instance name is specified, we use a default empty instance name
+            for (var i = 0; i < values.Length; i++)
+            {
+                var value = values[i];
+                if (value != null)
+                {
+                    var performanceCounterInfo = performanceCounterInfos[i];
+                    var fieldName = performanceCounterInfo.FieldName ?? "value";
+                    var key = performanceCounterInfo.PerformanceCounter.InstanceName;
+
+                    Dictionary<string, object> fields;
+                    if (!valuesByInstance.TryGetValue(key ?? string.Empty, out fields))
+                    {
+                        fields = new Dictionary<string, object>();
+                        valuesByInstance[key ?? string.Empty] = fields;
+                    }
+
+                    fields[fieldName] = value;
+                }
+            }
+
+            // second pass: for each instance name, we create a point
+            if (valuesByInstance.Count != 0)
+            {
+                foreach (var instanceValues in valuesByInstance)
+                {
+                    var point = new Point
+                    {
+                        Name = Name,
+                        Tags = GetTags(Tags, null, null),
+                        Fields = instanceValues.Value,
+                        Precision = precision,
+                        Timestamp = timestamp
+                    };
+
+                    var instance = instanceValues.Key;
+                    if (!string.IsNullOrEmpty(instance))
+                    {
+                        point.Tags.Add("instance", instance);
+                    }
+
+                    yield return point;
+                }
+            }
+        }
+
+        private IEnumerable<Point> FormatResultLong(IPerformanceCounterInfo[] performanceCounterInfos, float?[] values, TimeUnit precision, DateTime timestamp)
+        {
             for (var i = 0; i < values.Count(); i++)
             {
                 var value = values[i];
@@ -216,10 +286,18 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         {
             var dictionary = new Dictionary<string, string>
             {
-                { "hostname", Environment.MachineName },
-                { "category", categoryName },
-                { "counter", counterName },
+                { "hostname", Environment.MachineName }
             };
+
+            if (categoryName != null)
+            {
+                dictionary.Add("category", categoryName);
+            }
+
+            if (counterName != null)
+            {
+                dictionary.Add("counter", counterName);
+            }
 
             foreach (var tag in globalTags)
             {

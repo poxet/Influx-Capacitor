@@ -48,12 +48,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                             name = performanceCounter.InstanceName;
                         }
 
-                        performanceCounterInfos.Add(new PerformanceCounterInfo(name, performanceCounter, counter.Alias, counter.Tags));
+                        performanceCounterInfos.Add(new PerformanceCounterInfo(name, performanceCounter, counter.FieldName, counter.Alias, counter.Tags));
                     }
                 }
                 else
                 {
-                    performanceCounterInfos.Add(new PerformanceCounterInfo(counter.Name, null, counter.Alias, counter.Tags));
+                    performanceCounterInfos.Add(new PerformanceCounterInfo(counter.Name, null, counter.FieldName, counter.Alias, counter.Tags));
                 }
             }
             return performanceCounterInfos;
