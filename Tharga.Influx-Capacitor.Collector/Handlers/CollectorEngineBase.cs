@@ -172,27 +172,82 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
         protected IEnumerable<Point> FormatResult(IPerformanceCounterInfo[] performanceCounterInfos, float?[] values, TimeUnit precision, DateTime timestamp)
         {
-            var namedFields = new Dictionary<string, object>();
-            IPerformanceCounterInfo namedPerformanceCounter = null;
+            if (performanceCounterInfos.Any(i => !string.IsNullOrEmpty(i.FieldName)))
+            {
+                // WIDE SCHEMA
+                // If at least one field name is specified, then we use the "wide" schema format, where all values are stored as different fields.
+                // We will try to generate as few points as possible (only one per instance)
+                return FormatResultWide(performanceCounterInfos, values, precision, timestamp);
+            }
+            else
+            {
+                // LONG SCHEMA
+                // If no field name is specified we use the default format which result in each counter being sent as one point.
+                // Each point as counter, category and instance specified as tags
+                return FormatResultLong(performanceCounterInfos, values, precision, timestamp);
+            }
+        }
 
+        private IEnumerable<Point> FormatResultWide(IPerformanceCounterInfo[] performanceCounterInfos, float?[] values, TimeUnit precision, DateTime timestamp)
+        {
+            var valuesByInstance = new Dictionary<string, Dictionary<string, object>>();
+            
+            // first pass: we group all values by instance name
+            // if no field name is specified, we store the value in default "value" field
+            // if no instance name is specified, we use a default empty instance name
             for (var i = 0; i < values.Length; i++)
             {
                 var value = values[i];
                 if (value != null)
                 {
                     var performanceCounterInfo = performanceCounterInfos[i];
+                    var fieldName = performanceCounterInfo.FieldName ?? "value";
+                    var key = performanceCounterInfo.PerformanceCounter.InstanceName;
 
-                    // if a field name is specified, then we store this value in a specific
-                    // dictionary, store the first performanceCounterInfos then skip the default processing.
-                    // We will send all named fields in one point at the end of the method.//
-                    // Using a named field will ignore all counter tags and the instance tag (and therefore the instance alias)
-                    if (!string.IsNullOrEmpty(performanceCounterInfo.FieldName))
+                    Dictionary<string, object> fields;
+                    if (!valuesByInstance.TryGetValue(key ?? string.Empty, out fields))
                     {
-                        namedFields[performanceCounterInfo.FieldName] = value;
-                        if (namedPerformanceCounter == null)
-                            namedPerformanceCounter = performanceCounterInfo;
-                        continue;
+                        fields = new Dictionary<string, object>();
+                        valuesByInstance[key ?? string.Empty] = fields;
                     }
+
+                    fields[fieldName] = value;
+                }
+            }
+
+            // second pass: for each instance name, we create a point
+            if (valuesByInstance.Count != 0)
+            {
+                foreach (var instanceValues in valuesByInstance)
+                {
+                    var point = new Point
+                    {
+                        Name = Name,
+                        Tags = GetTags(Tags, null, null),
+                        Fields = instanceValues.Value,
+                        Precision = precision,
+                        Timestamp = timestamp
+                    };
+
+                    var instance = instanceValues.Key;
+                    if (!string.IsNullOrEmpty(instance))
+                    {
+                        point.Tags.Add("instance", instance);
+                    }
+
+                    yield return point;
+                }
+            }
+        }
+
+        private IEnumerable<Point> FormatResultLong(IPerformanceCounterInfo[] performanceCounterInfos, float?[] values, TimeUnit precision, DateTime timestamp)
+        {
+            for (var i = 0; i < values.Count(); i++)
+            {
+                var value = values[i];
+                if (value != null)
+                {
+                    var performanceCounterInfo = performanceCounterInfos[i];
 
                     var categoryName = performanceCounterInfo.PerformanceCounter.CategoryName;
                     var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
@@ -224,30 +279,6 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                     yield return point;
                 }
-            }
-
-            if (namedFields.Count != 0 && namedPerformanceCounter != null)
-            {
-                var point = new Point
-                {
-                    Name = Name,
-                    Tags = GetTags(Tags.Union(namedPerformanceCounter.Tags), null, null),
-                    Fields = namedFields,
-                    Precision = precision,
-                    Timestamp = timestamp
-                };
-
-                var key = namedPerformanceCounter.PerformanceCounter.InstanceName;
-                if (!string.IsNullOrEmpty(key))
-                {
-                    point.Tags.Add("instance", key);
-                    if (!string.IsNullOrEmpty(namedPerformanceCounter.Alias))
-                    {
-                        point.Tags.Add(namedPerformanceCounter.Alias, key);
-                    }
-                }
-
-                yield return point;
             }
         }
 
