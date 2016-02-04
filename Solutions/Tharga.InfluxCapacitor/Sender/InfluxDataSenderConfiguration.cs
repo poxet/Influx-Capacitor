@@ -8,6 +8,7 @@ namespace Tharga.InfluxCapacitor.Sender
         {
             IsEnabled = isEnabled;
             MaxQueueSize = maxQueueSize;
+            Properties = new System.Dynamic.ExpandoObject();
             Properties.Url = url;
             Properties.DatabaseName = databaseName;
             Properties.UserName = userName;
