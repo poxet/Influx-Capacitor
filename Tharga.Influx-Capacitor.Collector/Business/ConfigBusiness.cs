@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -374,6 +375,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 tags.Add(GetTag(tagElement));
             }
+
             foreach (XmlElement child in counterGroup.ChildNodes)
             {
                 if (child.Name == "Tag")
@@ -425,8 +427,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string instanceName = null;
             string instanceAlias = null;
             string fieldName = null;
+            float? max = null;
 
             var tags = new List<ITag>();
+            
             var tagElements1 = counter.GetElementsByTagName("CounterTag");
             foreach (XmlElement tagElement in tagElements1)
             {
@@ -438,7 +442,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 tags.Add(GetTag(tagElement));
             }
 
-            foreach (XmlElement item in counter.ChildNodes)
+            foreach (XmlElement item in counter.ChildNodes.OfType<XmlElement>())
             {
                 switch (item.Name)
                 {
@@ -455,10 +459,22 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     case "FieldName":
                         fieldName = item.InnerText;
                         break;
+                    case "Limits":
+                        var maxText = item.GetAttribute("Max");
+                        if (!string.IsNullOrEmpty(maxText))
+                        {
+                            float maxValue;
+                            if (float.TryParse(maxText, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out maxValue))
+                            {
+                                max = maxValue;
+                            }
+                        }
+                        break;
+
                 }
             }
 
-            return new Counter(categoryName, counterName, instanceName, fieldName, instanceAlias, tags);
+            return new Counter(categoryName, counterName, instanceName, fieldName, instanceAlias, tags, max);
         }
 
         private static ApplicationConfig GetApplicationConfig(XmlDocument document)
