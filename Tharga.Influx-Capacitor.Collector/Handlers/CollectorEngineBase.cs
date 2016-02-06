@@ -160,7 +160,17 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             {
                 try
                 {
-                    values[i] = performanceCounterInfos[i].PerformanceCounter.NextValue();
+                    var infos = performanceCounterInfos[i];
+                    var value = infos.PerformanceCounter.NextValue();
+
+                    // if the counter value is greater than the max limit, then we use the max value
+                    // see https://support.microsoft.com/en-us/kb/310067
+                    if (infos.Max.HasValue)
+                    {
+                        value = Math.Min(infos.Max.Value, value);
+                    }
+
+                    values[i] = value;
                 }
                 catch (InvalidOperationException)
                 {

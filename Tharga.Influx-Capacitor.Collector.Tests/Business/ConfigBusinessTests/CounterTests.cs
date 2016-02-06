@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
@@ -97,8 +98,10 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
             var counterName = "A";
             var categoryName = "B";
             var instanceName = "C";
+            var fieldName = "D";
+            var max = 25.5f;
             var fileLoaderMock = new Mock<IFileLoaderAgent>(MockBehavior.Strict);
-            fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format("<{0}><Database><Url>X</Url><Username>X</Username><Password>X</Password><Name>X</Name></Database><CounterGroup Name=\"{1}\" SecondsInterval=\"{2}\"><Counter><CounterName>{3}</CounterName><CategoryName>{4}</CategoryName><InstanceName>{5}</InstanceName></Counter></CounterGroup></{0}>", Constants.ServiceName, counterGroupName, secondsInterval, counterName, categoryName, instanceName));
+            fileLoaderMock.Setup(x => x.ReadAllText(It.IsAny<string>())).Returns(() => string.Format(CultureInfo.InvariantCulture, "<{0}><Database><Url>X</Url><Username>X</Username><Password>X</Password><Name>X</Name></Database><CounterGroup Name=\"{1}\" SecondsInterval=\"{2}\"><Counter><CounterName>{3}</CounterName><CategoryName>{4}</CategoryName><InstanceName>{5}</InstanceName><FieldName>{6}</FieldName><Limits Max=\"{7}\" /></Counter></CounterGroup></{0}>", Constants.ServiceName, counterGroupName, secondsInterval, counterName, categoryName, instanceName, fieldName, max));
             var configBusiness = new ConfigBusiness(fileLoaderMock.Object);
             Exception exception = null;
 
@@ -115,6 +118,9 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
             Assert.That(config.Groups.Single().Counters.Single().CategoryName, Is.EqualTo(categoryName));
             Assert.That(config.Groups.Single().Counters.Single().CounterName, Is.EqualTo(counterName));
             Assert.That(config.Groups.Single().Counters.Single().InstanceName, Is.EqualTo(instanceName));
+            Assert.That(config.Groups.Single().Counters.Single().FieldName, Is.EqualTo(fieldName));
+            Assert.That(config.Groups.Single().Counters.Single().Max, Is.EqualTo(max));
         }
+        
     }
 }

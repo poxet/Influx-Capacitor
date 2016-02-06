@@ -25,7 +25,8 @@ You can configure any Performance Counter available to be monitored. When you ha
         <CategoryName>[CategoryName]</CategoryName>
         <CounterName>[CounterName]</CounterName>
         <InstanceName Alias="[Alias]">[InstanceName]</InstanceName>
-		<FieldName>[FieldName]</FieldName>
+        <FieldName>[FieldName]</FieldName>
+        <Limits Max="[Max]" />
       </Counter>
     </CounterGroup>
   </CounterGroups>
@@ -41,6 +42,7 @@ You can configure any Performance Counter available to be monitored. When you ha
 - InstanceName - Name of the instance (Ex. _Total). Wild cards such as * and ? can be used heres. For counters that does not have any instances, this element can be left out or left empty. Using * will give all instances. The instances are refreshed on every read so that new instances are added and obsolete ones removed.
 - Alias - This is an optional value that will be used as field name for the Instance specification. The value of this field will be the same as of the "instance" field.
 - FieldName - This optional value will be used to name the field value instead of the default "value" one. You can use this value to merge points together. Note that when you use this option, counter tags are ignored (only countergroup tags are used).
+- Max - This optional value will be used to fix the maximum value sent for this counter.
 
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
 
