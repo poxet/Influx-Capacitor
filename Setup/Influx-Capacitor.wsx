@@ -29,7 +29,7 @@
 
     <DirectoryRef Id="APPLICATIONROOTDIRECTORY" FileSource='..\Tharga.Influx-Capacitor.Service\bin\$(var.Environment)'>
       <Component Id="Core" Guid="D1F1D596-A757-4B10-9C80-35184D3608CD">
-        <File Name="Tharga.InfluxCapacitor.dll" />
+        <File Name="Tharga.Influx-Capacitor.dll" />
         <File Name="Tharga.Influx-Capacitor.Collector.dll" />        
         <File Name="InfluxDB.Net.dll" />
         <File Name="Microsoft.Threading.Tasks.dll" />
