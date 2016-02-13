@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="InfluxDB.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Solutions\packages\InfluxDB.Net.1.0.0.38\lib\net45\InfluxDB.Net.dll</HintPath>
+      <HintPath>..\Solutions\packages\InfluxDB.MultiVersion.Client.1.0.6-beta\lib\net45\InfluxDB.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks">
@@ -96,18 +96,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Solutions\Tharga.InfluxCapacitor\Tharga.InfluxCapacitor.csproj">
-      <Project>{6E83A503-4094-48A7-A2AA-F6B46461C075}</Project>
-      <Name>Tharga.InfluxCapacitor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tharga.Influx-Capacitor.Collector\Tharga.Influx-Capacitor.Collector.csproj">
-      <Project>{E3FB3F45-87F5-4339-AC0C-90D8EC6102F2}</Project>
-      <Name>Tharga.Influx-Capacitor.Collector</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tharga.Influx-Capacitor.Collector\Tharga.Influx-Capacitor.Collector.csproj">
+      <Project>{e3fb3f45-87f5-4339-ac0c-90d8ec6102f2}</Project>
+      <Name>Tharga.Influx-Capacitor.Collector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tharga.InfluxCapacitor\Tharga.InfluxCapacitor.csproj">
+      <Project>{6e83a503-4094-48a7-a2aa-f6b46461c075}</Project>
+      <Name>Tharga.InfluxCapacitor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

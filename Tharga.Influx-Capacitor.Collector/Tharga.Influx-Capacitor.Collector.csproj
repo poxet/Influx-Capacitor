@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="InfluxDB.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Solutions\packages\InfluxDB.Net.1.0.0.38\lib\net45\InfluxDB.Net.dll</HintPath>
+      <HintPath>..\Solutions\packages\InfluxDB.MultiVersion.Client.1.0.6-beta\lib\net45\InfluxDB.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="kafka-net, Version=0.9.0.65, Culture=neutral, processorArchitecture=MSIL">
@@ -163,7 +163,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Solutions\Tharga.InfluxCapacitor\Tharga.InfluxCapacitor.csproj">
+    <ProjectReference Include="..\Tharga.InfluxCapacitor\Tharga.InfluxCapacitor.csproj">
       <Project>{6e83a503-4094-48a7-a2aa-f6b46461c075}</Project>
       <Name>Tharga.InfluxCapacitor</Name>
     </ProjectReference>
