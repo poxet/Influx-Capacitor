@@ -1,4 +1,4 @@
-param ([string]$version)
+param ([string]$version, [string]$environment)
 
 $original_file = 'Influx-Capacitor.nuspec'
 $destination_file =  '..\Influx-Capacitor.nuspec'
@@ -14,3 +14,6 @@ $destination_file =  '..\ChocolateyInstall.ps1'
     $_ -replace '#Version#', $version
     } | Set-Content $destination_file
 
+(Get-Content $destination_file) | Foreach-Object {
+    $_ -replace '#Environment#', $environment
+    } | Set-Content $destination_file
