@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Tharga.InfluxCapacitor")]
-[assembly: AssemblyDescription("Influx-Capacitor")]
+[assembly: AssemblyTitle("Tharga.Influx-Capacitor")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Thargelion AB")]
-[assembly: AssemblyProduct("Influx-Capacitor")]
+[assembly: AssemblyProduct("Tharga.Influx-Capacitor")]
 [assembly: AssemblyCopyright("Copyright © Thargelion AB 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,4 +20,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6e83a503-4094-48a7-a2aa-f6b46461c075")]
+[assembly: Guid("c60c4133-a221-4ef8-8f69-d407752dce3f")]
