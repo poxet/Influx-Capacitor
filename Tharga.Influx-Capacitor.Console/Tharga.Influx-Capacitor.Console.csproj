@@ -137,9 +137,9 @@
       <Project>{e3fb3f45-87f5-4339-ac0c-90d8ec6102f2}</Project>
       <Name>Tharga.Influx-Capacitor.Collector</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tharga.InfluxCapacitor\Tharga.InfluxCapacitor.csproj">
+    <ProjectReference Include="..\Tharga.InfluxCapacitor\Tharga.Influx-Capacitor.csproj">
       <Project>{6e83a503-4094-48a7-a2aa-f6b46461c075}</Project>
-      <Name>Tharga.InfluxCapacitor</Name>
+      <Name>Tharga.Influx-Capacitor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

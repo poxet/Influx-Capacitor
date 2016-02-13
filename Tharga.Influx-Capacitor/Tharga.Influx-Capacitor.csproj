@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tharga.InfluxCapacitor</RootNamespace>
-    <AssemblyName>Tharga.InfluxCapacitor</AssemblyName>
+    <AssemblyName>Tharga.Influx-Capacitor</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
