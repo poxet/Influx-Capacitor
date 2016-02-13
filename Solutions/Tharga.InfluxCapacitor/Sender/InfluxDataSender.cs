@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using InfluxDB.Net;
+using InfluxDB.Net.Helpers;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Agents;
 using Tharga.InfluxCapacitor.Entities;

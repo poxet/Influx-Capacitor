@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using InfluxDB.Net;
+using InfluxDB.Net.Enums;
+using InfluxDB.Net.Infrastructure.Influx;
 using InfluxDB.Net.Models;
-using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
@@ -16,7 +16,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
     {
         public static async Task<InfluxDbApiResponse> TestWriteAccess(IInfluxDbAgent client, string action)
         {
-            var tags = new Dictionary<string, string>
+            var tags = new Dictionary<string, object>
             {
                 { "counter", "configuration" },
                 { "hostname", Environment.MachineName },
@@ -33,7 +33,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 new Point
                     {
-                        Name = Constants.ServiceName + "-Metadata", 
+                        Measurement = Constants.ServiceName + "-Metadata", 
                         Tags = tags,
                         Fields = fields,
                         Precision = TimeUnit.Milliseconds,
@@ -46,7 +46,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public static Point GetQueueCountPoints(string action, string targetServer, string targetDatabase, int previousQueueCount, int queueCountChange, SendResponse response)
         {
-            var tags = new Dictionary<string, string>
+            var tags = new Dictionary<string, object>
             {
                 { "counter", "queueCount" },
                 { "hostname", Environment.MachineName },
@@ -75,7 +75,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             var point = new Point
             {
-                Name = Constants.ServiceName + "-Metadata",
+                Measurement = Constants.ServiceName + "-Metadata",
                 Tags = tags,
                 Fields = fields,
                 Precision = TimeUnit.Milliseconds,
@@ -87,7 +87,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public static IEnumerable<Point> GetCollectorPoint(string engineName, string performanceCounterGroup, int counters, Dictionary<string, long> timeInfo, double? elapseOffsetMs)
         {
-            var tags = new Dictionary<string, string>
+            var tags = new Dictionary<string, object>
             {
                 { "counter", "readCount" },
                 { "hostname", Environment.MachineName },
@@ -115,7 +115,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             yield return new Point
             {
-                Name = Constants.ServiceName + "-Metadata",
+                Measurement = Constants.ServiceName + "-Metadata",
                 Tags = tags,
                 Fields = fields,
                 Precision = TimeUnit.Milliseconds,
@@ -133,7 +133,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     //{ "readTime", (decimal)new TimeSpan(ti.Value).TotalMilliseconds }
                 };
 
-                tags = new Dictionary<string, string>
+                tags = new Dictionary<string, object>
                 {
                     { "counter", "readTime" },
                     { "hostname", Environment.MachineName },
@@ -146,7 +146,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
                 yield return new Point
                 {
-                    Name = Constants.ServiceName + "-Metadata",
+                    Measurement = Constants.ServiceName + "-Metadata",
                     Tags = tags,
                     Fields = fields,
                     Precision = TimeUnit.Milliseconds,

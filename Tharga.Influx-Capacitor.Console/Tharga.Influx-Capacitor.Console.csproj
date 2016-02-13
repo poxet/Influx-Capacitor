@@ -51,7 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="InfluxDB.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Solutions\packages\InfluxDB.Net-Main.1.0.0.26\lib\net45\InfluxDB.Net.dll</HintPath>
+      <HintPath>..\Solutions\packages\InfluxDB.Net.1.0.0.38\lib\net45\InfluxDB.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

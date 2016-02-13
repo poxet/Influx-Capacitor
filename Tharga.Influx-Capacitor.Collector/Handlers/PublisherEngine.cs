@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using InfluxDB.Net;
+using InfluxDB.Net.Enums;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
@@ -70,7 +71,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                 var point = new Point
                 {
-                    Name = _counterPublisher.CounterName,
+                    Measurement = _counterPublisher.CounterName,
                     Tags = tags,
                     Fields = fields,
                     Precision = TimeUnit.Seconds,
@@ -99,9 +100,9 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             }
         }
 
-        private static Dictionary<string, string> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName)
+        private static Dictionary<string, object> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName)
         {
-            var dictionary = new Dictionary<string, string>
+            var dictionary = new Dictionary<string, object>
             {
                 { "hostname", Environment.MachineName },
                 { "category", categoryName },

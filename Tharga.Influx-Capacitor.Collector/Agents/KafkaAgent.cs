@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using InfluxDB.Net;
+using InfluxDB.Net.Contracts;
+using InfluxDB.Net.Enums;
 using InfluxDB.Net.Models;
 using KafkaNet;
 using KafkaNet.Model;

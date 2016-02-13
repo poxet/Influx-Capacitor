@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using InfluxDB.Net;
+using InfluxDB.Net.Contracts;
+using InfluxDB.Net.Enums;
+using InfluxDB.Net.Infrastructure.Influx;
 using InfluxDB.Net.Models;
 
 namespace Tharga.InfluxCapacitor.Interface
