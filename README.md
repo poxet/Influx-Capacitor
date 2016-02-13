@@ -341,8 +341,3 @@ This compact mode suffers from some limitations you have to be aware of:
 * You can not use counter tags, are they could conflict with other tags defined in other counters of the same group. Only counter group tags can be used.
 * The instance alias is ignored, since the instance tag is ignored. But you can still use instance specific counter: you have to add a counter element for each of them, with a different fieldname.
 * Schema is less self-descriptive, as you have to know which field name corresponds to which performance counter by yourself.
- 
-## Thanks to
-- [zeugfr](https://github.com/zeugfr)
-- [discoduck2x](https://github.com/discoduck2x)
-- [ziyasal/InfluxDB.Net](https://github.com/ziyasal/InfluxDB.Net)
