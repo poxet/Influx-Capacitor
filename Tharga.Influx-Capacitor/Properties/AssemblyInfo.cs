@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Tharga.InfluxCapacitor")]
 [assembly: AssemblyDescription("Influx-Capacitor")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Thargelion AB")]
 [assembly: AssemblyProduct("Influx-Capacitor")]
 [assembly: AssemblyCopyright("Copyright © Thargelion AB 2016")]
 [assembly: AssemblyTrademark("")]
