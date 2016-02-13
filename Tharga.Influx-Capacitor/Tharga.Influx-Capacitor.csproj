@@ -89,7 +89,6 @@
     <Compile Include="Extensions\SenderExceptionExtension.cs" />
     <Compile Include="Interface\IDataSender.cs" />
     <Compile Include="Interface\IInfluxDbAgent.cs" />
-    <Compile Include="Interface\ISendBusiness.cs" />
     <Compile Include="Interface\ISenderConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sender\InfluxDataSender.cs" />

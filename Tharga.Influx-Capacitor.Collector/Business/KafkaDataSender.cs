@@ -5,8 +5,8 @@ using System.Linq;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.InfluxCapacitor.Entities;
-using Tharga.InfluxCapacitor.Interface;
+using Tharga.Influx_Capacitor.Entities;
+using Tharga.Influx_Capacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {

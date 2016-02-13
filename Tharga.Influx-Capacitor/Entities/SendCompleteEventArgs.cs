@@ -1,7 +1,7 @@
 using System;
-using Tharga.InfluxCapacitor.Interface;
+using Tharga.Influx_Capacitor.Interface;
 
-namespace Tharga.InfluxCapacitor.Entities
+namespace Tharga.Influx_Capacitor.Entities
 {
     public class SendCompleteEventArgs : EventArgs
     {

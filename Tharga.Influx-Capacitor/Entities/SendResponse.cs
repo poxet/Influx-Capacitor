@@ -1,4 +1,4 @@
-namespace Tharga.InfluxCapacitor.Entities
+namespace Tharga.Influx_Capacitor.Entities
 {
     public class SendResponse
     {

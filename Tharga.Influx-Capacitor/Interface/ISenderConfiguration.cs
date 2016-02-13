@@ -1,4 +1,4 @@
-namespace Tharga.InfluxCapacitor.Interface
+namespace Tharga.Influx_Capacitor.Interface
 {
     public interface ISenderConfiguration
     {

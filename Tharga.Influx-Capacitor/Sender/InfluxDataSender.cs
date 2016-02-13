@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using InfluxDB.Net.Helpers;
 using InfluxDB.Net.Models;
-using Tharga.InfluxCapacitor.Agents;
-using Tharga.InfluxCapacitor.Entities;
-using Tharga.InfluxCapacitor.Interface;
+using Tharga.Influx_Capacitor.Agents;
+using Tharga.Influx_Capacitor.Entities;
+using Tharga.Influx_Capacitor.Interface;
 
-namespace Tharga.InfluxCapacitor.Sender
+namespace Tharga.Influx_Capacitor.Sender
 {
     public class InfluxDataSender : IDataSender
     {

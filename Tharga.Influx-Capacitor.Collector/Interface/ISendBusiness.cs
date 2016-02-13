@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using InfluxDB.Net.Models;
-using Tharga.InfluxCapacitor.Entities;
+using Tharga.Influx_Capacitor.Entities;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
 {

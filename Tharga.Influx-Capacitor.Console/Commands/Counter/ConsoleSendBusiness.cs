@@ -5,7 +5,7 @@ using InfluxDB.Net.Contracts;
 using InfluxDB.Net.Enums;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.InfluxCapacitor.Entities;
+using Tharga.Influx_Capacitor.Entities;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter

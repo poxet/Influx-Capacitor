@@ -5,7 +5,7 @@ using InfluxDB.Net.Enums;
 using InfluxDB.Net.Infrastructure.Influx;
 using InfluxDB.Net.Models;
 
-namespace Tharga.InfluxCapacitor.Interface
+namespace Tharga.Influx_Capacitor.Interface
 {
     public interface IInfluxDbAgent
     {

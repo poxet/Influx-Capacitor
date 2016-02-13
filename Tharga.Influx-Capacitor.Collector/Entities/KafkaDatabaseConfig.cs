@@ -1,7 +1,7 @@
 using System;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.InfluxCapacitor.Interface;
+using Tharga.Influx_Capacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Entities
 {
