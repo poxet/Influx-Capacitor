@@ -88,7 +88,6 @@
     <Compile Include="..\Build\AssemblyVersionInfo.cs">
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
-    <Compile Include="Agents\InfluxDbAgent.cs" />
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
     <Compile Include="Agents\KafkaAgent.cs" />
     <Compile Include="Business\AccDataSender.cs" />

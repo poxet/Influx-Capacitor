@@ -26,7 +26,6 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         {
             if (_maxQueueSize - _points.Count < points.Length)
             {
-                //OnSendBusinessEvent(new SendBusinessEventArgs(_databaseConfig, string.Format("Queue will reach max limit, cannot add more points. Have {0} points, want to add {1} more. The limit is {2}.", _queue.Count, points.Length, _maxQueueSize), _queue.Count, OutputLevel.Error));
                 return;
             }
 

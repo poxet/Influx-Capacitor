@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
-using InfluxDB.Net;
 using InfluxDB.Net.Enums;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Event;

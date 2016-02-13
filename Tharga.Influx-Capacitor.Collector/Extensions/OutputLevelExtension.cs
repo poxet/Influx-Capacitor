@@ -18,7 +18,6 @@ namespace Tharga.InfluxCapacitor.Collector
                     return OutputLevel.Error;
                 default:
                     throw new ArgumentOutOfRangeException(string.Format("Inknown output level {0}.", item));
-
             }
         }
     }
