@@ -24,7 +24,4 @@
       <dependency id="Microsoft.Net.Http" version="2.2.28" />
     </dependencies>
   </metadata>
-  <files>
-    <file src="bin\Release\Tharga.InfluxCapacitor.dll" target="lib\net45\Tharga.InfluxCapacitor" />
-  </files>
 </package>
