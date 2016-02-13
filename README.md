@@ -22,6 +22,7 @@ You can configure any Performance Counter available to be monitored. When you ha
   <CounterGroups>
     <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]" RefreshInstanceInterval="[RefreshInstanceInterval]" CollectorEngineType="[CollectorEngineType]">
       <Counter>
+        <MachineName>[MachineName]</MachineName>
         <CategoryName>[CategoryName]</CategoryName>
         <CounterName>[CounterName]</CounterName>
         <InstanceName Alias="[Alias]">[InstanceName]</InstanceName>
@@ -37,6 +38,7 @@ You can configure any Performance Counter available to be monitored. When you ha
 - SecondsInterval - The interval in seconds that the group of counters will be collected.
 - RefreshInstanceInterval - An optional attribute for the interval used to refresh the list of instances for the counter. If set to 1, the counters are refreshed everytime. If set to 2, every other time and so on. To disable the refresh set this value to 0. The default value is 0, if the attribute is left out.
 - CollectorEngineType - Specifies the strategy of collecting data. Can be set to Safe or Exact, default is Safe. The Safe collector engine collects all counters and waits the specified SecondsInterval until the next read (SecondsInterval is actually seconds in between reads). Exact setting will read counter on the exact same time each interval. (SecondsInterval is actually seconds from start to next start read) Because of this the Exact setting will have to drop reads if the previous read takes too long to perform, since it then cannot start when it is supposed to.
+- MachineName - Optional element, used to specify the name of the machine where the counter should be read. If the element is left out or is empty, the current machine will be used.
 - CategoryName - Category name of the performance counter (Ex. Processor)
 - CounterName - Name of the counter (Ex. % Processor Time). Wild cards such as * and ? can be used heres. Using * will use all counters.
 - InstanceName - Name of the instance (Ex. _Total). Wild cards such as * and ? can be used heres. For counters that does not have any instances, this element can be left out or left empty. Using * will give all instances. The instances are refreshed on every read so that new instances are added and obsolete ones removed.

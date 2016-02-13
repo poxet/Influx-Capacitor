@@ -37,7 +37,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var performanceCounterInfos = new List<IPerformanceCounterInfo>();
             foreach (var counter in group.Counters)
             {
-                var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName).ToArray();
+                var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName, counter.MachineName).ToArray();
                 if (performanceCounters.Any())
                 {
                     foreach (var performanceCounter in performanceCounters)
@@ -65,9 +65,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return performanceCounterCategories.Select(x => x.CategoryName);
         }
 
-        public IEnumerable<string> GetCounterNames(string category)
+        public IEnumerable<string> GetCounterNames(string categoryName, string machineName)
         {
-            var cat = new PerformanceCounterCategory(category);
+            var cat = PerformanceCounterHelper.GetPerformanceCounterCategory(categoryName, machineName);
+
             var instances = cat.CategoryType == PerformanceCounterCategoryType.SingleInstance ? new string[] { null } : cat.GetInstanceNames();
             foreach (var instance in instances)
             {
@@ -79,9 +80,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
         }
 
-        public IEnumerable<string> GetInstances(string category, string counterName)
+        public IEnumerable<string> GetInstances(string category, string counterName, string machineName)
         {
-            var cat = new PerformanceCounterCategory(category);
+            var cat = PerformanceCounterHelper.GetPerformanceCounterCategory(category, machineName);
             return cat.GetInstanceNames();
         }
 
@@ -96,14 +97,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             return reg.IsMatch(data);
         }
 
-        private IEnumerable<PerformanceCounter> GetPerformanceCounters(string categoryName, string counterName, string instanceName)
+        private IEnumerable<PerformanceCounter> GetPerformanceCounters(string categoryName, string counterName, string instanceName, string machineName)
         {
             var response = new List<PerformanceCounter>();
             try
             {
                 if ((counterName.Contains("*") || (instanceName != null && instanceName.Contains("*"))))
                 {
-                    var cat = new PerformanceCounterCategory(categoryName);
+                    var cat = PerformanceCounterHelper.GetPerformanceCounterCategory(categoryName, machineName);
 
                     string[] instances;
                     if (instanceName.Contains("*"))

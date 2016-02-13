@@ -427,6 +427,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string instanceName = null;
             string instanceAlias = null;
             string fieldName = null;
+            string machineName = null;
             float? max = null;
 
             var tags = new List<ITag>();
@@ -459,6 +460,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     case "FieldName":
                         fieldName = item.InnerText;
                         break;
+                    case "MachineName":
+                        machineName = item.InnerText;
+                        break;
                     case "Limits":
                         var maxText = item.GetAttribute("Max");
                         if (!string.IsNullOrEmpty(maxText))
@@ -474,7 +478,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
             }
 
-            return new Counter(categoryName, counterName, instanceName, fieldName, instanceAlias, tags, max);
+            return new Counter(categoryName, counterName, instanceName, fieldName, instanceAlias, tags, max, machineName);
         }
 
         private static ApplicationConfig GetApplicationConfig(XmlDocument document)

@@ -8,8 +8,8 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
     {
         IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config);
         IEnumerable<string> GetCategoryNames();
-        IEnumerable<string> GetCounterNames(string category);
-        IEnumerable<string> GetInstances(string category, string counterName);
+        IEnumerable<string> GetCounterNames(string categoryName, string machineName);
+        IEnumerable<string> GetInstances(string category, string counterName, string machineName);
         event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
     }
 }

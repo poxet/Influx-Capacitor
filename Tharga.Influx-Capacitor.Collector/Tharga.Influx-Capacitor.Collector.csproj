@@ -91,7 +91,6 @@
     <Compile Include="Agents\InfluxDbAgentLoader.cs" />
     <Compile Include="Agents\KafkaAgent.cs" />
     <Compile Include="Business\AccDataSender.cs" />
-    <Compile Include="Business\InfluxDataSender.cs" />
     <Compile Include="Business\KafkaDataSender.cs" />
     <Compile Include="Business\MetaDataBusinessBusiness.cs" />
     <Compile Include="Business\NullDataSender.cs" />
@@ -104,11 +103,10 @@
     <Compile Include="Entities\NullDatabaseConfig.cs" />
     <Compile Include="Entities\Tag.cs" />
     <Compile Include="Event\PublishRegisterCounterValuesEventArgs.cs" />
-    <Compile Include="Extensions\SenderExceptionExtension.cs" />
+    <Compile Include="Extensions\PerformanceCounterHelper.cs" />
     <Compile Include="Handlers\PublisherEngine.cs" />
     <Compile Include="Interface\ICounterPublisher.cs" />
     <Compile Include="Interface\IPublisherBusiness.cs" />
-    <Compile Include="Entities\SendResponse.cs" />
     <Compile Include="Publishers\Random.cs" />
     <Compile Include="Publishers\TotalMemory.cs" />
     <Compile Include="TimerConstants.cs" />
@@ -121,7 +119,6 @@
     <Compile Include="Business\ConfigBusiness.cs" />
     <Compile Include="Business\CounterBusiness.cs" />
     <Compile Include="Agents\FileLoaderAgent.cs" />
-    <Compile Include="Event\SendBusinessEventArgs.cs" />
     <Compile Include="Extensions\XmlDocumentExtensions.cs" />
     <Compile Include="Event\CollectRegisterCounterValuesEventArgs.cs" />
     <Compile Include="Constants.cs" />

@@ -13,8 +13,9 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         private readonly string _alias;
         private readonly List<ITag> _tags;
         private readonly float? _max;
+        private readonly string _machineName;
 
-        public Counter(string categoryName, string counterName, string instanceName, string fieldName, string alias, IEnumerable<ITag> tags, float? max)
+        public Counter(string categoryName, string counterName, string instanceName, string fieldName, string alias, IEnumerable<ITag> tags, float? max, string machineName)
         {
             _categoryName = categoryName;
             _counterName = counterName;
@@ -23,9 +24,11 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             _alias = alias;
             _tags = (tags ?? new List<ITag>()).ToList();
             _max = max;
+            _machineName = machineName;
         }
 
         public string Name { get { return _instanceName ?? CategoryName; } }
+        public string MachineName { get { return _machineName; } }
         public string CategoryName { get { return _categoryName; } }
         public string CounterName { get { return _counterName; } }
         public string InstanceName { get { return _instanceName; } }

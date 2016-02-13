@@ -2,7 +2,8 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
- using Tharga.InfluxCapacitor.Collector.Handlers;
+using Tharga.InfluxCapacitor.Collector;
+using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter
@@ -28,17 +29,20 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 
             while (addAnother)
             {
+                var machineName = QueryParam("Machine", GetParam(paramList, index++), new Dictionary<string, string> { { System.Environment.MachineName, System.Environment.MachineName } });
+
                 var categoryNames = _counterBusiness.GetCategoryNames();
                 var categoryName = QueryParam("Category", GetParam(paramList, index++), categoryNames.Select(x => new KeyValuePair<string, string>(x, x)));
 
-                var counterNames = _counterBusiness.GetCounterNames(categoryName);
+                var counterNames = _counterBusiness.GetCounterNames(categoryName, machineName);
                 var counterName = QueryParam("Counter", GetParam(paramList, index++), counterNames.Select(x => new KeyValuePair<string, string>(x, x)));
 
                 string instanceName = null;
-                var cat = new PerformanceCounterCategory(categoryName);
+                var cat = PerformanceCounterHelper.GetPerformanceCounterCategory(categoryName, machineName);
+
                 if (cat.CategoryType == PerformanceCounterCategoryType.MultiInstance)
                 {
-                    var instanceNames = _counterBusiness.GetInstances(categoryName, counterName);
+                    var instanceNames = _counterBusiness.GetInstances(categoryName, counterName, machineName);
                     instanceName = QueryParam("Instance", GetParam(paramList, index++), instanceNames.Select(x => new KeyValuePair<string, string>(x, x)));
                 }
 
@@ -46,7 +50,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 
                 addAnother = QueryParam("Add another counter?", GetParam(paramList, index++), new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } });
 
-                var collector = new Collector.Entities.Counter(categoryName, counterName, instanceName, fieldName, null, null, null);
+                var collector = new Collector.Entities.Counter(categoryName, counterName, instanceName, fieldName, null, null, null, machineName);
                 collectors.Add(collector);
             }
 
