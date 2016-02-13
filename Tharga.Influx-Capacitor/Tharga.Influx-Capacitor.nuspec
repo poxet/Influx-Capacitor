@@ -25,6 +25,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Debug\Tharga.InfluxCapacitor.dll" target="lib\net45\Tharga.InfluxCapacitor" />
+    <file src="bin\Release\Tharga.InfluxCapacitor.dll" target="lib\net45\Tharga.InfluxCapacitor" />
   </files>
 </package>
