@@ -15,10 +15,10 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var count = 0;
             foreach (var counter in counterGroup.GetFreshCounters())
             {
-                if (counter.PerformanceCounter != null)
+                if (counter.HasPerformanceCounter)
                 {
-                    var nextValue = counter.PerformanceCounter.NextValue();
-                    OutputInformation("{0}.{1}.{2} {3}:\t{4}", counter.PerformanceCounter.CategoryName, counter.PerformanceCounter.CounterName, counter.PerformanceCounter.InstanceName, counter.Name, nextValue);
+                    var nextValue = counter.NextValue();
+                    OutputInformation("{0}.{1}.{2} {3}:\t{4}", counter.CategoryName, counter.CounterName, counter.InstanceName, counter.Name, nextValue);
                     count++;
                 }
                 else
