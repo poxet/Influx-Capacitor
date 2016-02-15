@@ -161,7 +161,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 try
                 {
                     var infos = performanceCounterInfos[i];
-                    var value = infos.PerformanceCounter.NextValue();
+                    var value = infos.NextValue();
 
                     // if the counter value is greater than the max limit, then we use the max value
                     // see https://support.microsoft.com/en-us/kb/310067
@@ -212,7 +212,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 {
                     var performanceCounterInfo = performanceCounterInfos[i];
                     var fieldName = performanceCounterInfo.FieldName ?? "value";
-                    var key = performanceCounterInfo.PerformanceCounter.InstanceName;
+                    var key = performanceCounterInfo.InstanceName;
 
                     Dictionary<string, object> fields;
                     if (!valuesByInstance.TryGetValue(key ?? string.Empty, out fields))
@@ -259,9 +259,9 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 {
                     var performanceCounterInfo = performanceCounterInfos[i];
 
-                    var categoryName = performanceCounterInfo.PerformanceCounter.CategoryName;
-                    var counterName = performanceCounterInfo.PerformanceCounter.CounterName;
-                    var key = performanceCounterInfo.PerformanceCounter.InstanceName;
+                    var categoryName = performanceCounterInfo.CategoryName;
+                    var counterName = performanceCounterInfo.CounterName;
+                    var key = performanceCounterInfo.InstanceName;
                     var instanceAlias = performanceCounterInfo.Alias;
                     var tags = GetTags(Tags.Union(performanceCounterInfo.Tags), categoryName, counterName);
                     var fields = new Dictionary<string, object>

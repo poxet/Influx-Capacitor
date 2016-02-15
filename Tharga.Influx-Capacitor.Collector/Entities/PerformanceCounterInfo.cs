@@ -40,10 +40,22 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         }
 
         public string Name { get { return _name; } }
-        public PerformanceCounter PerformanceCounter { get { return _performanceCounters; } }
+
+        public string CounterName { get { return _performanceCounters.CounterName; } }
+        
+        public string CategoryName {  get { return _performanceCounters.CategoryName; } }
+        
+        public string InstanceName {  get { return _performanceCounters.InstanceName; } }
+
         public string FieldName {  get { return _fieldName; } }
         public string Alias { get { return _alias; } }
         public IEnumerable<ITag> Tags { get { return _tags; } }
         public float? Max { get { return _max; } }
+
+        public bool HasPerformanceCounter {  get { return _performanceCounters != null; } }
+        public float NextValue()
+        {
+            return _performanceCounters.NextValue();
+        }
     }
 }

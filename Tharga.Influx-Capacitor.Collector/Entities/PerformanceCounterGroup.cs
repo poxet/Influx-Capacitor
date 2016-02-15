@@ -91,12 +91,12 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
                     //Get a new list of counters. Add new ones and remove obsolete ones. (Do not refresh the entire list since that messes up the metrics)
                     var cnt = _performanceCounterInfos.Count;
 
-                    _performanceCounterInfos.RemoveAll(x => x.PerformanceCounter == null);
-                    _performanceCounterInfos.RemoveAll(x => !newPerformanceCounterInfos.Any(y => y.Name == x.Name && y.PerformanceCounter.CategoryName == x.PerformanceCounter.CategoryName && y.PerformanceCounter.CounterName == x.PerformanceCounter.CounterName && y.PerformanceCounter.InstanceName == x.PerformanceCounter.InstanceName));
+                    _performanceCounterInfos.RemoveAll(x => x.HasPerformanceCounter);
+                    _performanceCounterInfos.RemoveAll(x => !newPerformanceCounterInfos.Any(y => y.Name == x.Name && y.CategoryName == x.CategoryName && y.CounterName == x.CounterName && y.InstanceName == x.InstanceName));
                     var removed = cnt - _performanceCounterInfos.Count;
                     cnt = _performanceCounterInfos.Count;
 
-                    var newCounters = newPerformanceCounterInfos.Where(x => !_performanceCounterInfos.Any(y => y.Name == x.Name && y.PerformanceCounter.CategoryName == x.PerformanceCounter.CategoryName && y.PerformanceCounter.CounterName == x.PerformanceCounter.CounterName && y.PerformanceCounter.InstanceName == x.PerformanceCounter.InstanceName));
+                    var newCounters = newPerformanceCounterInfos.Where(x => !_performanceCounterInfos.Any(y => y.Name == x.Name && y.CategoryName == x.CategoryName && y.CounterName == x.CounterName && y.InstanceName == x.InstanceName));
                     _performanceCounterInfos = _performanceCounterInfos.Union(newCounters).ToList();
                     var added = _performanceCounterInfos.Count - cnt;
 
