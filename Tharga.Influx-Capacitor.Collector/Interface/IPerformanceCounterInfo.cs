@@ -9,6 +9,10 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         /// Can be <see cref="CounterName"/> or <see cref="InstanceName"/>, depending if <see cref="CounterName"/> value is "*".
         /// </summary>
         string Name { get; }
+        /// <summary>
+        /// Gets the system performance counter associated with this informations.
+        /// <c>null</c> if the counter does not exists or is not available.
+        /// </summary>
 
         /// <summary>
         /// Gets a value indicating if this informational counter has a real counter or not.
@@ -26,10 +30,13 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string CounterName { get; }
 
         /// <summary>
-        /// Gets the instance name for this counter.
+        /// Gets the read instance name for this counter, based on system instance name (without filtering).
         /// </summary>
         string InstanceName { get; }
 
+        /// <summary>
+        /// Gets the name to use as a field for this counter. Can be the value of <see cref="CounterName"/> or <see cref="InstanceName"/> with an eventual filter applied.
+        /// </summary>
         string FieldName { get; }
 
         string Alias { get; }
