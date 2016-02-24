@@ -233,7 +233,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var point = new Point
                     {
                         Measurement = Name,
-                        Tags = GetTags(Tags, null, null),
+                        Tags = GetTags(Tags, null, null, null),
                         Fields = instanceValues.Value,
                         Precision = precision,
                         Timestamp = timestamp
@@ -263,7 +263,9 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var counterName = performanceCounterInfo.CounterName;
                     var key = performanceCounterInfo.InstanceName;
                     var instanceAlias = performanceCounterInfo.Alias;
-                    var tags = GetTags(Tags.Union(performanceCounterInfo.Tags), categoryName, counterName);
+                    var machineName = performanceCounterInfo.MachineName;
+
+                    var tags = GetTags(Tags.Union(performanceCounterInfo.Tags), categoryName, counterName, machineName);
                     var fields = new Dictionary<string, object>
                     {
                         { "value", value },
@@ -292,12 +294,18 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             }
         }
 
-        private static Dictionary<string, object> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName)
+        private static Dictionary<string, object> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName, string machineName)
         {
-            var dictionary = new Dictionary<string, object>
+            var dictionary = new Dictionary<string, object>();
+
+            if (string.IsNullOrEmpty(machineName) || machineName == ".")
             {
-                { "hostname", Environment.MachineName }
-            };
+                dictionary.Add("hostname", Environment.MachineName);
+            }
+            else
+            {
+                dictionary.Add("hostname", machineName);
+            }
 
             if (categoryName != null)
             {

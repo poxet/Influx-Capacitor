@@ -137,7 +137,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     {
                         foreach (var instance in instances)
                         {
-                            var processorCounter = new PerformanceCounter(categoryName, counter, instance);
+                            var processorCounter = new PerformanceCounter(categoryName, counter, instance, machineName);
                             processorCounter.NextValue();
                             response.Add(processorCounter);
                         }
@@ -145,25 +145,25 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
                 else
                 {
-                    var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName);
+                    var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName, machineName);
                     processorCounter.NextValue();
                     response.Add(processorCounter);
                 }
             }
             catch (Exception exception)
             {
-                OnGetPerformanceCounters(exception, categoryName, counterName, instanceName);
+                OnGetPerformanceCounters(exception, categoryName, counterName, instanceName, machineName);
             }
 
             return response;
         }
 
-        protected virtual void OnGetPerformanceCounters(Exception exception, string categoryName, string counterName, string instanceName)
+        protected virtual void OnGetPerformanceCounters(Exception exception, string categoryName, string counterName, string instanceName, string machineName)
         {
             var handler = GetPerformanceCounterEvent;
             if (handler != null)
             {
-                handler(this, new GetPerformanceCounterEventArgs(exception, categoryName, counterName, instanceName));
+                handler(this, new GetPerformanceCounterEventArgs(exception, categoryName, counterName, instanceName, machineName));
             }
         }
     }
