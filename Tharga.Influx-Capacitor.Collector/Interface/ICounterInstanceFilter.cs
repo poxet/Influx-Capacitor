@@ -1,7 +1,7 @@
 ﻿namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     /// <summary>
-    /// Definies a filter which can be executed on an instance name to change its value or ignore it from the counters to collect.
+    /// Defines a filter which can be executed on an instance name to change its value or ignore it from the counters to collect.
     /// </summary>
     public interface    ICounterInstanceFilter
     {
