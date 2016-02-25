@@ -11,5 +11,10 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         IEnumerable<ICounter> Counters { get; }
         IEnumerable<ITag> Tags { get; }
         CollectorEngineType CollectorEngineType { get; }
+
+        /// <summary>
+        /// Gets all filters defined on this group that should be applied on instance names.
+        /// </summary>
+        IEnumerable<ICounterInstanceFilter> Filters { get; }
     }
 }

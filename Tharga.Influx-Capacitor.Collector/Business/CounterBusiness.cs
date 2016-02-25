@@ -12,14 +12,23 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class CounterBusiness : ICounterBusiness
     {
+        private readonly Func<ICounter, IEnumerable<IPerformanceCounterInfo>> _getPerformanceCountersMethod;
+
         public event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
 
         public CounterBusiness()
+            : this(null)
+        {
+        }
+
+        public CounterBusiness(Func<ICounter, IEnumerable<IPerformanceCounterInfo>> getPerformanceCountersMethod)
         {
             if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
             {
                 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
             }
+
+            this._getPerformanceCountersMethod = getPerformanceCountersMethod ?? this.GetPerformanceCounterInfos;
         }
 
         public IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
@@ -35,27 +44,71 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         private IEnumerable<IPerformanceCounterInfo> GetPerformanceCounterInfos(ICounterGroup group)
         {
             var performanceCounterInfos = new List<IPerformanceCounterInfo>();
+
             foreach (var counter in group.Counters)
             {
-                var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName, counter.MachineName).ToArray();
-                if (performanceCounters.Any())
+                // retrieve all system performance counters
+                var performanceCounters = this._getPerformanceCountersMethod(counter).ToList();
+
+                if (performanceCounters.Count != 0)
                 {
-                    foreach (var performanceCounter in performanceCounters)
+                    if (group.Filters != null)
                     {
-                        var name = counter.Name;
-                        if (name == "*")
+                        // 1) apply filtering
+                        for (var i = performanceCounters.Count-1; i >= 0; i--)
                         {
-                            name = performanceCounter.InstanceName;
+                            var instanceName = performanceCounters[i].InstanceName;
+                            var filteredInstanceName = group.Filters.Aggregate(instanceName, (current, filter) => filter.Execute(current));
+                            if (filteredInstanceName == null)
+                            {
+                                performanceCounters.RemoveAt(i);
+                            }
+                            else
+                            {
+                                performanceCounters[i].InstanceName = filteredInstanceName;
+                            }
                         }
 
-                        performanceCounterInfos.Add(new PerformanceCounterInfo(name, performanceCounter, counter));
+                        // 2) we handle uniqueness of instance names :
+                        // because of the filtering, multiples instances can have the same instance name,
+                        // so we increment a counter for each instance after the first one
+                        // eg: w3wp, w3wp#2, w3wp#3, etc.
+                        var filteredNames = new Dictionary<string, int>(StringComparer.Ordinal);
+                        for (var i = 0; i < performanceCounters.Count; i++)
+                        {
+                            int count;
+                            var instanceName = performanceCounters[i].InstanceName;
+                            if (filteredNames.TryGetValue(instanceName, out count))
+                            {
+                                performanceCounters[i].InstanceName = instanceName + "#" + (count + 1);
+                            }
+
+                            filteredNames[instanceName] = count + 1;
+                        }
                     }
+
+                    // 3) retrieve values
+                    foreach (var performanceCounter in performanceCounters)
+                    {
+                        try
+                        {
+                            performanceCounter.NextValue();
+                        }
+                        catch (Exception ex)
+                        {
+                            OnGetPerformanceCounters(ex, counter.CategoryName, counter.CounterName, counter.InstanceName, counter.MachineName);
+                        }
+                    }
+
+                    // 4) create infos
+                    performanceCounterInfos.AddRange(performanceCounters);
                 }
                 else
                 {
-                    performanceCounterInfos.Add(new PerformanceCounterInfo(counter.Name, null, counter));
+                    performanceCounterInfos.Add(new PerformanceCounterInfo(null, counter));
                 }
             }
+
             return performanceCounterInfos;
         }
 
@@ -96,6 +149,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var reg = new Regex("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
             return reg.IsMatch(data);
         }
+
+        private IEnumerable<PerformanceCounterInfo> GetPerformanceCounterInfos(ICounter counter)
+        {
+            return this.GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName, counter.MachineName)
+                    .Select(p => new PerformanceCounterInfo(p, counter))
+                    .ToList();
+        }
+
 
         private IEnumerable<PerformanceCounter> GetPerformanceCounters(string categoryName, string counterName, string instanceName, string machineName)
         {
@@ -161,17 +222,27 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     {
                         foreach (var instance in instances)
                         {
-                            var processorCounter = new PerformanceCounter(categoryName, counter, instance, machineName);
-                            processorCounter.NextValue();
-                            response.Add(processorCounter);
+                            if (!string.IsNullOrEmpty(machineName))
+                            {
+                                response.Add(new PerformanceCounter(categoryName, counter, instance, machineName));
+                            }
+                            else
+                            {
+                                response.Add(new PerformanceCounter(categoryName, counter, instance));
+                            }
                         }
                     }
                 }
                 else
                 {
-                    var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName, machineName);
-                    processorCounter.NextValue();
-                    response.Add(processorCounter);
+                    if (!string.IsNullOrEmpty(machineName))
+                    {
+                        response.Add(new PerformanceCounter(categoryName, counterName, instanceName, machineName));
+                    }
+                    else
+                    {
+                        response.Add(new PerformanceCounter(categoryName, counterName, instanceName));
+                    }
                 }
             }
             catch (Exception exception)

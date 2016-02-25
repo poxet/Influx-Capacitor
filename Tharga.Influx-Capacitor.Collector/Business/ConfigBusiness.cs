@@ -384,13 +384,24 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
             }
 
+            List<ICounterInstanceFilter> filters = null;
+            var filtersElement = counterGroup.ChildNodes.OfType<XmlElement>().FirstOrDefault(n => n.Name == "InstanceFilters");
+            if (filtersElement != null)
+            {
+                filters = filtersElement.ChildNodes
+                    .OfType<XmlElement>()
+                    .Where(e => e.Name == "Filter")
+                    .Select(e => (ICounterInstanceFilter)new CounterInstanceFilter(e.GetAttribute("Pattern"), e.GetAttribute("Replacement")))
+                    .ToList();
+            }
+
             CollectorEngineType cet;
             if (!Enum.TryParse(collectorEngineType, out cet))
             {
                 cet = CollectorEngineType.Safe;
             }
 
-            return new CounterGroup(name, secondsInterval, refreshInstanceInterval, cts, tags, cet);
+            return new CounterGroup(name, secondsInterval, refreshInstanceInterval, cts, tags, cet, filters);
         }
 
         private static string GetString(XmlElement element, string name, string defaultValue = null)
