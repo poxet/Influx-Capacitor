@@ -13,9 +13,11 @@ http://influx-capacitor.com/
 
 ## Performance Counters
 
-By default configurations for a few Performance Counters are provided. Setup for counters are stored in xml-files in the same folder as the executables, or in the ProgramData folder (IE. C:\ProgramData\Thargelion\Influx-Capacitor) and are named with the file extension xml.
+By default configurations for a few Performance Counters are provided. Setup for counters are stored in xml-files in the same folder as the executables, or in the ProgramData folder (IE. `C:\ProgramData\Thargelion\Influx-Capacitor`) and are named with the file extension xml.
 
 You can configure any Performance Counter available to be monitored. When you have added or changed a configuration file you need to restart the service for it to take effect. You can test and run manually using the console application.
+
+### Configuration
 
 ```xml
 <Influx-Capacitor>
@@ -47,6 +49,59 @@ You can configure any Performance Counter available to be monitored. When you ha
 - Max - This optional value will be used to fix the maximum value sent for this counter.
 
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
+
+### Filters
+
+When you start using instance names, there are cases where you can't get the correct name, for example because the instance name is dynamic and uses process id.
+
+In such cases, you can use `InstanceFilters` at the `CounterGroup` level to apply some transformations on instance names, using regular expressions.
+
+An example of configuration with filters.
+
+```xml
+<Influx-Capacitor>
+  <CounterGroups>
+    <CounterGroup Name="[YourCounterGroupName]" SecondsInterval="[SecondsInterval]" RefreshInstanceInterval="[RefreshInstanceInterval]" CollectorEngineType="[CollectorEngineType]">
+      <Counter>
+        <MachineName>[MachineName]</MachineName>
+        <CategoryName>[CategoryName]</CategoryName>
+        <CounterName>[CounterName]</CounterName>
+        <InstanceName Alias="[Alias]">[InstanceName]</InstanceName>
+        <FieldName>[FieldName]</FieldName>
+        <Limits Max="[Max]" />
+      </Counter>
+      ...
+      <InstanceFilters>
+        <Filter Pattern="[Pattern]" />
+        <Filter Pattern="[ReplacementPattern]" Replacement="[Replacement]" />
+      </InstanceFilters>
+    </CounterGroup>
+  </CounterGroups>
+</Influx-Capacitor>
+```
+
+- `Pattern` - If you add a Filter element with only a Pattern attribute, then this pattern will be used as a filter to only include instances names matching this regular expression.
+- `ReplacementPattern` - If you add a Filter element with both a Pattern and a Replacement attribute, this regular expression pattern will be used to replace a part of the instance name.
+- `Replacement` - This expression will be used as a replacement for the pattern previously provided.
+
+A filtering pattern will exclude counters where instance name does not match.
+A replacement filter will only change the name, without excluding any instance.
+All filters are executed sequentially on each instance name.
+
+You can use the `InstanceName` element to choose counters for simple cases, then apply an advanced filter.
+
+Here are some examples.
+
+```xml
+<InstanceFilters>
+  <!-- this filter will only include counters names where ".NET" is present in the instance name -->
+  <Filter Pattern="\.NET" />
+  <!-- this filter will remove all pids from instance names for IIS apps. "1879_.NET v4.5" => ".NET v4.5" -->
+  <Filter Pattern="^\d+_(.*)$" Replacement="$1" />
+  <!-- this filter will replace ".NET v4.5" by "net45" -->
+  <Filter Pattern="\.NET v4\.5" Replacement="net45" />
+</InstanceFilters>
+```
 
 ## Application configuration
 
