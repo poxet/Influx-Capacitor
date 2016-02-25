@@ -12,19 +12,24 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class CounterBusiness : ICounterBusiness
     {
+        private readonly Func<ICounter, IEnumerable<IPerformanceCounterInfo>> _getPerformanceCountersMethod;
+
         public event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
 
         public CounterBusiness()
+            : this(null)
+        {
+        }
+
+        public CounterBusiness(Func<ICounter, IEnumerable<IPerformanceCounterInfo>> getPerformanceCountersMethod)
         {
             if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
             {
                 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
             }
 
-            this.GetPerformanceCountersMethod = this.GetPerformanceCounterInfos;
+            this._getPerformanceCountersMethod = getPerformanceCountersMethod ?? this.GetPerformanceCounterInfos;
         }
-
-        internal Func<ICounter, IEnumerable<IPerformanceCounterInfo>> GetPerformanceCountersMethod { get; set; }
 
         public IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
         {
@@ -43,7 +48,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             foreach (var counter in group.Counters)
             {
                 // retrieve all system performance counters
-                var performanceCounters = this.GetPerformanceCountersMethod(counter).ToList();
+                var performanceCounters = this._getPerformanceCountersMethod(counter).ToList();
 
                 if (performanceCounters.Count != 0)
                 {

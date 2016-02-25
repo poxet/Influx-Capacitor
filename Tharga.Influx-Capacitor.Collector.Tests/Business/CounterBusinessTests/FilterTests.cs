@@ -141,14 +141,13 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.CounterBusinessTests
             var counters = Mocks.Of<ICounter>(z => z.CategoryName == "Processor" && z.CounterName == "% Processor Time" && z.InstanceName == "*").Take(1).ToList();
             var counterGroup = Mocks.Of<ICounterGroup>(y => y.Name == "A" && y.SecondsInterval == 10 && y.Counters == counters).Take(1).ToList();
             var config = Mock.Of<IConfig>(x => x.Groups == counterGroup);
-            var counterBusiness = new CounterBusiness();
-            counterBusiness.GetPerformanceCountersMethod = counter => new[]
+            var counterBusiness = new CounterBusiness(counter => new[]
             {
                 new PerformanceCounterInfo(null, null, "w3wp", null, null, null, null),
                 new PerformanceCounterInfo(null, null, "w3wp", null, null, null, null),
                 new PerformanceCounterInfo(null, null, "w3wp", null, null, null, null),
                 new PerformanceCounterInfo(null, null, "w3wp", null, null, null, null),
-            };
+            });
 
             // act
             var result = counterBusiness.GetPerformanceCounterGroups(config).ToList();
