@@ -202,17 +202,27 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     {
                         foreach (var instance in instances)
                         {
-                            var processorCounter = new PerformanceCounter(categoryName, counter, instance, machineName);
-                            //processorCounter.NextValue();
-                            response.Add(processorCounter);
+                            if (!string.IsNullOrEmpty(machineName))
+                            {
+                                response.Add(new PerformanceCounter(categoryName, counter, instance, machineName));
+                            }
+                            else
+                            {
+                                response.Add(new PerformanceCounter(categoryName, counter, instance));
+                            }
                         }
                     }
                 }
                 else
                 {
-                    var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName, machineName);
-                    //processorCounter.NextValue();
-                    response.Add(processorCounter);
+                    if (!string.IsNullOrEmpty(machineName))
+                    {
+                        response.Add(new PerformanceCounter(categoryName, counterName, instanceName, machineName));
+                    }
+                    else
+                    {
+                        response.Add(new PerformanceCounter(categoryName, counterName, instanceName));
+                    }
                 }
             }
             catch (Exception exception)
