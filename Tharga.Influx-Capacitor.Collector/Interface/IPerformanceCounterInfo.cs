@@ -32,7 +32,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         /// <summary>
         /// Gets the read instance name for this counter, based on system instance name (without filtering).
         /// </summary>
-        string InstanceName { get; }
+        string InstanceName { get; set; }
 
         /// <summary>
         /// Gets the name to use as a field for this counter. Can be the value of <see cref="CounterName"/> or <see cref="InstanceName"/> with an eventual filter applied.

@@ -40,7 +40,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 // retrieve all system performance counters, then
                 var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName, counter.MachineName)
-                    .Select(p => new PerformanceCounterRegistration  { PerformanceCounter = p, FilteredInstanceName = p.InstanceName})
+                    .Select(p => new PerformanceCounterInfo(p, counter))
                     .ToList();
 
                 if (performanceCounters.Count != 0)
@@ -48,10 +48,11 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     // 1) apply filtering
                     if (group.Filters != null)
                     {
+                        var filteredNames = new Dictionary<string, int>(StringComparer.Ordinal);
                         for (var i = performanceCounters.Count-1; i >= 0; i--)
                         {
                             var x = performanceCounters[i];
-                            var filteredInstanceName = group.Filters.Aggregate(x.FilteredInstanceName, (current, filter) => filter.Execute(current));
+                            var filteredInstanceName = group.Filters.Aggregate(x.InstanceName, (current, filter) => filter.Execute(current));
 
                             if (filteredInstanceName == null)
                             {
@@ -59,8 +60,18 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                             }
                             else
                             {
-                                // we save the instance name with filters applied
-                                performanceCounters[i].FilteredInstanceName = filteredInstanceName;
+                                // we handle uniqueness of instance names :
+                                // because of the filtering, multiples instances can have the same instance name,
+                                // so we increment a counter for each instance after the first one
+                                // eg: w3wp, w3wp#2, w3wp#3, etc.
+                                int count;
+                                if (filteredNames.TryGetValue(filteredInstanceName, out count))
+                                {
+                                    filteredInstanceName += "#" + (count + 1);
+                                }
+
+                                filteredNames[filteredInstanceName] = count + 1;
+                                performanceCounters[i].InstanceName = filteredInstanceName;
                             }
                         }
                     }
@@ -70,7 +81,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     {
                         try
                         {
-                            performanceCounter.PerformanceCounter.NextValue();
+                            performanceCounter.NextValue();
                         }
                         catch (Exception ex)
                         {
@@ -81,18 +92,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     // 3) create infos
                     foreach (var performanceCounter in performanceCounters)
                     {
-                        var name = counter.Name;
-                        if (name == "*")
-                        {
-                            name = performanceCounter.PerformanceCounter.InstanceName;
-                        }
-
-                        performanceCounterInfos.Add(new PerformanceCounterInfo(name, performanceCounter.PerformanceCounter, performanceCounter.FilteredInstanceName, counter.FieldName, counter.Alias, counter.Tags, null));
+                        performanceCounterInfos.Add(performanceCounter);
                     }
                 }
                 else
                 {
-                    performanceCounterInfos.Add(new PerformanceCounterInfo(counter.Name, null, counter));
+                    performanceCounterInfos.Add(new PerformanceCounterInfo(null, counter));
                 }
             }
 
@@ -240,22 +245,6 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 handler(this, new GetPerformanceCounterEventArgs(exception, categoryName, counterName, instanceName, machineName));
             }
-        }
-
-        /// <summary>
-        /// Contains informations required to register a performance counter as a new IPerformanceCounterInfo
-        /// </summary>
-        private class PerformanceCounterRegistration
-        {
-            /// <summary>
-            /// Gets or sets the system performance counter.
-            /// </summary>
-            public PerformanceCounter PerformanceCounter { get; set; }
-
-            /// <summary>
-            /// Gets or sets the name of the instance, after the filters have been applied.
-            /// </summary>
-            public string FilteredInstanceName { get; set; }
         }
     }
 }
