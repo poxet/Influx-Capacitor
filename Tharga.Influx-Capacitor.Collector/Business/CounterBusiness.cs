@@ -51,16 +51,16 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         for (var i = performanceCounters.Count-1; i >= 0; i--)
                         {
                             var x = performanceCounters[i];
-                            var instanceName = group.Filters.Aggregate(x.FilteredInstanceName, (current, filter) => filter.Execute(current));
+                            var filteredInstanceName = group.Filters.Aggregate(x.FilteredInstanceName, (current, filter) => filter.Execute(current));
 
-                            if (instanceName == null)
+                            if (filteredInstanceName == null)
                             {
                                 performanceCounters.RemoveAt(i);
                             }
                             else
                             {
                                 // we save the instance name with filters applied
-                                performanceCounters[i].FilteredInstanceName = instanceName;
+                                performanceCounters[i].FilteredInstanceName = filteredInstanceName;
                             }
                         }
                     }
