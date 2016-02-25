@@ -102,23 +102,47 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var response = new List<PerformanceCounter>();
             try
             {
-                if ((counterName.Contains("*") || (instanceName != null && instanceName.Contains("*"))))
+                if ((counterName.Contains("*") || (instanceName != null && (instanceName.Contains("*") || instanceName.Contains("|")))))
                 {
                     var cat = PerformanceCounterHelper.GetPerformanceCounterCategory(categoryName, machineName);
 
-                    string[] instances;
-                    if (instanceName.Contains("*"))
+                    List<string> instances = new List<string>();
+
+                    if (instanceName == null)
                     {
-                        instances = cat.GetInstanceNames().Where(x => Match(x, instanceName)).ToArray();
-                        //TODO: If this response gives no instances, this means that this counter should use null, for instance
-                        if (!instances.Any())
+                        instances.Add(null);
+                    }
+                    else if (instanceName.Contains("|"))
+                    {
+                        foreach (String instancePart in instanceName.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
                         {
-                            instances = new[] { (string)null };
+                            if (instancePart.Contains("*"))
+                            {
+                                instances.AddRange(cat.GetInstanceNames().Where(x => Match(x, instancePart)));
+                            }
+                            else
+                            {
+                                instances.Add(instancePart);
+                            }
+                        }
+
+                        if (instances.Count == 0)
+                        {
+                            instances.Add(null);
+                        }
+                    }
+                    else if (instanceName.Contains("*"))
+                    {
+                        instances.AddRange(cat.GetInstanceNames().Where(x => Match(x, instanceName)));
+                        //TODO: If this response gives no instances, this means that this counter should use null, for instance
+                        if (instances.Count == 0)
+                        {
+                            instances.Add(null);
                         }
                     }
                     else
                     {
-                        instances = new[] { instanceName };
+                        instances.Add(instanceName);
                     }
 
                     var counterNames = new[] { counterName };
@@ -137,7 +161,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     {
                         foreach (var instance in instances)
                         {
-                            var processorCounter = new PerformanceCounter(categoryName, counter, instance);
+                            var processorCounter = new PerformanceCounter(categoryName, counter, instance, machineName);
                             processorCounter.NextValue();
                             response.Add(processorCounter);
                         }
@@ -145,25 +169,25 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
                 else
                 {
-                    var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName);
+                    var processorCounter = new PerformanceCounter(categoryName, counterName, instanceName, machineName);
                     processorCounter.NextValue();
                     response.Add(processorCounter);
                 }
             }
             catch (Exception exception)
             {
-                OnGetPerformanceCounters(exception, categoryName, counterName, instanceName);
+                OnGetPerformanceCounters(exception, categoryName, counterName, instanceName, machineName);
             }
 
             return response;
         }
 
-        protected virtual void OnGetPerformanceCounters(Exception exception, string categoryName, string counterName, string instanceName)
+        protected virtual void OnGetPerformanceCounters(Exception exception, string categoryName, string counterName, string instanceName, string machineName)
         {
             var handler = GetPerformanceCounterEvent;
             if (handler != null)
             {
-                handler(this, new GetPerformanceCounterEventArgs(exception, categoryName, counterName, instanceName));
+                handler(this, new GetPerformanceCounterEventArgs(exception, categoryName, counterName, instanceName, machineName));
             }
         }
     }

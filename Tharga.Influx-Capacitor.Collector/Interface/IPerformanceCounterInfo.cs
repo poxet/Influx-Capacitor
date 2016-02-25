@@ -30,6 +30,11 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         /// </summary>
         string InstanceName { get; }
 
+        /// <summary>
+        /// Gets the machine name for this counter.
+        /// </summary>
+        string MachineName { get; }
+
         string FieldName { get; }
 
         string Alias { get; }
