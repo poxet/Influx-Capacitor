@@ -71,6 +71,8 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         /// </summary>
         public string FieldName { get { return _fieldName; } }
 
+        public string MachineName { get { return _performanceCounters == null ? null : _performanceCounters.MachineName; } }
+
         public string Alias { get { return _alias; } }
 
         public IEnumerable<ITag> Tags { get { return _tags; } }

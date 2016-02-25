@@ -556,6 +556,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     case "kafka":
                         yield return GetKafkaDatabaseConfig(database);
                         break;
+                    case "influx":
+                    case "influxdb":
                     case "":
                         yield return GetInfluxDatabaseConfig(database);
                         break;
