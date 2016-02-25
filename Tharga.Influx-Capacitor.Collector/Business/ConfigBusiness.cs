@@ -385,7 +385,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
 
             List<ICounterInstanceFilter> filters = null;
-            var filtersElement = counterGroup.ChildNodes.OfType<XmlElement>().FirstOrDefault(n => n.Name == "Filters");
+            var filtersElement = counterGroup.ChildNodes.OfType<XmlElement>().FirstOrDefault(n => n.Name == "InstanceFilters");
             if (filtersElement != null)
             {
                 filters = filtersElement.ChildNodes
