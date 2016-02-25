@@ -20,7 +20,11 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
             }
+
+            this.GetPerformanceCountersMethod = this.GetPerformanceCounterInfos;
         }
+
+        internal Func<ICounter, IEnumerable<IPerformanceCounterInfo>> GetPerformanceCountersMethod { get; set; }
 
         public IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
         {
@@ -38,45 +42,47 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             foreach (var counter in group.Counters)
             {
-                // retrieve all system performance counters, then
-                var performanceCounters = GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName, counter.MachineName)
-                    .Select(p => new PerformanceCounterInfo(p, counter))
-                    .ToList();
+                // retrieve all system performance counters
+                var performanceCounters = this.GetPerformanceCountersMethod(counter).ToList();
 
                 if (performanceCounters.Count != 0)
                 {
-                    // 1) apply filtering
                     if (group.Filters != null)
                     {
-                        var filteredNames = new Dictionary<string, int>(StringComparer.Ordinal);
+                        // 1) apply filtering
                         for (var i = performanceCounters.Count-1; i >= 0; i--)
                         {
-                            var x = performanceCounters[i];
-                            var filteredInstanceName = group.Filters.Aggregate(x.InstanceName, (current, filter) => filter.Execute(current));
-
+                            var instanceName = performanceCounters[i].InstanceName;
+                            var filteredInstanceName = group.Filters.Aggregate(instanceName, (current, filter) => filter.Execute(current));
                             if (filteredInstanceName == null)
                             {
                                 performanceCounters.RemoveAt(i);
                             }
                             else
                             {
-                                // we handle uniqueness of instance names :
-                                // because of the filtering, multiples instances can have the same instance name,
-                                // so we increment a counter for each instance after the first one
-                                // eg: w3wp, w3wp#2, w3wp#3, etc.
-                                int count;
-                                if (filteredNames.TryGetValue(filteredInstanceName, out count))
-                                {
-                                    filteredInstanceName += "#" + (count + 1);
-                                }
-
-                                filteredNames[filteredInstanceName] = count + 1;
                                 performanceCounters[i].InstanceName = filteredInstanceName;
                             }
                         }
+
+                        // 2) we handle uniqueness of instance names :
+                        // because of the filtering, multiples instances can have the same instance name,
+                        // so we increment a counter for each instance after the first one
+                        // eg: w3wp, w3wp#2, w3wp#3, etc.
+                        var filteredNames = new Dictionary<string, int>(StringComparer.Ordinal);
+                        for (var i = 0; i < performanceCounters.Count; i++)
+                        {
+                            int count;
+                            var instanceName = performanceCounters[i].InstanceName;
+                            if (filteredNames.TryGetValue(instanceName, out count))
+                            {
+                                performanceCounters[i].InstanceName = instanceName + "#" + (count + 1);
+                            }
+
+                            filteredNames[instanceName] = count + 1;
+                        }
                     }
 
-                    // 2) retrieve values
+                    // 3) retrieve values
                     foreach (var performanceCounter in performanceCounters)
                     {
                         try
@@ -89,11 +95,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         }
                     }
 
-                    // 3) create infos
-                    foreach (var performanceCounter in performanceCounters)
-                    {
-                        performanceCounterInfos.Add(performanceCounter);
-                    }
+                    // 4) create infos
+                    performanceCounterInfos.AddRange(performanceCounters);
                 }
                 else
                 {
@@ -140,6 +143,13 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             var reg = new Regex("^" + Regex.Escape(pattern).Replace(@"\*", ".*").Replace(@"\?", ".") + "$");
             return reg.IsMatch(data);
+        }
+
+        private IEnumerable<PerformanceCounterInfo> GetPerformanceCounterInfos(ICounter counter)
+        {
+            return this.GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName, counter.MachineName)
+                    .Select(p => new PerformanceCounterInfo(p, counter))
+                    .ToList();
         }
 
 
