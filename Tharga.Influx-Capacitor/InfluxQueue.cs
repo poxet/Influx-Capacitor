@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Security.AccessControl;
 using System.Threading;
@@ -118,7 +119,15 @@ namespace Tharga.Influx_Capacitor
                 return;
             }
 
-            result = await _agent.WriteAsync(pts.ToArray());
+            try
+            {
+                result = await _agent.WriteAsync(pts.ToArray());
+            }
+            catch (Exception exception)
+            {
+                _queue.Enqueue(pts.ToArray());
+                Logger.Error(exception);
+            }
         }
 
         public static void Enqueue(Point point)
