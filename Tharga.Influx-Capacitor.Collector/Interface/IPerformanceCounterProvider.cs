@@ -7,6 +7,8 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
     /// </summary>
     public interface IPerformanceCounterProvider
     {
+        string Name { get; }
+
         IPerformanceCounterGroup GetGroup(ICounterGroup group);
 
         IEnumerable<string> GetCategoryNames();

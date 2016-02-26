@@ -23,6 +23,11 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             _getPerformanceCountersMethod = getPerformanceCountersMethod ?? this.GetPerformanceCounterInfos;
         }
 
+        public string Name
+        {
+            get { return "PerformanceCounter"; }
+        }
+
         public IPerformanceCounterGroup GetGroup(ICounterGroup group)
         {
             return new PerformanceCounterGroup(group, GetPerformanceCounterInfos);

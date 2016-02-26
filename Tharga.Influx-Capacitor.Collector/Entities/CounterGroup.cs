@@ -13,9 +13,10 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         private readonly List<ICounter> _counters;
         private readonly List<ITag> _tags;
         private readonly CollectorEngineType _collectorEngineType;
-        private readonly IEnumerable<ICounterInstanceFilter> _filters ; 
+        private readonly IEnumerable<ICounterInstanceFilter> _filters ;
+        private readonly string _provider;
 
-        public CounterGroup(string name, int secondsInterval, int refreshInstanceInterval, List<ICounter> counters, IEnumerable<ITag> tags, CollectorEngineType collectorEngineType, IEnumerable<ICounterInstanceFilter> filters)
+        public CounterGroup(string name, int secondsInterval, int refreshInstanceInterval, List<ICounter> counters, IEnumerable<ITag> tags, CollectorEngineType collectorEngineType, IEnumerable<ICounterInstanceFilter> filters, string provider)
         {
             _name = name;
             _secondsInterval = secondsInterval;
@@ -24,6 +25,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             _tags = (tags ?? new List<ITag>()).ToList();
             _collectorEngineType = collectorEngineType;
             _filters = filters;
+            _provider = provider;
         }
 
         public string Name { get { return _name; } }
@@ -33,5 +35,6 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public IEnumerable<ITag> Tags { get { return _tags; } }
         public CollectorEngineType CollectorEngineType { get { return _collectorEngineType; } }
         public IEnumerable<ICounterInstanceFilter> Filters { get { return _filters; } } 
+        public string Provider { get { return _provider; } }
     }
 }
