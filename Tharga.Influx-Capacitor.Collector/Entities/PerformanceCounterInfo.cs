@@ -93,7 +93,6 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 
         public bool HasPerformanceCounter { get { return _performanceCounters != null; } }
 
-
         public float NextValue()
         {
             return _performanceCounters.NextValue();
