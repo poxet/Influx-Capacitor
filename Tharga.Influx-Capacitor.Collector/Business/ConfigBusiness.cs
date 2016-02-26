@@ -356,7 +356,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var secondsInterval = GetInt(counterGroup, "SecondsInterval");
             var refreshInstanceInterval = GetInt(counterGroup, "RefreshInstanceInterval", 0);
             var collectorEngineType = GetString(counterGroup, "CollectorEngineType", "Safe");
-            var providerName = GetString(counterGroup, "Provider");
+            var providerName = GetString(counterGroup, "Provider", string.Empty);
 
             var counters = counterGroup.GetElementsByTagName("Counter");
             var cts = new List<ICounter>();
