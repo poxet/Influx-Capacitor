@@ -22,12 +22,6 @@ namespace Tharga.InfluxCapacitor.Service
             _console = new ServerConsole();
             ServiceName = Constants.ServiceName;
 
-            //TODO: This can be removed when the new version of Tharga.Toolkit.Console is used. One version after 1.5.13.0 will do this for you.
-            if (!EventLog.SourceExists(ServiceName))
-            {
-                EventLog.CreateEventSource(ServiceName, "Application");
-            }
-
             //TODO: Inject before this point
             var configBusiness = new ConfigBusiness(new FileLoaderAgent());
             configBusiness.InvalidConfigEvent += InvalidConfigEvent;

@@ -3,33 +3,33 @@ using log4net;
 
 namespace Tharga.Influx_Capacitor
 {
-    public static class Logger
+    public class Logger
     {
-        private static ILog Log { get; set; }
+        private readonly ILog _log;
 
-        static Logger()
+        public Logger()
         {
-            Log = LogManager.GetLogger(typeof(Logger));
+            _log = LogManager.GetLogger(typeof(Logger));
         }
 
-        public static void Error(object msg)
+        public void Error(object msg)
         {
-            Log.Error(msg);
+            _log.Error(msg);
         }
 
-        public static void Error(object msg, Exception ex)
+        public void Error(object msg, Exception ex)
         {
-            Log.Error(msg, ex);
+            _log.Error(msg, ex);
         }
 
-        public static void Error(Exception ex)
+        public void Error(Exception ex)
         {
-            Log.Error(ex.Message, ex);
+            _log.Error(ex.Message, ex);
         }
 
-        public static void Info(object msg)
+        public void Info(object msg)
         {
-            Log.Info(msg);
+            _log.Info(msg);
         }
     }
 }
