@@ -6,6 +6,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
     public interface ICounterGroup
     {
         string Name { get; }
+        string Provider { get; }
         int SecondsInterval { get; }
         int RefreshInstanceInterval { get; }
         IEnumerable<ICounter> Counters { get; }

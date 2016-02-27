@@ -356,6 +356,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var secondsInterval = GetInt(counterGroup, "SecondsInterval");
             var refreshInstanceInterval = GetInt(counterGroup, "RefreshInstanceInterval", 0);
             var collectorEngineType = GetString(counterGroup, "CollectorEngineType", "Safe");
+            var providerName = GetString(counterGroup, "Provider", string.Empty);
 
             var counters = counterGroup.GetElementsByTagName("Counter");
             var cts = new List<ICounter>();
@@ -401,7 +402,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 cet = CollectorEngineType.Safe;
             }
 
-            return new CounterGroup(name, secondsInterval, refreshInstanceInterval, cts, tags, cet, filters);
+            return new CounterGroup(name, secondsInterval, refreshInstanceInterval, cts, tags, cet, filters, providerName);
         }
 
         private static string GetString(XmlElement element, string name, string defaultValue = null)
