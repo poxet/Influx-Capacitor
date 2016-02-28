@@ -7,6 +7,7 @@ using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
+using Tharga.Influx_Capacitor;
 using Tharga.Influx_Capacitor.Entities;
 using Tharga.Toolkit.Console.Command.Base;
 
@@ -16,6 +17,7 @@ namespace Tharga.InfluxCapacitor.Service
     {
         private readonly Processor _processor;
         private readonly ServerConsole _console;
+        private readonly MyLogger _logger;
 
         public WindowsService()
         {
@@ -34,6 +36,7 @@ namespace Tharga.InfluxCapacitor.Service
             var tagLoader = new TagLoader(configBusiness);
             _processor = new Processor(configBusiness, counterBusiness, publisherBusiness, sendBusiness, tagLoader);
             _processor.EngineActionEvent += _processor_EngineActionEvent;
+            _logger = new MyLogger();
 
             // These Flags set whether or not to handle that specific
             //  type of event. Set to true if you need it, false otherwise.
@@ -42,6 +45,33 @@ namespace Tharga.InfluxCapacitor.Service
             CanPauseAndContinue = true;
             CanShutdown = true;
             CanStop = true;
+
+            _console.LineWrittenEvent += _console_LineWrittenEvent;
+        }
+
+        private void _console_LineWrittenEvent(object sender, LineWrittenEventArgs e)
+        {
+            switch (e.Level.ToString())
+            {
+                case "Default":
+                    _logger.Debug(e.Value);
+                    break;
+                case "Information":
+                    _logger.Info(e.Value);
+                    break;
+                case "Warning":
+                    _logger.Warn(e.Value);
+                    break;
+                case "Error":
+                    _logger.Error(e.Value);
+                    break;
+                default:
+                    _logger.Error(string.Format("Unknown output level: {0}", e.Level));
+                    _logger.Info(e.Value);
+                    break;
+            }
+
+            Trace.WriteLine(e.Value, e.Level.ToString());
         }
 
         public IConsole Console { get { return _console; } }
@@ -49,25 +79,21 @@ namespace Tharga.InfluxCapacitor.Service
         void _processor_EngineActionEvent(object sender, EngineActionEventArgs e)
         {
             _console.WriteLine(e.Message, e.OutputLevel, null);
-            Trace.WriteLine(e.Message, e.OutputLevel.ToString());
         }
 
         private void SendBusinessEvent(object sender, SendCompleteEventArgs e)
         {
             _console.WriteLine(e.Message, e.Level.ToOutputLevel(), null);
-            Trace.WriteLine(e.Message, e.Level.ToString());
         }
 
         private void GetPerformanceCounterEvent(object sender, GetPerformanceCounterEventArgs e)
         {
             _console.WriteLine(e.Message, OutputLevel.Warning, null);
-            Trace.TraceWarning(e.Message);
         }
 
         private void InvalidConfigEvent(object sender, InvalidConfigEventArgs e)
         {
             _console.WriteLine(e.Message, OutputLevel.Warning, null);
-            Trace.TraceWarning(e.Message);
         }
 
         static void Main()
@@ -91,14 +117,12 @@ namespace Tharga.InfluxCapacitor.Service
 
                 var message = string.Format("Service {0} version {1} started.", Constants.ServiceName, Assembly.GetExecutingAssembly().GetName().Version);
                 _console.WriteLine(message, OutputLevel.Information, null);
-                Trace.TraceInformation(message);
 
                 base.OnStart(args);
             }
             catch (Exception exception)
             {
                 _console.WriteLine(exception.Message, OutputLevel.Error, null);
-                Trace.TraceInformation(exception.Message);
                 throw;
             }
         }

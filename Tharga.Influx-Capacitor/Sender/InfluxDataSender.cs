@@ -143,7 +143,16 @@ namespace Tharga.Influx_Capacitor.Sender
             get { return _senderConfiguration.Properties.DatabaseName; }
         }
 
-        public int QueueCount { get { return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length); } }
+        public int QueueCount
+        {
+            get
+            {
+                lock (_syncRoot)
+                {
+                    return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length);
+                }
+            }
+        }
 
         protected virtual void OnSendBusinessEvent(SendCompleteEventArgs e)
         {

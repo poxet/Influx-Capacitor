@@ -88,8 +88,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tharga.Toolkit.Console, Version=1.5.16.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Solutions\packages\Tharga.Toolkit.Console.1.5.16.0\lib\net45\Tharga.Toolkit.Console.dll</HintPath>
+    <Reference Include="Tharga.Toolkit.Console, Version=1.5.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Solutions\packages\Tharga.Toolkit.Console.1.5.18.0\lib\net45\Tharga.Toolkit.Console.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

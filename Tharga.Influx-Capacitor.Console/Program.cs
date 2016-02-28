@@ -13,20 +13,29 @@ namespace Tharga.InfluxCapacitor.Console
     [ExcludeFromCodeCoverage]
     internal static class Program
     {
+        private static CompositeRoot _compositeRoot;
+
         private static void Main(string[] args)
         {
             System.Console.Title = Constants.ServiceName + " Management Console";
-            var compositeRoot = new CompositeRoot();
+            _compositeRoot = new CompositeRoot();
 
-            var command = new RootCommand(compositeRoot.ClientConsole);
+            var clientConsole = _compositeRoot.ClientConsole;
+            clientConsole.KeyReadEvent += ClientConsole_KeyReadEvent;
+            var command = new RootCommand(clientConsole);
 
-            command.RegisterCommand(new ConfigCommands(compositeRoot));
-            command.RegisterCommand(new ServiceCommands(compositeRoot));
-            command.RegisterCommand(new CounterCommands(compositeRoot));
-            command.RegisterCommand(new PublishCommands(compositeRoot));
-            command.RegisterCommand(new SenderCommands(compositeRoot));
+            command.RegisterCommand(new ConfigCommands(_compositeRoot));
+            command.RegisterCommand(new ServiceCommands(_compositeRoot));
+            command.RegisterCommand(new CounterCommands(_compositeRoot));
+            command.RegisterCommand(new PublishCommands(_compositeRoot));
+            command.RegisterCommand(new SenderCommands(_compositeRoot));
 
            new CommandEngine(command).Run(args);
+        }
+
+        private static void ClientConsole_KeyReadEvent(object sender, Toolkit.Console.Command.Base.KeyReadEventArgs e)
+        {
+            _compositeRoot.Logger.Debug(string.Format("Key '{0}' pressed. ({1}.{2})", e.ReadKey.Key, e.ReadKey.KeyChar, e.ReadKey.Modifiers));
         }
     }
 }
