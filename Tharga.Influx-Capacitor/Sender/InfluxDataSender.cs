@@ -25,7 +25,7 @@ namespace Tharga.Influx_Capacitor.Sender
         {
             _senderConfiguration = senderConfiguration;
             _dropOnFail = false;
-            _client = new Lazy<IInfluxDbAgent>(() => new InfluxDbAgent(senderConfiguration.Properties.Url, senderConfiguration.Properties.DatabaseName, senderConfiguration.Properties.UserName, senderConfiguration.Properties.Password));
+            _client = new Lazy<IInfluxDbAgent>(() => new InfluxDbAgent(senderConfiguration.Properties.Url, senderConfiguration.Properties.DatabaseName, senderConfiguration.Properties.UserName, senderConfiguration.Properties.Password, senderConfiguration.Properties.RequestTimeout));
         }
 
         public SendResponse Send()

@@ -11,8 +11,9 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         private readonly string _username;
         private readonly string _password;
         private readonly string _name;
+        private readonly TimeSpan? _requestTimeout;
 
-        public InfluxDatabaseConfig(bool enabled, string url, string username, string password, string name)
+        public InfluxDatabaseConfig(bool enabled, string url, string username, string password, string name, TimeSpan? requestTimeout)
         {
             if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("url", "No url to influxDB provided.");
 
@@ -21,6 +22,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             _username = username;
             _password = password;
             _name = name;
+            _requestTimeout = requestTimeout;
         }
 
         public bool IsEnabled { get; private set; }
@@ -28,10 +30,11 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public string Username { get { return _username; } }
         public string Password { get { return _password; } }
         public string Name { get { return _name; } }
+        public TimeSpan? RequestTimeout { get { return _requestTimeout; } }
 
         public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
         {
-            return new InfluxDataSender(new InfluxDataSenderConfiguration(IsEnabled, maxQueueSize, Url, Name, Username, Password));
+            return new InfluxDataSender(new InfluxDataSenderConfiguration(IsEnabled, maxQueueSize, Url, Name, Username, Password, RequestTimeout));
         }
     }
 }

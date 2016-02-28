@@ -18,7 +18,7 @@ namespace Tharga.Influx_Capacitor.Agents
         private readonly string _password;
         private readonly InfluxDb _influxDb;
 
-        public InfluxDbAgent(string url, string databaseName, string userName, string password, InfluxVersion influxVersion = InfluxVersion.Auto)
+        public InfluxDbAgent(string url, string databaseName, string userName, string password, TimeSpan? requestTimeout, InfluxVersion influxVersion = InfluxVersion.Auto)
         {
             _databaseName = databaseName;
             _userName = userName;
@@ -34,7 +34,7 @@ namespace Tharga.Influx_Capacitor.Agents
 
             try
             {
-                _influxDb = new InfluxDb(url, userName, password, influxVersion);
+                _influxDb = new InfluxDb(url, userName, password, influxVersion, requestTimeout);
             }
             catch (Exception exception)
             {

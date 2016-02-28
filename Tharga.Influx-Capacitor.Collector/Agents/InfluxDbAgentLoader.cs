@@ -15,7 +15,7 @@ namespace Tharga.InfluxCapacitor.Collector.Agents
                 return null;
             }
 
-            return new InfluxDbAgent(database.Url, database.Name, database.Username, database.Password);
+            return new InfluxDbAgent(database.Url, database.Name, database.Username, database.Password, database.RequestTimeout);
         }
     }
 }

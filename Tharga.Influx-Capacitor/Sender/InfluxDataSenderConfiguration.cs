@@ -1,10 +1,11 @@
+using System;
 using Tharga.Influx_Capacitor.Interface;
 
 namespace Tharga.Influx_Capacitor.Sender
 {
     public class InfluxDataSenderConfiguration : ISenderConfiguration
     {
-        public InfluxDataSenderConfiguration(bool isEnabled, int maxQueueSize, string url, string databaseName, string userName, string password)
+        public InfluxDataSenderConfiguration(bool isEnabled, int maxQueueSize, string url, string databaseName, string userName, string password, TimeSpan? requestTimeout)
         {
             IsEnabled = isEnabled;
             MaxQueueSize = maxQueueSize;
@@ -13,6 +14,7 @@ namespace Tharga.Influx_Capacitor.Sender
             Properties.DatabaseName = databaseName;
             Properties.UserName = userName;
             Properties.Password = password;
+            Properties.RequestTimeout = requestTimeout;
         }
 
         public bool IsEnabled { get; private set; }

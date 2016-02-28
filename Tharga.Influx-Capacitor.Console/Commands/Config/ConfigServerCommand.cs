@@ -31,7 +31,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             if (string.IsNullOrEmpty(response))
                 return false;
 
-            var config = new InfluxDatabaseConfig(true, response, null, null, null);
+            var config = new InfluxDatabaseConfig(true, response, null, null, null, null);
             var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_change");
             if (logonInfo == null)
                 return false;

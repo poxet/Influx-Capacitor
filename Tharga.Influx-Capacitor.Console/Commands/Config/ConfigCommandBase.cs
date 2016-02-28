@@ -36,7 +36,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             {
                 try
                 {
-                    client = _influxDbAgentLoader.GetAgent(new InfluxDatabaseConfig(true, url, "root", "qwerty", "qwerty"));
+                    client = _influxDbAgentLoader.GetAgent(new InfluxDatabaseConfig(true, url, "root", "qwerty", "qwerty", null));
                 }
                 catch (Exception exception)
                 {
@@ -67,7 +67,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     {
                         url = QueryParam<string>("Url", urlParam);
                         urlParam = null;
-                        client = _influxDbAgentLoader.GetAgent(new InfluxDatabaseConfig(true, url, "root", "qwerty", "qwert"));
+                        client = _influxDbAgentLoader.GetAgent(new InfluxDatabaseConfig(true, url, "root", "qwerty", "qwert", null));
 
                         connectionConfirmed = await client.CanConnect();
                     }
@@ -119,7 +119,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     database = QueryParam<string>("DatabaseName", GetParam(paramList, index++));
                     var user = QueryParam<string>("Username", GetParam(paramList, index++));
                     var password = QueryParam<string>("Password", GetParam(paramList, index++));
-                    config = new InfluxDatabaseConfig(true, url, user, password, database);
+                    config = new InfluxDatabaseConfig(true, url, user, password, database, null);
 
                     client = _influxDbAgentLoader.GetAgent(config);
                     response = await MetaDataBusiness.TestWriteAccess(client, action);

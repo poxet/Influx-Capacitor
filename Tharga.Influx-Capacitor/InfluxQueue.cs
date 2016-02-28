@@ -32,7 +32,7 @@ namespace Tharga.Influx_Capacitor
                 {
                     var influxVersion = InfluxVersion.Auto; //TODO: Move to settings
                     _logger.Info(string.Format("Initiating influxdb agent to address {0} database {1} user {2} version {3}.",Address, DatabaseName, UserName, influxVersion));
-                    _agent = new InfluxDbAgent(Address, DatabaseName, UserName, Password, influxVersion);
+                    _agent = new InfluxDbAgent(Address, DatabaseName, UserName, Password, null, influxVersion);
                 }
             }
             catch(Exception exception)
