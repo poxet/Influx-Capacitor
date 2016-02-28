@@ -100,7 +100,7 @@
     <Compile Include="Interface\IDataSender.cs" />
     <Compile Include="Interface\IInfluxDbAgent.cs" />
     <Compile Include="Interface\ISenderConfiguration.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="MyLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sender\InfluxDataSender.cs" />
     <Compile Include="Sender\InfluxDataSenderConfiguration.cs" />

@@ -3,7 +3,7 @@ using log4net;
 
 namespace Tharga.Influx_Capacitor
 {
-    public class MyLogger
+    internal class MyLogger
     {
         private readonly ILog _log;
 

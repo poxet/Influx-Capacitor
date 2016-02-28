@@ -36,7 +36,7 @@ namespace Tharga.InfluxCapacitor.Console
             ClientConsole.WriteLine(e.Message, OutputLevel.Warning, null);
         }
 
-        public MyLogger Logger { get; private set; }
+        internal MyLogger Logger { get; private set; }
         public IConsole ClientConsole { get; private set; }
         public IInfluxDbAgentLoader InfluxDbAgentLoader { get; private set; }
         public ISendBusiness SendBusiness { get; private set; }
