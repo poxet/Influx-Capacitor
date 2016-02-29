@@ -6,10 +6,10 @@ It is installed as a windows service named *Influx-Capacitor*. There is also a c
 Data is collected and sent to a [InfluxDB](https://github.com/influxdb/influxdb) database of your choice. [Grafana](https://github.com/grafana/grafana) is a great way of looking at the data.
 
 Install using chocolatey
-https://chocolatey.org/packages/Influx-Capacitor
+[https://chocolatey.org/packages/Influx-Capacitor]()
 
 Visit the main site for more information
-http://influx-capacitor.com/
+[http://influx-capacitor.com/]()
 
 ## Performance Counters
 
@@ -50,7 +50,7 @@ You can configure any Performance Counter available to be monitored. When you ha
 
 If you want to get the name of the counters right, simply open *perfmon* and find the counter that you want there. The names to put in the config files are exactly the same as the ones in *perfmon*.
 
-### Filters
+### Advanced: filters
 
 When you start using instance names, there are cases where you can't get the correct name, for example because the instance name is dynamic and uses process id.
 
@@ -101,6 +101,42 @@ Here are some examples.
   <!-- this filter will replace ".NET v4.5" by "net45" -->
   <Filter Pattern="\.NET v4\.5" Replacement="net45" />
 </InstanceFilters>
+```
+
+### Advanced: custom providers
+
+By default, Influx-Capacitor includes one standard provider, which is able to collect counters from system performance counters, as presented above.
+
+A additional mechanism is included to allow external contributors to add their own providers.
+A provider is an assembly which references `Tharga.Influx-Capacitor.Collector` and expose a public class which implements `Tharga.InfluxCapacitor.Collector.Interface.IPerformanceCounterProvider`.
+Then, you can configure this custom provider in your configuration files, in a `Provider` element.
+
+```xml
+<Influx-Capacitor>
+  <Providers>
+    <Provider Name="[ProviderName]" Type="[ProviderType]" />
+  </Provider>
+</Influx-Capacitor>
+```
+
+- ProviderName - A unique name for this provider. The same provider type can be registered multiple times with a different configuration.
+  Each registration must use a different unique name.
+- ProviderType - The assembly qualified type name for this provider. eg: `MyLibrary.MyCustomProvider, MyLibrary, version=1.0.0.0`.
+  If the provider is an internal provider (included in `Tharga.Influx-Capacitor.Collector`), you just have to provide the type name.
+
+Specific provider settings can be included in configuration. See each provider documentation for details about these settings.
+
+To use your specific providers, you have to indicate the provider uniquename in `CounterGroup`.
+
+
+```xml
+<Influx-Capacitor>
+  <CounterGroups>
+    <CounterGroup Name="..." Provider="[ProviderName]">
+	  ...
+	</CounterGroup>
+  </CounterGroups>
+</Influx-Capacitor>
 ```
 
 ## Application configuration

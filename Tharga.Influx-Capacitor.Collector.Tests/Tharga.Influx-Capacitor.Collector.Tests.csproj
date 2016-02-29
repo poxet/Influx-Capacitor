@@ -93,6 +93,7 @@
     <Compile Include="Business\CounterBusinessTests\CounterTests.cs" />
     <Compile Include="CollectorEngineTests\RegisterCounterValuesTests.cs" />
     <Compile Include="CollectorEngineTests\StartTests.cs" />
+    <Compile Include="Entities\CounterProviderConfigTests.cs" />
     <Compile Include="ProcessorTests\RunTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

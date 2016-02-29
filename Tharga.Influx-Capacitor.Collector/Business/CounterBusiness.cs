@@ -11,7 +11,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
     {
         private readonly PerformanceCounterProvider _perfCounterProvider;
 
-        private IEnumerable<IPerformanceCounterProvider> _additionalProviders; 
+        private readonly Dictionary<string, IPerformanceCounterProvider> _additionalProviders;
 
         public event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
 
@@ -23,17 +23,25 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
 
             _perfCounterProvider = new PerformanceCounterProvider(this.OnGetPerformanceCounters, null);
-            _additionalProviders = Enumerable.Empty<IPerformanceCounterProvider>();
-        }
-
-        public IEnumerable<IPerformanceCounterProvider> AdditionalProviders {
-            get { return _additionalProviders; }
-            set { _additionalProviders = value ?? Enumerable.Empty<IPerformanceCounterProvider>(); }
+            _additionalProviders = new Dictionary<string, IPerformanceCounterProvider>(StringComparer.OrdinalIgnoreCase);
         }
 
         public IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
         {
             if (config.Groups == null) throw new NullReferenceException("No groups in config.");
+
+            if (config.Providers != null)
+            {
+                foreach (var providerConfig in config.Providers)
+                {
+                    if (!_additionalProviders.ContainsKey(providerConfig.Name))
+                    {
+                        var provider = providerConfig.Load(typeof(PerformanceCounterProvider).Assembly, typeof(PerformanceCounterProvider).Namespace);
+                        provider.Setup(providerConfig);
+                        _additionalProviders.Add(providerConfig.Name, provider);
+                    }
+                }
+            }
 
             foreach (var group in config.Groups)
             {
@@ -47,14 +55,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 else
                 {
                     // use specific provider
-                    var provider = _additionalProviders.FirstOrDefault(p => string.Equals(providerName, p.Name, StringComparison.OrdinalIgnoreCase));
-                    if (provider != null)
+                    IPerformanceCounterProvider provider;
+                    if (_additionalProviders.TryGetValue(providerName, out provider))
                     {
                         yield return provider.GetGroup(group);
                     }
                     else
                     {
-                        throw new InvalidOperationException(string.Format("There is no registered provider named '{0}'. Registered providers are: {1}", providerName, string.Join(", ", GetAllProviders().Select(p => p.Name))));
+                        throw new InvalidOperationException(string.Format("There is no registered provider named '{0}'. Registered providers are: {1}", providerName, string.Join(", ", GetAllProviders().Select(p => p.Key))));
                     }
                 }
             }
@@ -62,17 +70,17 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public IEnumerable<string> GetCategoryNames()
         {
-            return GetAllProviders().SelectMany(provider => provider.GetCategoryNames());
+            return GetAllProviders().SelectMany(provider => provider.Value.GetCategoryNames());
         }
 
         public IEnumerable<string> GetCounterNames(string categoryName, string machineName)
         {
-            return GetAllProviders().SelectMany(provider => provider.GetCounterNames(categoryName, machineName));
+            return GetAllProviders().SelectMany(provider => provider.Value.GetCounterNames(categoryName, machineName));
         }
 
         public IEnumerable<string> GetInstances(string category, string counterName, string machineName)
         {
-            return GetAllProviders().SelectMany(provider => provider.GetInstances(category, counterName, machineName));
+            return GetAllProviders().SelectMany(provider => provider.Value.GetInstances(category, counterName, machineName));
         }
 
         protected virtual void OnGetPerformanceCounters(string message)
@@ -84,9 +92,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
         }
 
-        private IEnumerable<IPerformanceCounterProvider> GetAllProviders()
+        private IEnumerable<KeyValuePair<string, IPerformanceCounterProvider>> GetAllProviders()
         {
-            yield return _perfCounterProvider;
+            yield return new KeyValuePair<string, IPerformanceCounterProvider>("PerformanceCounter", _perfCounterProvider);
 
             foreach (var provider in _additionalProviders)
             {
