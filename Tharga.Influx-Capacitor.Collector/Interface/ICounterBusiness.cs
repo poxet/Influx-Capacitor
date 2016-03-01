@@ -6,11 +6,6 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface ICounterBusiness
     {
-        /// <summary>
-        /// Gets or sets additional providers to use.
-        /// </summary>
-        IEnumerable<IPerformanceCounterProvider> AdditionalProviders { get; set; }
-
         IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config);
 
         IEnumerable<string> GetCategoryNames();

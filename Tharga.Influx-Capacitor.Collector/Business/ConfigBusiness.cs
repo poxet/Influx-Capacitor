@@ -47,6 +47,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var publishers = new List<ICounterPublisher>();
             IApplicationConfig application = null;
             var tags = new List<ITag>();
+            var providers = new List<ICounterProviderConfig>();
 
             foreach (var configurationFilename in configurationFilenames)
             {
@@ -60,6 +61,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 var pbs = GetPublishers(document).ToList();
                 var app = GetApplicationConfig(document);
                 var tgs = GetGlobalTags(document);
+                var pcs = GetCounterProviderConfig(document);
 
                 foreach (var db in dbs)
                 {
@@ -90,6 +92,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     }
                 }
 
+                foreach (var pc in pcs)
+                {
+                    pc.Load(typeof(PerformanceCounterProvider).Assembly, typeof(PerformanceCounterProvider).Namespace);
+                    providers.Add(pc);
+                }
+
                 if (app != null)
                 {
                     if (application != null)
@@ -118,7 +126,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 application = new ApplicationConfig(10, false, true, 20000);
             }
 
-            var config = new Config(databases, application, groups, publishers, tags);
+            var config = new Config(databases, application, groups, publishers, tags, providers);
             return config;
         }
 
@@ -308,6 +316,46 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
             }
         }
+
+        private IEnumerable<ICounterProviderConfig> GetCounterProviderConfig(XmlDocument document)
+        {
+            foreach (var providersElement in document.DocumentElement.ChildNodes.OfType<XmlElement>().Where(e => e.Name == "Providers"))
+            {
+                foreach (var providerElement in providersElement.ChildNodes.OfType<XmlElement>().Where(e => e.Name == "Provider"))
+                {
+                    var providerNameAttribute = providerElement.Attributes.GetNamedItem("Name");
+                    if (providerNameAttribute == null)
+                    {
+                        throw new ArgumentOutOfRangeException("Required provider name attribute missing");
+                    }
+
+                    var providerName = providerNameAttribute.Value;
+
+                    var providerTypeAttribute = providerElement.Attributes.GetNamedItem("Type");
+                    if (providerTypeAttribute == null)
+                    {
+                        throw new ArgumentOutOfRangeException("Required provider type attribute missing");
+                    }
+
+                    var providerType = providerTypeAttribute.Value;
+
+                    var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                    foreach (var attribute in providerElement.Attributes.Cast<XmlAttribute>().Where(attribute => attribute.Name != "Name"))
+                    {
+                        values[attribute.Name] = attribute.Value;
+                    }
+
+                    foreach (var element in providerElement.ChildNodes.OfType<XmlElement>())
+                    {
+                        values[element.Name] = element.InnerText;
+                    }
+
+                    yield return new CounterProviderConfig(providerName, providerType, values);
+                }
+            }
+        }
+
 
         private IEnumerable<ICounterGroup> GetCounterGroups(XmlDocument document)
         {

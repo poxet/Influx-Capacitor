@@ -97,6 +97,7 @@
     <Compile Include="Business\PerformanceCounterProvider.cs" />
     <Compile Include="Business\PublisherBusiness.cs" />
     <Compile Include="Entities\CounterInstanceFilter.cs" />
+    <Compile Include="Entities\CounterProviderConfig.cs" />
     <Compile Include="Extensions\OutputLevelExtension.cs" />
     <Compile Include="Business\TagLoader.cs" />
     <Compile Include="Entities\AccDatabaseConfig.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Extensions\PerformanceCounterHelper.cs" />
     <Compile Include="Handlers\PublisherEngine.cs" />
     <Compile Include="Interface\ICounterInstanceFilter.cs" />
+    <Compile Include="Interface\ICounterProviderConfig.cs" />
     <Compile Include="Interface\ICounterPublisher.cs" />
     <Compile Include="Interface\IPerformanceCounterProvider.cs" />
     <Compile Include="Interface\IPublisherBusiness.cs" />

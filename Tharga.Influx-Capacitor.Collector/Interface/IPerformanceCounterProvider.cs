@@ -7,7 +7,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
     /// </summary>
     public interface IPerformanceCounterProvider
     {
-        string Name { get; }
+        void Setup(ICounterProviderConfig config);
 
         IPerformanceCounterGroup GetGroup(ICounterGroup group);
 

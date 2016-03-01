@@ -8,6 +8,7 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         List<ICounterPublisher> Publishers { get; }
         List<IDatabaseConfig> Databases { get; }
         IApplicationConfig Application { get; }
+        List<ICounterProviderConfig> Providers { get; }
         List<ITag> Tags { get; }
     }
 }
