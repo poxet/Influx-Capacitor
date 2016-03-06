@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Timers;
+using InfluxDB.Net.Contracts;
 using InfluxDB.Net.Enums;
 using InfluxDB.Net.Infrastructure.Influx;
 using InfluxDB.Net.Models;
@@ -17,12 +17,12 @@ namespace Tharga.Influx_Capacitor
 {
     public class InfluxQueue
     {
-        private static readonly IInfluxDbAgent _agent;
-        private static readonly Queue<Point[]> _queue = new Queue<Point[]>();
-        private static Timer _sendTimer;
-        private static MyLogger _logger = new MyLogger();
-
         private const string MutexId = "InfluxQueue";
+        private static readonly IInfluxDbAgent _agent;
+        private static readonly IFormatter _formatter;
+        private static readonly Queue<Point[]> _queue = new Queue<Point[]>();
+        private static readonly MyLogger _logger = new MyLogger();
+        private static Timer _sendTimer;
         private static MutexSecurity _securitySettings;
         private static bool? _enabled;
 
@@ -35,6 +35,7 @@ namespace Tharga.Influx_Capacitor
                     var influxVersion = InfluxVersion.Auto; //TODO: Move to settings
                     _logger.Info(string.Format("Initiating influxdb agent to address {0} database {1} user {2} version {3}.",Address, DatabaseName, UserName, influxVersion));
                     _agent = new InfluxDbAgent(Address, DatabaseName, UserName, Password, null, influxVersion);
+                    _formatter = _agent.GetAgentInfo().Item1;
                 }
             }
             catch(Exception exception)
@@ -133,7 +134,7 @@ namespace Tharga.Influx_Capacitor
                 var data = new StringBuilder();
                 foreach (var item in pts)
                 {
-                    data.AppendLine(item.ToString());
+                    data.AppendLine(_formatter.PointToString(item));
                 }
                 _logger.Debug(data.ToString());
 
