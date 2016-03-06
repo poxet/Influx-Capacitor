@@ -4,6 +4,7 @@ using System.Linq;
 using System.Timers;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Interface;
+using Tharga.Influx_Capacitor;
 using Tharga.Influx_Capacitor.Entities;
 using Tharga.Influx_Capacitor.Interface;
 
@@ -12,6 +13,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
     public class SendBusiness : ISendBusiness
     {
         public event EventHandler<SendCompleteEventArgs> SendBusinessEvent;
+        private static MyLogger _logger = new MyLogger();
 
         public IEnumerable<Tuple<string, int>> GetQueueInfo()
         {
@@ -44,26 +46,36 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         private void Elapsed(object sender, ElapsedEventArgs e)
         {
-            var metaPoints = new List<Point>();
-
-            foreach (var dataSender in _dataSenders)
+            try
             {
-                var previousQueueCount = dataSender.QueueCount;
-                var success = dataSender.Send();
-                var postQueueCount = dataSender.QueueCount;
+                var metaPoints = new List<Point>();
+
+                foreach (var dataSender in _dataSenders)
+                {
+                    var previousQueueCount = dataSender.QueueCount;
+                    _logger.Debug(string.Format("Starting to send {0} points to server {1} database {2}.", previousQueueCount, dataSender.TargetServer, dataSender.TargetDatabase));
+                    var success = dataSender.Send();
+                    var postQueueCount = dataSender.QueueCount;
+                    _logger.Debug(string.Format("Done sending {0} points to server {1} database {2}. Now {3} items in queue.", previousQueueCount, dataSender.TargetServer, dataSender.TargetDatabase, postQueueCount));
+
+                    if (_metadata)
+                    {
+                        metaPoints.Add(MetaDataBusiness.GetQueueCountPoints("Send", dataSender.TargetServer, dataSender.TargetDatabase, previousQueueCount, postQueueCount - previousQueueCount + _dataSenders.Count, success));
+                    }
+                }
 
                 if (_metadata)
                 {
-                    metaPoints.Add(MetaDataBusiness.GetQueueCountPoints("Send", dataSender.TargetServer, dataSender.TargetDatabase, previousQueueCount, postQueueCount - previousQueueCount + _dataSenders.Count, success));
+                    foreach (var dataSender in _dataSenders)
+                    {
+                        dataSender.Enqueue(metaPoints.ToArray());
+                    }
                 }
             }
-
-            if (_metadata)
+            catch (Exception exception)
             {
-                foreach (var dataSender in _dataSenders)
-                {
-                    dataSender.Enqueue(metaPoints.ToArray());
-                }
+                _logger.Error(exception);
+                throw;
             }
         }
 
@@ -76,8 +88,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             if (_timer == null)
             {
-                //TODO: Fire!
-                //OnSendBusinessEvent(this, new SendBusinessEventArgs(null, "The engine that sends data to the database is not enabled. Probably becuse the FlushSecondsInterval has not been configured.", points.Length, OutputLevel.Error));
+                _logger.Error(string.Format("The engine that sends data to the database is not enabled. Probably becuse the FlushSecondsInterval has not been configured. Point count: {0}.", points.Length));
                 return;
             }
 
@@ -95,6 +106,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
             foreach (var dataSender in _dataSenders)
             {
+                _logger.Debug(string.Format("Enqueueing {0} points to server {1} database {2}.", points.Length, dataSender.TargetServer, dataSender.TargetDatabase));
                 dataSender.Enqueue(points);
             }
         }

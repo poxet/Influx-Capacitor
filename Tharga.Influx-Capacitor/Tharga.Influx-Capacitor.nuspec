@@ -18,10 +18,11 @@
     <copyright />
 	<tags>InfluxDB queue performance counter metrics</tags>
     <dependencies>
-      <dependency id="InfluxDB.MultiVersion.Client" version="1.0.6" />
+      <dependency id="InfluxDB.MultiVersion.Client" version="1.0.8" />
       <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
       <dependency id="Newtonsoft.Json" version="6.0.5" />
       <dependency id="Microsoft.Net.Http" version="2.2.28" />
+	  <dependency id="log4net" version="2.0.5" />
     </dependencies>
   </metadata>
 </package>

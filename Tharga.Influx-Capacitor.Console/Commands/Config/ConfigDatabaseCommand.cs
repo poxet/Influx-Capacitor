@@ -26,7 +26,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             }
 
             var currentConfig = configs.First();
-            var config = new InfluxDatabaseConfig(true, currentConfig.Url, string.Empty, string.Empty, string.Empty);
+            var config = new InfluxDatabaseConfig(true, currentConfig.Url, string.Empty, string.Empty, string.Empty, null);
 
             var index = 0;
             var logonInfo = await GetUsernameAsync(paramList, index++, config, "config_database");

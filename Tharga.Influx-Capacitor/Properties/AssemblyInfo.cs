@@ -22,5 +22,6 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("c60c4133-a221-4ef8-8f69-d407752dce3f")]
 
-// Log4Net
-[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
+[assembly: InternalsVisibleTo("Tharga.Influx-Capacitor.Collector")]
+[assembly: InternalsVisibleTo("Tharga.Influx-Capacitor.Service")]
+[assembly: InternalsVisibleTo("Tharga.Influx-Capacitor.Console")]

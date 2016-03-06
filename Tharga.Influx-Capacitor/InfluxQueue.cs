@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Security.AccessControl;
+using System.Text;
 using System.Threading;
 using System.Timers;
 using InfluxDB.Net.Enums;
@@ -18,6 +20,7 @@ namespace Tharga.Influx_Capacitor
         private static readonly IInfluxDbAgent _agent;
         private static readonly Queue<Point[]> _queue = new Queue<Point[]>();
         private static Timer _sendTimer;
+        private static MyLogger _logger = new MyLogger();
 
         private const string MutexId = "InfluxQueue";
         private static MutexSecurity _securitySettings;
@@ -30,11 +33,13 @@ namespace Tharga.Influx_Capacitor
                 if (Enabled)
                 {
                     var influxVersion = InfluxVersion.Auto; //TODO: Move to settings
-                    _agent = new InfluxDbAgent(Address, DatabaseName, UserName, Password, influxVersion);
+                    _logger.Info(string.Format("Initiating influxdb agent to address {0} database {1} user {2} version {3}.",Address, DatabaseName, UserName, influxVersion));
+                    _agent = new InfluxDbAgent(Address, DatabaseName, UserName, Password, null, influxVersion);
                 }
             }
-            catch
+            catch(Exception exception)
             {
+                _logger.Error(exception);
                 _enabled = false;
             }
         }
@@ -100,6 +105,8 @@ namespace Tharga.Influx_Capacitor
 
         private static async void SendTimerElapsed(object sender, ElapsedEventArgs e)
         {
+            //_logger.Debug("SendTimerElapsed.");
+
             var pts = new List<Point>();
             InfluxDbApiResponse result = null;
             bool createdNew;
@@ -116,24 +123,38 @@ namespace Tharga.Influx_Capacitor
 
             if (pts.Count == 0)
             {
+                //_logger.Debug("Nothing to send.");
                 return;
             }
 
             try
             {
+                _logger.Debug(string.Format("Sending {0} measurements.", pts.Count + 1));
+                var data = new StringBuilder();
+                foreach (var item in pts)
+                {
+                    data.AppendLine(item.ToString());
+                }
+                _logger.Debug(data.ToString());
+
                 result = await _agent.WriteAsync(pts.ToArray());
+                _logger.Info(result);
             }
             catch (Exception exception)
             {
-                _queue.Enqueue(pts.ToArray());
-                Logger.Error(exception);
+                _logger.Error(exception);
+                //TODO: Only re-enqueue points in certain situations
+                //_queue.Enqueue(pts.ToArray());
             }
         }
 
         public static void Enqueue(Point point)
         {
             if (!Enabled)
+            {
+                _logger.Debug("Ignoreing enqueue becuase the queue is disabled.");
                 return;
+            }
 
             bool createdNew;
             using (var mutex = new Mutex(false, MutexId, out createdNew, _securitySettings))
@@ -142,6 +163,7 @@ namespace Tharga.Influx_Capacitor
                 {
                     mutex.WaitOne();
 
+                    _logger.Debug(string.Format("Enqueue measurement. There will be {0} items in the queue.", _queue.Count + 1));
                     _queue.Enqueue(new[] { point });
 
                     if (_sendTimer != null)

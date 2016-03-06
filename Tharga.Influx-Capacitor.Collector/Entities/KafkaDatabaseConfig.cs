@@ -18,6 +18,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public string Username { get { throw new NotSupportedException(); } }
         public string Password { get { throw new NotSupportedException(); } }
         public string Name { get { return "N/A"; } }
+        public TimeSpan? RequestTimeout { get { return null; } }
 
         public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
         {

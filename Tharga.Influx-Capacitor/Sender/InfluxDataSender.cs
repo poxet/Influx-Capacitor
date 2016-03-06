@@ -25,7 +25,7 @@ namespace Tharga.Influx_Capacitor.Sender
         {
             _senderConfiguration = senderConfiguration;
             _dropOnFail = false;
-            _client = new Lazy<IInfluxDbAgent>(() => new InfluxDbAgent(senderConfiguration.Properties.Url, senderConfiguration.Properties.DatabaseName, senderConfiguration.Properties.UserName, senderConfiguration.Properties.Password));
+            _client = new Lazy<IInfluxDbAgent>(() => new InfluxDbAgent(senderConfiguration.Properties.Url, senderConfiguration.Properties.DatabaseName, senderConfiguration.Properties.UserName, senderConfiguration.Properties.Password, senderConfiguration.Properties.RequestTimeout));
         }
 
         public SendResponse Send()
@@ -143,7 +143,16 @@ namespace Tharga.Influx_Capacitor.Sender
             get { return _senderConfiguration.Properties.DatabaseName; }
         }
 
-        public int QueueCount { get { return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length); } }
+        public int QueueCount
+        {
+            get
+            {
+                lock (_syncRoot)
+                {
+                    return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length);
+                }
+            }
+        }
 
         protected virtual void OnSendBusinessEvent(SendCompleteEventArgs e)
         {

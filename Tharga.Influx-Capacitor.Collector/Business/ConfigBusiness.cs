@@ -166,7 +166,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var databaseConfigFilePath = path + "\\database.xml";
             if (!_fileLoaderAgent.DoesFileExist(databaseConfigFilePath))
             {
-                return new List<InfluxDatabaseConfig> { new InfluxDatabaseConfig(true, Constants.NoConfigUrl, null, null, null) };
+                return new List<InfluxDatabaseConfig> { new InfluxDatabaseConfig(true, Constants.NoConfigUrl, null, null, null, null) };
             }
 
             var config = LoadFile(databaseConfigFilePath);
@@ -176,14 +176,14 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         public void SaveDatabaseUrl(string url)
         {
             var config = OpenDatabaseConfig().First();
-            var newDbConfig = new InfluxDatabaseConfig(true, url, config.Username, config.Password, config.Name);
+            var newDbConfig = new InfluxDatabaseConfig(true, url, config.Username, config.Password, config.Name, config.RequestTimeout);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
         public void SaveDatabaseConfig(string databaseName, string username, string password)
         {
             var config = OpenDatabaseConfig().First();
-            var newDbConfig = new InfluxDatabaseConfig(true, config.Url, username, password, databaseName);
+            var newDbConfig = new InfluxDatabaseConfig(true, config.Url, username, password, databaseName, null);
             SaveDatabaseConfigEx(newDbConfig);
         }
 
@@ -675,6 +675,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             string username = null;
             string password = null;
             string name = null;
+            TimeSpan? requestTimeout = null;
             foreach (XmlElement item in database.ChildNodes)
             {
                 switch (item.Name)
@@ -691,12 +692,15 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     case "Name":
                         name = item.InnerText;
                         break;
+                    case "RequestTimeoutMs":
+                        requestTimeout = new TimeSpan(0, 0, 0, 0, int.Parse(item.InnerText));
+                        break;
                     case "":
                         break;
                 }
             }
 
-            var db = new InfluxDatabaseConfig(enabled, url, username, password, name);
+            var db = new InfluxDatabaseConfig(enabled, url, username, password, name, requestTimeout);
             return db;
         }
 

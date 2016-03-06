@@ -177,6 +177,7 @@ Supported types are
 - Username - Login username
 - Password - password
 - Name - Name of the database
+- RequestTimeoutMs - Optional value, describing the HTTP request timeout when sending data to influxDB.
 
 ```xml
 <Influx-Capacitor>
@@ -185,6 +186,7 @@ Supported types are
     <Username>MyUser</Username>
     <Password>qwerty</Password>
     <Name>InfluxDbName</Name>
+	<RequestTimeoutMs>15000</RequestTimeoutMs>
   </Database>
 </Influx-Capacitor>
 ```
