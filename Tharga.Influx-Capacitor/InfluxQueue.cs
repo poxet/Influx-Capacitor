@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Security.AccessControl;
+using System.Text;
 using System.Threading;
 using System.Timers;
 using InfluxDB.Net.Enums;
@@ -103,7 +105,7 @@ namespace Tharga.Influx_Capacitor
 
         private static async void SendTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            _logger.Debug("SendTimerElapsed.");
+            //_logger.Debug("SendTimerElapsed.");
 
             var pts = new List<Point>();
             InfluxDbApiResponse result = null;
@@ -121,20 +123,28 @@ namespace Tharga.Influx_Capacitor
 
             if (pts.Count == 0)
             {
-                _logger.Debug("Nothing to send.");
+                //_logger.Debug("Nothing to send.");
                 return;
             }
 
             try
             {
                 _logger.Debug(string.Format("Sending {0} measurements.", pts.Count + 1));
+                var data = new StringBuilder();
+                foreach (var item in pts)
+                {
+                    data.AppendLine(item.ToString());
+                }
+                _logger.Debug(data.ToString());
+
                 result = await _agent.WriteAsync(pts.ToArray());
                 _logger.Info(result);
             }
             catch (Exception exception)
             {
                 _logger.Error(exception);
-                _queue.Enqueue(pts.ToArray());
+                //TODO: Only re-enqueue points in certain situations
+                //_queue.Enqueue(pts.ToArray());
             }
         }
 
