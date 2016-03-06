@@ -139,7 +139,7 @@ namespace Tharga.Influx_Capacitor
                 _logger.Debug(data.ToString());
 
                 result = await _agent.WriteAsync(pts.ToArray());
-                _logger.Info(result);
+                _logger.Info(result.StatusCode + ": " + result.Body);
             }
             catch (Exception exception)
             {
