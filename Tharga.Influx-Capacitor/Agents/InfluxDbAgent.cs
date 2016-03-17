@@ -60,6 +60,11 @@ namespace Tharga.Influx_Capacitor.Agents
             return new Tuple<IFormatter, InfluxVersion>(_influxDb.GetFormatter(), _influxDb.GetClientVersion());
         }
 
+        public IFormatter GetFormatter()
+        {
+            return _influxDb.GetFormatter();
+        }
+
         public async Task<InfluxDbApiResponse> AuthenticateDatabaseUserAsync()
         {
             return await _influxDb.AuthenticateDatabaseUserAsync(_databaseName, _userName, _password);

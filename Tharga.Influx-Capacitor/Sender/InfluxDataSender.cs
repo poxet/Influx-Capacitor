@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using InfluxDB.Net.Helpers;
 using InfluxDB.Net.Models;
 using Tharga.Influx_Capacitor.Agents;
@@ -12,6 +13,7 @@ namespace Tharga.Influx_Capacitor.Sender
     public class InfluxDataSender : IDataSender
     {
         private readonly object _syncRoot = new object();
+        private readonly MyLogger _myLogger;
         private readonly ISenderConfiguration _senderConfiguration;
         private readonly Queue<Point[]> _queue = new Queue<Point[]>();
         private readonly Queue<Tuple<int, Point[]>> _failQueue = new Queue<Tuple<int, Point[]>>();
@@ -23,6 +25,7 @@ namespace Tharga.Influx_Capacitor.Sender
 
         public InfluxDataSender(ISenderConfiguration senderConfiguration)
         {
+            _myLogger = new MyLogger();
             _senderConfiguration = senderConfiguration;
             _dropOnFail = false;
             _client = new Lazy<IInfluxDbAgent>(() => new InfluxDbAgent(senderConfiguration.Properties.Url, senderConfiguration.Properties.DatabaseName, senderConfiguration.Properties.UserName, senderConfiguration.Properties.Password, senderConfiguration.Properties.RequestTimeout));
@@ -64,6 +67,8 @@ namespace Tharga.Influx_Capacitor.Sender
                         {
                             //TODO: Possible to log what is sent. To an output file or similar.
                             var response = client.WriteAsync(points).Result;
+                            _myLogger.Info(response);
+
                             _canSucceed = true;
                             OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, string.Format("Sending {0} points to server.", points.Length), points.Length, SendCompleteEventArgs.OutputLevel.Information));
                         }
@@ -76,6 +81,23 @@ namespace Tharga.Influx_Capacitor.Sender
                 }
                 catch (Exception exception)
                 {
+                    if (points != null)
+                    {
+                        var sb = new StringBuilder();
+                        sb.AppendLine(exception.Message);
+                        var formatter = _client.Value.GetFormatter();
+                        foreach (var point in points)
+                        {
+                            sb.AppendLine(formatter.PointToString(point));
+                        }
+                        sb.AppendLine();
+                        _myLogger.Error(sb.ToString());
+                    }
+                    else
+                    {
+                        _myLogger.Error(exception);
+                    }
+
                     if (exception is AggregateException)
                     {
                         exception = exception.InnerException;

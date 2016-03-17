@@ -15,5 +15,6 @@ namespace Tharga.Influx_Capacitor.Interface
         Task<InfluxDbApiResponse> WriteAsync(Point[] points);
         Task CreateDatabaseAsync(string databaseName);
         Tuple<IFormatter, InfluxVersion> GetAgentInfo();
+        IFormatter GetFormatter();
     }
 }
