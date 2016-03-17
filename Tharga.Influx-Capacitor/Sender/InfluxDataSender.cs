@@ -65,9 +65,9 @@ namespace Tharga.Influx_Capacitor.Sender
                         var client = _client.Value;
                         if (client != null)
                         {
-                            //TODO: Possible to log what is sent. To an output file or similar.
+                            _myLogger.Debug("Sending:" + Environment.NewLine + GetPointsString(points));
                             var response = client.WriteAsync(points).Result;
-                            _myLogger.Info(response);
+                            _myLogger.Info("Response: " + response.StatusCode + " " + response.Body);
 
                             _canSucceed = true;
                             OnSendBusinessEvent(new SendCompleteEventArgs(_senderConfiguration, string.Format("Sending {0} points to server.", points.Length), points.Length, SendCompleteEventArgs.OutputLevel.Information));
@@ -85,12 +85,7 @@ namespace Tharga.Influx_Capacitor.Sender
                     {
                         var sb = new StringBuilder();
                         sb.AppendLine(exception.Message);
-                        var formatter = _client.Value.GetFormatter();
-                        foreach (var point in points)
-                        {
-                            sb.AppendLine(formatter.PointToString(point));
-                        }
-                        sb.AppendLine();
+                        sb.AppendLine(GetPointsString(points));
                         _myLogger.Error(sb.ToString());
                     }
                     else
@@ -139,6 +134,18 @@ namespace Tharga.Influx_Capacitor.Sender
             }
 
             return new SendResponse(responseMessage, stopWatch.Elapsed.TotalMilliseconds);
+        }
+
+        private string GetPointsString(Point[] points)
+        {
+            var sb = new StringBuilder();
+            var formatter = _client.Value.GetFormatter();
+            foreach (var point in points)
+            {
+                sb.AppendLine(formatter.PointToString(point));
+            }
+            sb.AppendLine();
+            return sb.ToString();
         }
 
         public void Enqueue(Point[] points)
