@@ -52,7 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="InfluxDB.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Solutions\packages\InfluxDB.MultiVersion.Client.1.0.8\lib\net45\InfluxDB.Net.dll</HintPath>
+      <HintPath>..\Solutions\packages\InfluxDB.MultiVersion.Client.1.0.9\lib\net45\InfluxDB.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -90,8 +90,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tharga.Toolkit.Console, Version=1.5.18.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Solutions\packages\Tharga.Toolkit.Console.1.5.18.0\lib\net45\Tharga.Toolkit.Console.dll</HintPath>
+    <Reference Include="Tharga.Toolkit.Console, Version=1.5.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Solutions\packages\Tharga.Toolkit.Console.1.5.19.0\lib\net45\Tharga.Toolkit.Console.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

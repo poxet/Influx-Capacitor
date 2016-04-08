@@ -301,7 +301,7 @@ The console version is named *Tharga.Influx-Capacitor.Console.exe* and provided 
 - Create - Create a new performance counter config file for a counter.
 
 ## Versions
-The currently supported version of InfluxDB is 0.9x.
+The currently supported versions of InfluxDB is 0.9.x, 0.10.x and 0.11.x.
 
 ## Metadata
 By default metadata is sent fron Influx-Capacitor to influxDB. (There is an Application that can turn this off if you do not want it)
