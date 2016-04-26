@@ -15,10 +15,11 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public CounterBusiness()
         {
-            if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
+            var cultureName = System.Configuration.ConfigurationManager.AppSettings["Culture"] as string;
+            if (!string.IsNullOrEmpty(cultureName) && Thread.CurrentThread.CurrentCulture.Name != cultureName)
             {
                 var previous = Thread.CurrentThread.CurrentCulture.Name;
-                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cultureName);
                 OnChangedCurrentCultureEvent(new ChangedCurrentCultureEventArgs(previous, Thread.CurrentThread.CurrentCulture.Name));
             }
 
@@ -27,7 +28,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         }
 
         public event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
-        public event EventHandler<ChangedCurrentCultureEventArgs> ChangedCurrentCultureEvent;
+        public static event EventHandler<ChangedCurrentCultureEventArgs> ChangedCurrentCultureEvent;
 
         public IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
         {

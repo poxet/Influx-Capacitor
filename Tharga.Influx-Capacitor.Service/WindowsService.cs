@@ -31,7 +31,7 @@ namespace Tharga.InfluxCapacitor.Service
             var counterBusiness = new CounterBusiness();
             var publisherBusiness = new PublisherBusiness();
             counterBusiness.GetPerformanceCounterEvent += GetPerformanceCounterEvent;
-            counterBusiness.ChangedCurrentCultureEvent += ChangedCurrentCultureEvent;
+            CounterBusiness.ChangedCurrentCultureEvent += ChangedCurrentCultureEvent;
             var sendBusiness = new SendBusiness(configBusiness, influxDbAgentLoader);
             sendBusiness.SendBusinessEvent += SendBusinessEvent;
             var tagLoader = new TagLoader(configBusiness);
