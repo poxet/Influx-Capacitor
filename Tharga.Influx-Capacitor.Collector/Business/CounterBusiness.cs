@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Tharga.InfluxCapacitor.Collector.Event;
@@ -9,22 +10,24 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 {
     public class CounterBusiness : ICounterBusiness
     {
-        private readonly PerformanceCounterProvider _perfCounterProvider;
-
         private readonly Dictionary<string, IPerformanceCounterProvider> _additionalProviders;
-
-        public event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
+        private readonly PerformanceCounterProvider _perfCounterProvider;
 
         public CounterBusiness()
         {
             if (Thread.CurrentThread.CurrentCulture.Name != "en-US")
             {
-                Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+                var previous = Thread.CurrentThread.CurrentCulture.Name;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
+                OnChangedCurrentCultureEvent(new ChangedCurrentCultureEventArgs(previous, Thread.CurrentThread.CurrentCulture.Name));
             }
 
-            _perfCounterProvider = new PerformanceCounterProvider(this.OnGetPerformanceCounters, null);
+            _perfCounterProvider = new PerformanceCounterProvider(OnGetPerformanceCounters, null);
             _additionalProviders = new Dictionary<string, IPerformanceCounterProvider>(StringComparer.OrdinalIgnoreCase);
         }
+
+        public event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
+        public event EventHandler<ChangedCurrentCultureEventArgs> ChangedCurrentCultureEvent;
 
         public IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config)
         {
@@ -100,6 +103,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 yield return provider;
             }
+        }
+
+        private void OnChangedCurrentCultureEvent(ChangedCurrentCultureEventArgs e)
+        {
+            var handler = ChangedCurrentCultureEvent;
+            if (handler != null) handler(this, e);
         }
     }
 }

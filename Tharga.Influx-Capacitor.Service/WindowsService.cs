@@ -31,6 +31,7 @@ namespace Tharga.InfluxCapacitor.Service
             var counterBusiness = new CounterBusiness();
             var publisherBusiness = new PublisherBusiness();
             counterBusiness.GetPerformanceCounterEvent += GetPerformanceCounterEvent;
+            counterBusiness.ChangedCurrentCultureEvent += ChangedCurrentCultureEvent;
             var sendBusiness = new SendBusiness(configBusiness, influxDbAgentLoader);
             sendBusiness.SendBusinessEvent += SendBusinessEvent;
             var tagLoader = new TagLoader(configBusiness);
@@ -84,6 +85,11 @@ namespace Tharga.InfluxCapacitor.Service
         private void SendBusinessEvent(object sender, SendCompleteEventArgs e)
         {
             _console.WriteLine(e.Message, e.Level.ToOutputLevel(), null);
+        }
+
+        private void ChangedCurrentCultureEvent(object sender, ChangedCurrentCultureEventArgs e)
+        {
+            _console.WriteLine(string.Format("Changed culture from {0} to {1}.", e.PreviousCulture, e.NewCulture), OutputLevel.Information, null);
         }
 
         private void GetPerformanceCounterEvent(object sender, GetPerformanceCounterEventArgs e)

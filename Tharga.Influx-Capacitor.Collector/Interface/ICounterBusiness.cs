@@ -6,6 +6,8 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
 {
     public interface ICounterBusiness
     {
+        event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
+        event EventHandler<ChangedCurrentCultureEventArgs> ChangedCurrentCultureEvent;
         IEnumerable<IPerformanceCounterGroup> GetPerformanceCounterGroups(IConfig config);
 
         IEnumerable<string> GetCategoryNames();
@@ -14,6 +16,5 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
 
         IEnumerable<string> GetInstances(string category, string counterName, string machineName);
 
-        event EventHandler<GetPerformanceCounterEventArgs> GetPerformanceCounterEvent;
     }
 }
