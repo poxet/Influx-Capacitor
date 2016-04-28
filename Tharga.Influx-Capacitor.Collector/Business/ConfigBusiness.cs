@@ -405,6 +405,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             var refreshInstanceInterval = GetInt(counterGroup, "RefreshInstanceInterval", 0);
             var collectorEngineType = GetString(counterGroup, "CollectorEngineType", "Safe");
             var providerName = GetString(counterGroup, "Provider", string.Empty);
+            var allowDuplicateInstanceNames = GetBool(counterGroup, "AllowDuplicateInstanceNames", false);
 
             var counters = counterGroup.GetElementsByTagName("Counter");
             var cts = new List<ICounter>();
@@ -450,7 +451,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 cet = CollectorEngineType.Safe;
             }
 
-            return new CounterGroup(name, secondsInterval, refreshInstanceInterval, cts, tags, cet, filters, providerName);
+            return new CounterGroup(name, secondsInterval, refreshInstanceInterval, cts, tags, cet, filters, providerName, allowDuplicateInstanceNames);
         }
 
         private static string GetString(XmlElement element, string name, string defaultValue = null)
@@ -474,6 +475,20 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 if (defaultValue == null)
                     throw new InvalidOperationException(string.Format("Cannot parse attribute {0} value to integer.", name));
+                return defaultValue.Value;
+            }
+
+            return value;
+        }
+
+        private static bool GetBool(XmlElement element, string name, bool? defaultValue = null)
+        {
+            var stringValue = GetString(element, name, defaultValue != null ? defaultValue.ToString() : null);
+            bool value;
+            if (!bool.TryParse(stringValue, out value))
+            {
+                if (defaultValue == null)
+                    throw new InvalidOperationException(string.Format("Cannot parse attribute {0} value to bool.", name));
                 return defaultValue.Value;
             }
 

@@ -96,17 +96,20 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         // because of the filtering, multiples instances can have the same instance name,
                         // so we increment a counter for each instance after the first one
                         // eg: w3wp, w3wp#2, w3wp#3, etc.
-                        var filteredNames = new Dictionary<string, int>(StringComparer.Ordinal);
-                        for (var i = 0; i < performanceCounters.Count; i++)
+                        if (!group.AllowDuplicateInstanceNames)
                         {
-                            int count;
-                            var instanceName = performanceCounters[i].InstanceName;
-                            if (filteredNames.TryGetValue(instanceName, out count))
+                            var filteredNames = new Dictionary<string, int>(StringComparer.Ordinal);
+                            for (var i = 0; i < performanceCounters.Count; i++)
                             {
-                                performanceCounters[i].InstanceName = instanceName + "#" + (count + 1);
-                            }
+                                int count;
+                                var instanceName = performanceCounters[i].InstanceName;
+                                if (filteredNames.TryGetValue(instanceName, out count))
+                                {
+                                    performanceCounters[i].InstanceName = instanceName + "#" + (count + 1);
+                                }
 
-                            filteredNames[instanceName] = count + 1;
+                                filteredNames[instanceName] = count + 1;
+                            }
                         }
                     }
 
