@@ -488,7 +488,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             if (!bool.TryParse(stringValue, out value))
             {
                 if (defaultValue == null)
-                    throw new InvalidOperationException(string.Format("Cannot parse attribute {0} value to integer.", name));
+                    throw new InvalidOperationException(string.Format("Cannot parse attribute {0} value to bool.", name));
                 return defaultValue.Value;
             }
 
