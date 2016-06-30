@@ -95,7 +95,16 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 
         public float NextValue()
         {
-            return _performanceCounters.NextValue();
+            // if performance counter exists but its raw value is null, calling NextValue() will throw an exception
+            // in this case, just return zero
+            try
+            {
+                return _performanceCounters.NextValue();
+            }
+            catch (System.Exception)
+            {
+                return 0;
+            }
         }
     }
 }
