@@ -11,10 +11,7 @@ Param(
     $version,
 	[parameter(Mandatory=$true)]
     [alias("f")]
-    $wsxFile,
-	[parameter(Mandatory=$false)]
-    [alias("p")]
-    $prerelease
+    $wsxFile
 )
 
 Try
@@ -23,10 +20,17 @@ Try
 	#$path = $wsxFile.Substring(0, $wsxFile.LastIndexOf("\"))
 	$name = $wsxFile.Substring($wsxFile.LastIndexOf("\")+1)
 	$name = $name.Substring(0,$name.LastIndexOf("."))
-	
+		
+	if ($version.LastIndexOf('-') -eq -1) { } else
+	{
+		$prerelease = $version.Substring($version.LastIndexOf('-')+1)
+		$version = $version.Substring(0,$version.LastIndexOf('-'))
+	}
+		
 	#write-host ("name:" + $name) -f green
-	#write-host ("path:" + $path) -f green
-	
+	#write-host ("version:" + $version) -f green
+	#write-host ("prerelease:" + $prerelease) -f green
+		
 	Push-Location $path
 	
 	write-host ("Running candle to create wixobj-file.") -f green
