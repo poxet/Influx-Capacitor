@@ -1,0 +1,60 @@
+Preconditions
+- You need to have chocolatey installed
+- You need "WiX Toolset v3.10" to be able to create the installation package. Run "choco install wixtoolset" to have it installed. [choco install wixtoolset]
+- To calculate checksums. [choco install checksum]
+
+Steps to manually build the installation package
+
+- Create a Release build
+- Open powershell and go to ~\Influx-Capacitor\Build
+
+
+1. Build the msi package
+------------------------------------
+.\BuildMsiPackage.ps1 -b #build# -v #version# -f #wsxFile# -p #prerelease#
+build - The build type "Release" or "Debug"
+version - Version number without prerelease information. (ie. 1.2.3)
+wsxFile - path the the wsx-file
+prerelease - name of the prerelease part of the version, if this is a prerelease
+
+Example:
+.\BuildMsiPackage.ps1 -b Release -v 1.0.0 -f Influx-Capacitor.wsx -p alfa
+Output will be a new file named "Influx-Capacitor.1.0.0-alfa.msi".
+
+2. Upload packate to resource location
+------------------------------------
+.\DeployFileToMultipleTargets.ps1 -s #ShareNames# -f #fromFile# -t #target# -U #UserName# -P #password#
+ShareNames - 
+fromFile - 
+target - 
+UserName - 
+password -
+
+Example:
+.\DeployFileToMultipleTargets.ps1 -s \\192.168.35.126\c$ -f Influx-Capacitor.1.0.0-alfa.msi -t inetpub\wwwroot\influx-capacitor.com\Resources\Continuous
+
+3. Build the chocolatey package
+------------------------------------
+.\BuildChocoPackage.ps1 -u #url# -f #msiFile# -n #nuspecFile#
+url - Url where the msi file will be located. (ie. http://influx-capacitor.com/Resources/Influx-Capacitor.1.0.0-alfa.msi)
+msiFile - Path to msi-file to be used with checksum calculation
+nuspecFile - Path to the nuspec file with definitions for the package
+
+Example:
+.\BuildChocoPackage.ps1 -u http://influx-capacitor.com/Resources/Continuous/Influx-Capacitor.1.0.0-alfa.msi -f Influx-Capacitor.1.0.0-alfa.msi -n Chocolatey\influx-capacitor.nuspec
+
+4. Test the package
+------------------------------------
+choco install influx-capacitor -pre -fdv -s .
+
+5. Upload the nuget package to the thargelion server
+------------------------------------
+
+
+Example
+.\DeployFileToMultipleTargets.ps1 -s \\192.168.35.126\c$ -f influx-capacitor.1.0.0-alfa.nupkg -t inetpub\wwwroot\influx-capacitor.com\Packages
+
+6. Upload the nuget package to chocolatey.org
+------------------------------------
+TODO: 
+
