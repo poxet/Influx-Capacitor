@@ -72,7 +72,7 @@
         <InstanceName>*</InstanceName>
       </Counter>
     </CounterGroup>
-    <CounterGroup Name="perfmon.disk.avergae_disk_queue_length" SecondsInterval="5">
+    <CounterGroup Name="perfmon.disk.average_disk_queue_length" SecondsInterval="5">
       <Counter>
         <CategoryName>LogicalDisk</CategoryName>
         <CounterName>Avg. Disk Queue Length</CounterName>
