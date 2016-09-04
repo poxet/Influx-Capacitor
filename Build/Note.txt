@@ -56,5 +56,7 @@ Example
 
 6. Upload the nuget package to chocolatey.org
 ------------------------------------
-TODO: 
+.\PushChocolatey.ps1 -p #package# -k #apiKey" -l #label#
 
+Example:
+.\PushChocolatey.ps1 -p C:\ChocolateyArchive\influx-capacitor.%build.number%.nupkg -k ?????
