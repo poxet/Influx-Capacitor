@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using InfluxDB.Net.Models;
 using Moq;
 using NUnit.Framework;
@@ -14,8 +15,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
     public class StartTests
     {
         [Test]
-        [Ignore]
-        public async void Should_not_send_data_to_database_when_no_SecondsInterval()
+        [Ignore("")]
+        public async Task Should_not_send_data_to_database_when_no_SecondsInterval()
         {
             //Arrange
             var databaseName = "AA";
@@ -35,8 +36,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
         }
 
         [Test]
-        [Ignore]
-        public async void Should_send_data_to_database_when_started()
+        [Ignore("")]
+        public async Task Should_send_data_to_database_when_started()
         {
             //Arrange
             var databaseName = "AA";
@@ -56,8 +57,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
         }
 
         [Test]
-        [Ignore]
-        public async void Should_send_data_every_SecondsInterval()
+        [Ignore("")]
+        public async Task Should_send_data_every_SecondsInterval()
         {
             //Arrange
             var databaseName = "AA";

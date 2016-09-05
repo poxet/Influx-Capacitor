@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.Influx-Capacitor.Console", "..\Tharga.Influx-Capacitor.Console\Tharga.Influx-Capacitor.Console.csproj", "{840B45F9-F50E-449A-B132-63B80FCF1337}"
 EndProject
@@ -18,22 +18,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.Influx-Capacitor.Col
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.Influx-Capacitor.Service", "..\Tharga.Influx-Capacitor.Service\Tharga.Influx-Capacitor.Service.csproj", "{AC63E1C0-867D-4E9C-96AA-A34045617B26}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{472514BE-9F45-4C27-AA9D-DC57C99D7292}"
-	ProjectSection(SolutionItems) = preProject
-		..\Setup\BuildMsi.bat = ..\Setup\BuildMsi.bat
-		..\Setup\ChocolateyInstall.ps1 = ..\Setup\ChocolateyInstall.ps1
-		..\Setup\Influx-Capacitor.nuspec = ..\Setup\Influx-Capacitor.nuspec
-		..\Setup\Influx-Capacitor.wsx = ..\Setup\Influx-Capacitor.wsx
-		..\Setup\Note.txt = ..\Setup\Note.txt
-		..\Setup\SetChocolateyVersion.ps1 = ..\Setup\SetChocolateyVersion.ps1
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{75270509-6847-49AD-90CD-5EA4F972A857}"
 	ProjectSection(SolutionItems) = preProject
 		..\Build\AssemblyVersionInfo.cs = ..\Build\AssemblyVersionInfo.cs
-		..\Build\build.tasks = ..\Build\build.tasks
-		..\Build\CI.msbuild = ..\Build\CI.msbuild
-		..\Build\Release.msbuild = ..\Build\Release.msbuild
+		..\Build\BuildChocoPackage.ps1 = ..\Build\BuildChocoPackage.ps1
+		..\Build\BuildMsiPackage.ps1 = ..\Build\BuildMsiPackage.ps1
+		..\Build\DeployFileToMultipleTargets.ps1 = ..\Build\DeployFileToMultipleTargets.ps1
+		..\Build\Influx-Capacitor.wsx = ..\Build\Influx-Capacitor.wsx
+		..\Build\Note.txt = ..\Build\Note.txt
+		..\Build\PushChocolatey.ps1 = ..\Build\PushChocolatey.ps1
+		..\Build\PushNuget.ps1 = ..\Build\PushNuget.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{57B6D49E-1A1D-4145-B1B5-D0EAF3A3AF9C}"
@@ -58,6 +52,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{1477
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.Influx-Capacitor", "..\Tharga.Influx-Capacitor\Tharga.Influx-Capacitor.csproj", "{C60C4133-A221-4EF8-8F69-D407752DCE3F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chocolatey", "Chocolatey", "{78D82766-66E1-4051-9CC9-EF9DFDE3DD03}"
+	ProjectSection(SolutionItems) = preProject
+		..\Build\Chocolatey\influx-capacitor.nuspec = ..\Build\Chocolatey\influx-capacitor.nuspec
+		..\Build\Chocolatey\ReadMe.md = ..\Build\Chocolatey\ReadMe.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{25F8AE5C-A0BE-4516-A20B-F360A10875E2}"
+	ProjectSection(SolutionItems) = preProject
+		..\Build\Chocolatey\tools\chocolateybeforemodify.ps1 = ..\Build\Chocolatey\tools\chocolateybeforemodify.ps1
+		..\Build\Chocolatey\tools\chocolateyinstall.ps1 = ..\Build\Chocolatey\tools\chocolateyinstall.ps1
+		..\Build\Chocolatey\tools\chocolateyuninstall.ps1 = ..\Build\Chocolatey\tools\chocolateyuninstall.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,5 +112,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{78D82766-66E1-4051-9CC9-EF9DFDE3DD03} = {75270509-6847-49AD-90CD-5EA4F972A857}
+		{25F8AE5C-A0BE-4516-A20B-F360A10875E2} = {78D82766-66E1-4051-9CC9-EF9DFDE3DD03}
 	EndGlobalSection
 EndGlobal

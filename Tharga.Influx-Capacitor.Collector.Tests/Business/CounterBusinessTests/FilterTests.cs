@@ -61,7 +61,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.CounterBusinessTests
         }
 
         [Test]
-        [Ignore]
+        [Ignore("")]
         public void Should_Apply_Filter_Which_Returns_All()
         {
             // The test filter match all counters

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using InfluxDB.Net.Models;
 using Moq;
 using NUnit.Framework;
@@ -12,8 +13,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.ProcessorTests
     public class RunTests
     {
         [Test]
-        [Ignore]
-        public async void Should_run()
+        [Ignore("")]
+        public async Task Should_run()
         {
             //Arrange
             var configBusinessMock = new Mock<IConfigBusiness>(MockBehavior.Strict);
