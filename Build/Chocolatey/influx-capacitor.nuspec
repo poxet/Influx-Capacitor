@@ -5,7 +5,7 @@
     <version>1.0.0</version>
     <packageSourceUrl>https://github.com/poxet/Influx-Capacitor</packageSourceUrl>
     <owners>poxet</owners>
-    <title>Influx-Capacitor (Install)</title>
+    <title>Influx-Capacitor</title>
     <authors>Daniel Bohlin</authors>
     <projectUrl>http://influx-capacitor.com</projectUrl>
     <iconUrl>http://influx-capacitor.com/Images/icon-48x48.png</iconUrl>
