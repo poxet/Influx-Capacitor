@@ -43,8 +43,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="InfluxDB.Net, Version=1.0.18.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Solutions\packages\InfluxDB.MultiVersion.Client.1.0.18\lib\net45\InfluxDB.Net.dll</HintPath>
+    <Reference Include="InfluxDB.Net, Version=1.0.20.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Solutions\packages\InfluxDB.MultiVersion.Client.1.0.20\lib\net45\InfluxDB.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="kafka-net, Version=0.9.0.65, Culture=neutral, processorArchitecture=MSIL">
