@@ -11,10 +11,10 @@
 	<iconUrl>http://influx-capacitor.com/Images/icon-72x72.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-      Client component for managed sending of measurements to UnfluxDB.
-      The component is used withing the Influx Capacitor project that collects performance counter data.
+      Client component for sending managed measurements to InfluxDB.
+      This is the core component of the Influx Capacitor project that collects performance counter data.
     </description>
-    <summary>Send Performance Counter data and custom data to InfluxDB.</summary>
+    <summary>Sends performance counter data and custom data to InfluxDB.</summary>
     <copyright />
 	<tags>InfluxDB queue performance counter metrics</tags>
     <dependencies>

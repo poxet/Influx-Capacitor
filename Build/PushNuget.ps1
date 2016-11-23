@@ -25,7 +25,7 @@ Param
     [alias("l")]
     $label
 )
-	
+
 Try
 {
 	#C:\TeamCity\buildAgent\work\8056a26431335114
@@ -39,28 +39,28 @@ Try
 		$prerelease = $version.Substring($version.IndexOf("-")+1)
 	}
 	$packageName = $arr[0..($len-5)] -join '.'
-	
-	
+
+
 	write-host ("version '" + $version + "'.") -f "green"
 	write-host ("prerelease '" + $prerelease + "'.") -f "green"
 	write-host ("packageName '" + $packageName + "'.") -f "green"
-	
+
 	#Push to nuget
 	if (-NOT $prerelease)
 	{
-		if ([System.Convert]::ToBoolean($label)) 
+		if ([System.Convert]::ToBoolean($label))
 		{
 			#Tag git repository
 			write-host ("Creating git tag '" + $version + "'.") -f "green"
 			git tag $version
-			
+
 			write-host ("Pushing tag '" + $version + "' to origin.") -f "green"
 			git push origin $version
 		}
-		
+
 		#%teamcity.tool.NuGet.CommandLine.DEFAULT%\tools\nuget.exe
-		if (-Not $nugetExe) 
-		{ 
+		if (-Not $nugetExe)
+		{
 			#$nugetExe = "%teamcity.tool.NuGet.CommandLine.DEFAULT%\tools\nuget.exe"
 			#$nugetExe = "C:\TeamCity\buildAgent0\tools\NuGet.CommandLine.3.4.4\tools\NuGet.exe"
 		}
@@ -71,9 +71,9 @@ Try
 		write-host ("Pushing package '" + $filename + "' to '" + $target + "'.") -f "green"
 		#write-host ("Executing: $nugetExe push $package -ApiKey $apiKey -Source https://www.nuget.org")
 		#iex $nugetExe push $package -ApiKey $apiKey -Source https://www.nuget.org
-		C:\TeamCity\buildAgent0\tools\NuGet.CommandLine.3.4.4\tools\NuGet.exe push $package -ApiKey $apiKey -Source https://www.nuget.org
+		C:\TeamCity\buildAgent\tools\NuGet.CommandLine.3.4.4\tools\NuGet.exe push $package -ApiKey $apiKey -Source https://www.nuget.org
 	}
-	else 
+	else
 	{
 		write-host ("Will not push package '" + $filename + "', it is a prerelease.") -f "yellow"
 	}
