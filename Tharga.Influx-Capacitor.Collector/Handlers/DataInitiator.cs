@@ -22,6 +22,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         {
             yield return CreateProcessorCounter();
             yield return CreateMemoryCounter();
+            yield return CreateDiskCounter();
         }
 
         public Tuple<string, Tuple<string, OutputLevel>> CreateCounter(string groupName, int secondsInterval, int refreshInstanceInterval, List<ICounter> counters, CollectorEngineType collectorEngineType)
@@ -43,8 +44,17 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         private Tuple<string, OutputLevel> CreateMemoryCounter()
         {
             var name = "memory";
-            
+
             var counters = new List<ICounter> { new Counter("Memory", "*", string.Empty, null, null, null, null, null) };
+            var response = new CounterGroup(name, 10, 0, counters, new ITag[] { }, CollectorEngineType.Safe, null, null, false);
+            return ConvertErrorsToWarnings(CreateFile(name, response));
+        }
+
+        private Tuple<string, OutputLevel> CreateDiskCounter()
+        {
+            var name = "disk";
+
+            var counters = new List<ICounter> { new Counter("LogicalDisk", "Free Megabytes", "*", null, null, null, null, null) };
             var response = new CounterGroup(name, 10, 0, counters, new ITag[] { }, CollectorEngineType.Safe, null, null, false);
             return ConvertErrorsToWarnings(CreateFile(name, response));
         }
