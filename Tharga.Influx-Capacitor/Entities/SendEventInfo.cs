@@ -1,10 +1,8 @@
 using System;
-using System.Threading;
-using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Entities
 {
-    public class SendCompleteEventArgs : EventArgs
+    public class SendEventInfo : ISendEventInfo
     {
         public enum OutputLevel
         {
@@ -13,20 +11,17 @@ namespace Tharga.InfluxCapacitor.Entities
             Error,
         }
 
-        private readonly ISenderConfiguration _senderConfiguration;
         private readonly string _message;
         private readonly Exception _exception;
 
-        public SendCompleteEventArgs(ISenderConfiguration senderConfiguration, Exception exception)
+        public SendEventInfo(Exception exception)
         {
-            _senderConfiguration = senderConfiguration;
             _exception = exception;
             Level = OutputLevel.Error;
         }
 
-        public SendCompleteEventArgs(ISenderConfiguration senderConfiguration, string message, int count, OutputLevel outputLevel)
+        public SendEventInfo(string message, int count, OutputLevel outputLevel)
         {
-            _senderConfiguration = senderConfiguration;
             _message = message;
             Level = outputLevel;
         }

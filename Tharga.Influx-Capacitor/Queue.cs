@@ -10,47 +10,6 @@ using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor
 {
-    public interface IQueue
-    {
-        void Enqueue(Point[] points);
-        IQueueCountInfo GetQueueInfo();
-    }
-
-    public enum QueueEventLevel { Debug, Information, Warning, Error }
-
-    public interface ISendEventInfo
-    {
-    }
-
-    public interface IQueueChangeEventInfo
-    {
-        IQueueCountInfo Before { get; }
-        IQueueCountInfo After { get; }
-        string Message { get; }
-    }
-
-    public interface IQueueCountInfo
-    {
-        int QueueCount { get; }
-        int FailQueueCount { get; }
-        int TotalQueueCount { get; }
-    }
-
-    public interface IQueueEvents
-    {
-        void DebugMessageEvent(string message);
-        void ExceptionEvent(Exception exception);
-        void SendEvent(ISendEventInfo sendCompleteEventArgs);
-        void QueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo);
-    }
-
-    public interface IQueueSettings
-    {
-        int FlushSecondsInterval { get; }
-        bool DropOnFail { get; }
-        int MaxQueueSize { get; }
-    }
-
     public class Queue : IQueue
     {
         private readonly object _syncRoot = new object();
