@@ -104,9 +104,10 @@
     <Compile Include="Agents\KafkaAgent.cs" />
     <Compile Include="Agents\KafkaSenderAgent.cs" />
     <Compile Include="Agents\NullSenderAgent.cs" />
-    <Compile Include="Agents\QueueSettings.cs" />
+    <Compile Include="Entities\QueueSettings.cs" />
     <Compile Include="Entities\AgentSendResponse.cs" />
     <Compile Include="Interface\IKafkaAgent.cs" />
+    <Compile Include="Interface\ISendResponse.cs" />
     <Compile Include="Managers\ConsoleQueueEvents.cs" />
     <Compile Include="Entities\QueueChangeEventInfo.cs" />
     <Compile Include="Entities\QueueCountInfo.cs" />

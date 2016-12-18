@@ -68,10 +68,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "queueCountChange", queueCountChange }
             };
 
-            if (response.Elapsed != null)
-            {
-                fields.Add("sendTimeMs", response.Elapsed.Value);
-            }
+            fields.Add("sendTimeMs", response.Elapsed);
 
             var point = new Point
             {

@@ -1,4 +1,5 @@
 using System;
+using Tharga.InfluxCapacitor.Entities;
 
 namespace Tharga.InfluxCapacitor.Interface
 {
@@ -8,5 +9,6 @@ namespace Tharga.InfluxCapacitor.Interface
         void ExceptionEvent(Exception exception);
         void SendEvent(ISendEventInfo sendCompleteEventArgs);
         void QueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo);
+        void TimerEvent(ISendResponse sendResponse);
     }
 }

@@ -44,7 +44,8 @@ namespace Tharga.InfluxCapacitor
         {
             try
             {
-                var success = Send();
+                var response = Send();
+                _queueEvents.TimerEvent(response);
             }
             catch (Exception exception)
             {
@@ -58,6 +59,9 @@ namespace Tharga.InfluxCapacitor
             string responseMessage = null;
             var stopWatch = new Stopwatch();
             stopWatch.Start();
+
+            var isSuccess = false;
+            var pointCount = 0;
 
             lock (_syncRoot)
             {
@@ -88,15 +92,19 @@ namespace Tharga.InfluxCapacitor
                         });
 
                         _queueEvents.DebugMessageEvent("Sending:" + Environment.NewLine + GetPointsString(points));
+                        pointCount = points.Length;
                         var response = _senderAgent.SendAsync(points).Result;
                         if (response.IsSuccess)
                         {
                             _canSucceed = true;
-                            _queueEvents.SendEvent(new SendEventInfo($"Sent {points.Length} points to server, with response '{response.StatusName}'.", points.Length, SendEventInfo.OutputLevel.Information));
+                            isSuccess = true;
+                            responseMessage = $"Sent {points.Length} points to server, with response '{response.StatusName}'.";
+                            _queueEvents.SendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Information));
                         }
                         else
                         {
-                            _queueEvents.SendEvent(new SendEventInfo($"Failed to send {points.Length} points to server. Code '{response.StatusName}', Body '{response.Body ?? "n/a"}'.", points.Length, SendEventInfo.OutputLevel.Error));
+                            responseMessage = $"Failed to send {points.Length} points to server. Code '{response.StatusName}', Body '{response.Body ?? "n/a"}'.";
+                            _queueEvents.SendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Error));
                             _queueAction.Execute(() => { _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points)); });
                         }
                     }
@@ -156,7 +164,7 @@ namespace Tharga.InfluxCapacitor
                 }
             }
 
-            return new SendResponse(responseMessage, stopWatch.Elapsed);
+            return new SendResponse(isSuccess, responseMessage, pointCount , stopWatch.Elapsed);
         }
 
         public IQueueCountInfo GetQueueInfo()

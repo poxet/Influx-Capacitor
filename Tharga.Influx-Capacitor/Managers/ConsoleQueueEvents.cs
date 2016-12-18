@@ -16,7 +16,8 @@ namespace Tharga.InfluxCapacitor.Managers
 
         public void DebugMessageEvent(string message)
         {
-            _console.WriteLine(message, OutputLevel.Information);
+            //NOTE: Use this to se debug information
+            //_console.WriteLine(message, OutputLevel.Information);
         }
 
         public void ExceptionEvent(Exception exception)
@@ -47,6 +48,11 @@ namespace Tharga.InfluxCapacitor.Managers
         public void QueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo)
         {
             _console.WriteLine(queueChangeEventInfo.Message, OutputLevel.Information);
+        }
+
+        public void TimerEvent(ISendResponse sendResponse)
+        {
+            _console.WriteLine($"{sendResponse.Message} in {sendResponse.Elapsed.TotalMilliseconds:N2}ms.", OutputLevel.Information);
         }
     }
 }
