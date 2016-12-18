@@ -19,18 +19,9 @@ namespace Tharga.InfluxCapacitor
 
         private bool _canSucceed; //Has successed to send at least once.
 
-        //private ILogger _logger;
-        ////private const string MutexId = "InfluxQueue";
-        ////private static readonly IInfluxDbAgent _agent;
-        ////private static readonly IFormatter _formatter;
         private readonly Queue<Point[]> _queue = new Queue<Point[]>();
         private readonly Queue<Tuple<int, Point[]>> _failQueue = new Queue<Tuple<int, Point[]>>();
         private readonly QueueAction _queueAction;
-        ////private static readonly MyLogger _logger = new MyLogger();
-        ////private static Timer _sendTimer;
-        ////private static MutexSecurity _securitySettings;
-        ////private static bool? _enabled;
-        //private readonly bool _metadata;
 
         public Queue(ISenderAgent senderAgent, IQueueEvents queueEvents, IQueueSettings queueSettings)
         {
@@ -47,48 +38,13 @@ namespace Tharga.InfluxCapacitor
                 timer.Elapsed += Elapsed;
                 timer.Start();
             }
-
-            //    //try
-            //    //{
-            //    //    if (Enabled)
-            //    //    {
-            //    //        var influxVersion = InfluxVersion.Auto; //TODO: Move to settings
-            //    //        _logger.Info(string.Format("Initiating influxdb agent to address {0} database {1} user {2} version {3}.",Address, DatabaseName, UserName, influxVersion));
-            //    //        _agent = new InfluxDbAgent(Address, DatabaseName, UserName, Password, null, influxVersion);
-            //    //        _formatter = _agent.GetAgentInfo().Item1;
-            //    //    }
-            //    //}
-            //    //catch(Exception exception)
-            //    //{
-            //    //    _logger.Error(exception);
-            //    //    _enabled = false;
-            //    //}
         }
 
         private void Elapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
-                //var metaPoints = new List<Point>();
-
-                //var previousQueueCount = TotalQueueCount;
-                //_queueEvents.DebugMessageEvent(string.Format("Starting to send {0} points to {1}.", previousQueueCount, _senderAgent.TargetDescription));
                 var success = Send();
-                //var postQueueCount = TotalQueueCount;
-                //_queueEvents.DebugMessageEvent(string.Format("Done sending {0} points to server {1}. Now {2} items in queue.", previousQueueCount, _senderAgent.TargetDescription, postQueueCount));
-
-                //if (_metadata)
-                //{
-                //    metaPoints.Add(MetaDataBusiness.GetQueueCountPoints("Send", senderAgent.TargetServer, senderAgent.TargetDatabase, previousQueueCount, postQueueCount - previousQueueCount + _dataSenders.Count, success));
-                //}
-                //
-                //if (_metadata)
-                //{
-                //    foreach (var dataSender in _dataSenders)
-                //    {
-                //        dataSender.Enqueue(metaPoints.ToArray());
-                //    }
-                //}
             }
             catch (Exception exception)
             {
@@ -96,39 +52,6 @@ namespace Tharga.InfluxCapacitor
                 throw;
             }
         }
-
-        //public int TotalQueueCount
-        //{
-        //    get
-        //    {
-        //        lock (_syncRoot)
-        //        {
-        //            return _queue.Sum(x => x.Length) + _failQueue.Sum(x => x.Item2.Length);
-        //        }
-        //    }
-        //}
-        //
-        //public int QueueCount
-        //{
-        //    get
-        //    {
-        //        lock (_syncRoot)
-        //        {
-        //            return _queue.Sum(x => x.Length);
-        //        }
-        //    }
-        //}
-        //
-        //public int FailQueueCount
-        //{
-        //    get
-        //    {
-        //        lock (_syncRoot)
-        //        {
-        //            return _failQueue.Sum(x => x.Item2.Length);
-        //        }
-        //    }
-        //}
 
         private SendResponse Send()
         {
@@ -287,147 +210,5 @@ namespace Tharga.InfluxCapacitor
                 _queueEvents.QueueChangedEvent(new QueueChangeEventInfo(before, _getQueueInfo()));
             }
         }
-
-        //private static QueueAction
-
-        ////private static string Address
-        ////{
-        ////    get
-        ////    {
-        ////        var influxDbAddress = ConfigurationManager.AppSettings["InfluxDbAddress"];
-        ////        if (influxDbAddress == null) throw new ConfigurationErrorsException("No InfluxDbAddress configured.");
-        ////        return influxDbAddress;
-        ////    }
-        ////}
-        ////
-        ////private static string DatabaseName
-        ////{
-        ////    get
-        ////    {
-        ////        var databaseName = ConfigurationManager.AppSettings["InfluxDbName"];
-        ////        if (databaseName == null) throw new ConfigurationErrorsException("No InfluxDbName configured.");
-        ////        return databaseName;
-        ////    }
-        ////}
-        ////
-        ////private static string UserName
-        ////{
-        ////    get
-        ////    {
-        ////        var influxDbUserName = ConfigurationManager.AppSettings["InfluxDbUserName"];
-        ////        if (influxDbUserName == null) throw new ConfigurationErrorsException("No InfluxDbUserName configured.");
-        ////        return influxDbUserName;
-        ////    }
-        ////}
-        ////
-        ////private static string Password
-        ////{
-        ////    get
-        ////    {
-        ////        var influxDbPassword = ConfigurationManager.AppSettings["InfluxDbPassword"];
-        ////        if (influxDbPassword == null) throw new ConfigurationErrorsException("No InfluxDbPassword configured.");
-        ////        return influxDbPassword;
-        ////    }
-        ////}
-
-        ////private static bool Enabled
-        ////{
-        ////    get
-        ////    {
-        ////        if (_enabled == null)
-        ////        {
-        ////            var enabledString = ConfigurationManager.AppSettings["InfluxDbEnabled"];
-        ////
-        ////            bool enabled;
-        ////            if (!bool.TryParse(enabledString, out enabled))
-        ////                enabled = true;
-        ////
-        ////            _enabled = enabled;
-        ////        }
-        ////
-        ////        return _enabled ?? true;
-        ////    }
-        ////}
-
-        //private static async void SendTimerElapsed(object sender, ElapsedEventArgs e)
-        //{
-        //    ////_logger.Debug("SendTimerElapsed.");
-        //    //
-        //    //var pts = new List<Point>();
-        //    //InfluxDbApiResponse result = null;
-        //    //bool createdNew;
-        //    //using (var mutex = new Mutex(false, MutexId, out createdNew, _securitySettings))
-        //    //{
-        //    //    mutex.WaitOne();
-        //    //    while (_queue.Count > 0)
-        //    //    {
-        //    //        var points = _queue.Dequeue();
-        //    //        pts.AddRange(points);
-        //    //    }
-        //    //    mutex.ReleaseMutex();
-        //    //}
-        //    //
-        //    //if (pts.Count == 0)
-        //    //{
-        //    //    //_logger.Debug("Nothing to send.");
-        //    //    return;
-        //    //}
-        //    //
-        //    //try
-        //    //{
-        //    //    _logger.Debug(string.Format("Sending {0} measurements.", pts.Count + 1));
-        //    //    var data = new StringBuilder();
-        //    //    foreach (var item in pts)
-        //    //    {
-        //    //        data.AppendLine(_formatter.PointToString(item));
-        //    //    }
-        //    //    _logger.Debug(data.ToString());
-        //    //
-        //    //    result = await _agent.WriteAsync(pts.ToArray());
-        //    //    _logger.Info(result.StatusCode + ": " + result.Body);
-        //    //}
-        //    //catch (Exception exception)
-        //    //{
-        //    //    _logger.Error(exception);
-        //    //    //TODO: Only re-enqueue points in certain situations
-        //    //    //_queue.Enqueue(pts.ToArray());
-        //    //}
-        //}
-
-        //public static void Enqueue(Point point)
-        //{
-        //    //if (!Enabled)
-        //    //{
-        //    //    _logger.Debug("Ignoreing enqueue becuase the queue is disabled.");
-        //    //    return;
-        //    //}
-
-        //    //bool createdNew;
-        //    //using (var mutex = new Mutex(false, MutexId, out createdNew, _securitySettings))
-        //    //{
-        //    //    try
-        //    //    {
-        //    //        mutex.WaitOne();
-
-        //    //        _logger.Debug(string.Format("Enqueue measurement. There will be {0} items in the queue.", _queue.Count + 1));
-        //    //        _queue.Enqueue(new[] { point });
-
-        //    //        if (_sendTimer != null)
-        //    //            return;
-
-        //    //        if (_sendTimer == null)
-        //    //        {
-        //    //            _sendTimer = new Timer();
-        //    //            _sendTimer.Interval = 10000; //TODO: Move to settings
-        //    //            _sendTimer.Elapsed += SendTimerElapsed;
-        //    //            _sendTimer.Start();
-        //    //        }
-        //    //    }
-        //    //    finally
-        //    //    {
-        //    //        mutex.ReleaseMutex();
-        //    //    }
-        //    //}
-        //}
     }
 }

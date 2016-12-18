@@ -19,7 +19,7 @@ namespace Tharga.InfluxCapacitor.Agents
         public async Task<IAgentSendResponse> SendAsync(Point[] points)
         {
             var response = await _influxDbAgent.WriteAsync(points);
-            return new AgentSendResponse(response.StatusCode, response.Body);
+            return new AgentSendResponse(response.Success, response.StatusCode, response.Body);
         }
 
         public string PointToString(Point point)

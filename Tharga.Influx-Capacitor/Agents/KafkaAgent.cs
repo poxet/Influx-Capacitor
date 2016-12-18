@@ -28,7 +28,7 @@ namespace Tharga.InfluxCapacitor.Agents
 
             //NOTE: Get a formatter for infludb
             //TODO: Make it possible to send "InfluxVersion.Latest" to get the latest formatter (not Auto).
-            var influxDbClient = new InfluxDb("http://localhost", "reapadda", "qwerty", InfluxVersion.v09x);
+            var influxDbClient = new InfluxDb("http://localhost", "reapadda", "qwerty", InfluxVersion.v1_1_x);
             _formatter = influxDbClient.GetFormatter();
         }
 
@@ -53,10 +53,10 @@ namespace Tharga.InfluxCapacitor.Agents
                 }
                 catch (Exception exception)
                 {
-                    return new AgentSendResponse(HttpStatusCode.InternalServerError, exception.Message);
+                    return new AgentSendResponse(false, HttpStatusCode.InternalServerError, exception.Message);
                 }
             }
-            return new AgentSendResponse(HttpStatusCode.OK, string.Empty);
+            return new AgentSendResponse(true, HttpStatusCode.OK, string.Empty);
         }
     }
 }

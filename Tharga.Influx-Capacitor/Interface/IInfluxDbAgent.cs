@@ -7,11 +7,6 @@ using InfluxDB.Net.Models;
 
 namespace Tharga.InfluxCapacitor.Interface
 {
-    public interface IKafkaAgent : IDisposable
-    {
-        Task<IAgentSendResponse> SendAsync(Point[] points);
-    }
-
     public interface IInfluxDbAgent
     {
         Task<bool> CanConnect();

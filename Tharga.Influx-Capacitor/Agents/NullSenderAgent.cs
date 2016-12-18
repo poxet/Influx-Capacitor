@@ -12,7 +12,7 @@ namespace Tharga.InfluxCapacitor.Agents
 
         public async Task<IAgentSendResponse> SendAsync(Point[] points)
         {
-            return new AgentSendResponse(HttpStatusCode.OK, null);
+            return new AgentSendResponse(true, HttpStatusCode.OK, null);
         }
 
         public string PointToString(Point point)

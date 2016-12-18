@@ -23,12 +23,12 @@ namespace Tharga.InfluxCapacitor.Agents
         {
             if (_maxQueueSize - _points.Count < points.Length)
             {
-                return new AgentSendResponse(HttpStatusCode.RequestEntityTooLarge, null);
+                return new AgentSendResponse(false, HttpStatusCode.RequestEntityTooLarge, null);
             }
 
             _points.AddRange(points);
 
-            return new AgentSendResponse(HttpStatusCode.OK, null);
+            return new AgentSendResponse(true, HttpStatusCode.OK, null);
         }
 
         public string PointToString(Point point)
