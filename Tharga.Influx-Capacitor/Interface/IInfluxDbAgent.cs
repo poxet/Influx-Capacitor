@@ -5,8 +5,21 @@ using InfluxDB.Net.Enums;
 using InfluxDB.Net.Infrastructure.Influx;
 using InfluxDB.Net.Models;
 
-namespace Tharga.Influx_Capacitor.Interface
+namespace Tharga.InfluxCapacitor.Interface
 {
+    public interface ISendResponse
+    {
+        string StatusCode { get; }
+        string Body { get; }
+    }
+
+    public interface ISenderAgent
+    {
+        string TargetDescription { get; }
+        Task<ISendResponse> SendAsync(Point[] points);
+        string PointToString(Point point);
+    }
+
     public interface IInfluxDbAgent
     {
         Task<bool> CanConnect();

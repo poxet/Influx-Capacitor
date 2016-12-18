@@ -4,12 +4,12 @@ using System.Linq;
 using System.Timers;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.Influx_Capacitor;
-using Tharga.Influx_Capacitor.Entities;
-using Tharga.Influx_Capacitor.Interface;
+using Tharga.InfluxCapacitor.Entities;
+using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
+    [Obsolete("Use Tharga.InfluxCapacitor.Quene instead.")]
     public class SendBusiness : ISendBusiness
     {
         public event EventHandler<SendCompleteEventArgs> SendBusinessEvent;

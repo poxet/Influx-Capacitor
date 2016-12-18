@@ -1,14 +1,16 @@
-namespace Tharga.Influx_Capacitor.Entities
+using System;
+
+namespace Tharga.InfluxCapacitor.Entities
 {
     public class SendResponse
     {
-        public SendResponse(string message, double? elapsed)
+        public SendResponse(string message, TimeSpan? elapsed)
         {
             Message = message;
             Elapsed = elapsed;
         }
 
-        public string Message { get; private set; }
-        public double? Elapsed { get; private set; }
+        public string Message { get; }
+        public TimeSpan? Elapsed { get; }
     }
 }

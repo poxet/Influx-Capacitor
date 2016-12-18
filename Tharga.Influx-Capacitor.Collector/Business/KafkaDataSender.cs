@@ -5,8 +5,8 @@ using System.Linq;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.Influx_Capacitor.Entities;
-using Tharga.Influx_Capacitor.Interface;
+using Tharga.InfluxCapacitor.Entities;
+using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
@@ -115,7 +115,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
             }
 
-            return new SendResponse(responseMessage, stopWatch.Elapsed.TotalMilliseconds);
+            return new SendResponse(responseMessage, stopWatch.Elapsed);
         }
 
         public void Enqueue(Point[] points)

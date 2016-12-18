@@ -1,7 +1,7 @@
 using System;
 using log4net;
 
-namespace Tharga.Influx_Capacitor
+namespace Tharga.InfluxCapacitor
 {
     internal class MyLogger
     {

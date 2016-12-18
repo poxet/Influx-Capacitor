@@ -1,7 +1,7 @@
 using System;
-using Tharga.Influx_Capacitor.Interface;
+using Tharga.InfluxCapacitor.Interface;
 
-namespace Tharga.Influx_Capacitor.Sender
+namespace Tharga.InfluxCapacitor.Sender
 {
     public class InfluxDataSenderConfiguration : ISenderConfiguration
     {

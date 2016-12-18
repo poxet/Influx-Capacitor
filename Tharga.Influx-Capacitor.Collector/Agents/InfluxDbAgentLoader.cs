@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using Tharga.InfluxCapacitor.Agents;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.Influx_Capacitor.Agents;
-using Tharga.Influx_Capacitor.Interface;
+using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Agents
 {

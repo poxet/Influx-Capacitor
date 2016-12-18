@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 
-namespace Tharga.Influx_Capacitor
+namespace Tharga.InfluxCapacitor
 {
     internal static class SenderExceptionExtension
     {

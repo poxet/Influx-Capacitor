@@ -5,7 +5,7 @@ using Moq;
 using NUnit.Framework;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.Influx_Capacitor.Interface;
+using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Tests.ProcessorTests
 {

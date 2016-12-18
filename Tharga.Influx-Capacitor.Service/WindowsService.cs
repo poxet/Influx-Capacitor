@@ -7,8 +7,7 @@ using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
-using Tharga.Influx_Capacitor;
-using Tharga.Influx_Capacitor.Entities;
+using Tharga.InfluxCapacitor.Entities;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Service

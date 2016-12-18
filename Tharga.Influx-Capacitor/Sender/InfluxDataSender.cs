@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using InfluxDB.Net.Helpers;
 using InfluxDB.Net.Models;
-using Tharga.Influx_Capacitor.Agents;
-using Tharga.Influx_Capacitor.Entities;
-using Tharga.Influx_Capacitor.Interface;
+using Tharga.InfluxCapacitor.Agents;
+using Tharga.InfluxCapacitor.Entities;
+using Tharga.InfluxCapacitor.Interface;
 
-namespace Tharga.Influx_Capacitor.Sender
+namespace Tharga.InfluxCapacitor.Sender
 {
     public class InfluxDataSender : IDataSender
     {
@@ -133,7 +133,7 @@ namespace Tharga.Influx_Capacitor.Sender
                 }
             }
 
-            return new SendResponse(responseMessage, stopWatch.Elapsed.TotalMilliseconds);
+            return new SendResponse(responseMessage, stopWatch.Elapsed);
         }
 
         private string GetPointsString(Point[] points)

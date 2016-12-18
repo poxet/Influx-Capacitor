@@ -1,5 +1,5 @@
 using System;
-using Tharga.Influx_Capacitor.Entities;
+using Tharga.InfluxCapacitor.Entities;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Collector

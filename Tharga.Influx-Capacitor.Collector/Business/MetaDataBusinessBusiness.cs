@@ -7,8 +7,8 @@ using InfluxDB.Net.Enums;
 using InfluxDB.Net.Infrastructure.Influx;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.Influx_Capacitor.Entities;
-using Tharga.Influx_Capacitor.Interface;
+using Tharga.InfluxCapacitor.Entities;
+using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Business
 {
@@ -21,24 +21,24 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "counter", "configuration" },
                 { "hostname", Environment.MachineName },
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
-                { "action", action },
+                { "action", action }
             };
 
             var fields = new Dictionary<string, object>
             {
-                { "value", (decimal)1.0 },
+                { "value", (decimal)1.0 }
             };
 
             var points = new[]
             {
                 new Point
-                    {
-                        Measurement = Constants.ServiceName + "-Metadata", 
-                        Tags = tags,
-                        Fields = fields,
-                        Precision = TimeUnit.Milliseconds,
-                        Timestamp = DateTime.UtcNow
-                    },
+                {
+                    Measurement = Constants.ServiceName + "-Metadata",
+                    Tags = tags,
+                    Fields = fields,
+                    Precision = TimeUnit.Milliseconds,
+                    Timestamp = DateTime.UtcNow
+                }
             };
 
             return await client.WriteAsync(points);
@@ -53,7 +53,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
                 { "action", action },
                 { "targetServer", targetServer },
-                { "targetDatabase", targetDatabase },
+                { "targetDatabase", targetDatabase }
             };
 
             if (!string.IsNullOrEmpty(response.Message))
@@ -65,12 +65,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 { "value", (decimal)(previousQueueCount + queueCountChange) },
                 //{ "queueCount", previousQueueCount + queueCountChange },
-                { "queueCountChange", queueCountChange },
+                { "queueCountChange", queueCountChange }
             };
 
             if (response.Elapsed != null)
             {
-                fields.Add("sendTimeMs", (decimal)response.Elapsed.Value);
+                fields.Add("sendTimeMs", response.Elapsed.Value);
             }
 
             var point = new Point
@@ -81,7 +81,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 Precision = TimeUnit.Milliseconds,
                 Timestamp = DateTime.UtcNow
             };
-            
+
             return point;
         }
 
@@ -94,12 +94,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
                 { "action", "collect" },
                 { "performanceCounterGroup", performanceCounterGroup },
-                { "engineName", engineName },
+                { "engineName", engineName }
             };
 
             var fields = new Dictionary<string, object>
             {
-                { "value", (decimal)counters },
+                { "value", (decimal)counters }
                 //{ "readCount", counters }
             };
 
@@ -129,7 +129,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
                 fields = new Dictionary<string, object>
                 {
-                    { "value", (decimal)new TimeSpan(ti.Value).TotalMilliseconds },
+                    { "value", (decimal)new TimeSpan(ti.Value).TotalMilliseconds }
                     //{ "readTime", (decimal)new TimeSpan(ti.Value).TotalMilliseconds }
                 };
 
@@ -141,7 +141,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     { "action", "collect" },
                     { "performanceCounterGroup", performanceCounterGroup },
                     { "engineName", engineName },
-                    { "step", index + "-" + ti.Key },
+                    { "step", index + "-" + ti.Key }
                 };
 
                 yield return new Point

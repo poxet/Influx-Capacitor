@@ -5,11 +5,12 @@ using InfluxDB.Net.Contracts;
 using InfluxDB.Net.Enums;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.Influx_Capacitor.Entities;
+using Tharga.InfluxCapacitor.Entities;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 {
+    [Obsolete("Use Tharga.InfluxCapacitor.Quene instead.")]
     internal class ConsoleSendBusiness : ISendBusiness
     {
         private readonly IConfigBusiness _configBusiness;

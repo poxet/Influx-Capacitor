@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using InfluxDB.Net;
 using InfluxDB.Net.Infrastructure.Influx;
 using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
-using Tharga.Influx_Capacitor.Interface;
+using Tharga.InfluxCapacitor.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Config

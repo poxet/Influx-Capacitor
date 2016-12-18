@@ -7,7 +7,7 @@
     <ProjectGuid>{C60C4133-A221-4EF8-8F69-D407752DCE3F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tharga.Influx_Capacitor</RootNamespace>
+    <RootNamespace>Tharga.InfluxCapacitor</RootNamespace>
     <AssemblyName>Tharga.Influx-Capacitor</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -95,7 +95,7 @@
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
     <Compile Include="Agents\InfluxDbAgent.cs" />
-    <Compile Include="InfluxQueue.cs" />
+    <Compile Include="InfluxCapacitorQueue.cs" />
     <Compile Include="Entities\SendCompleteEventArgs.cs" />
     <Compile Include="Entities\SendResponse.cs" />
     <Compile Include="Extensions\SenderExceptionExtension.cs" />

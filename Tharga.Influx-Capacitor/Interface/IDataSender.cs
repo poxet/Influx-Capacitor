@@ -1,8 +1,8 @@
 using System;
 using InfluxDB.Net.Models;
-using Tharga.Influx_Capacitor.Entities;
+using Tharga.InfluxCapacitor.Entities;
 
-namespace Tharga.Influx_Capacitor.Interface
+namespace Tharga.InfluxCapacitor.Interface
 {
     public interface IDataSender
     {
