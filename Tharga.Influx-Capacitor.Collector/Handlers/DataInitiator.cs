@@ -54,8 +54,12 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         {
             var name = "disk";
 
-            var counters = new List<ICounter> { new Counter("LogicalDisk", "Free Megabytes", "*", null, null, null, null, null) };
-            var response = new CounterGroup(name, 10, 0, counters, new ITag[] { }, CollectorEngineType.Safe, null, null, false);
+            var counters = new List<ICounter>
+            {
+                new Counter("LogicalDisk", "Free Megabytes", "*", null, null, null, null, null),
+                new Counter("LogicalDisk", "% Free Space", "*", null, null, null, null, null),
+            };
+            var response = new CounterGroup(name, 600, 0, counters, new ITag[] { }, CollectorEngineType.Safe, null, null, false);
             return ConvertErrorsToWarnings(CreateFile(name, response));
         }
 
