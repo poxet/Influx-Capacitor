@@ -10,6 +10,96 @@ using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Agents
 {
+    public class QueueSettings : IQueueSettings
+    {
+        public int FlushSecondsInterval { get; }
+        public bool DropOnFail { get; }
+        public int MaxQueueSize { get; }
+    }
+
+    public class QueueEvents : IQueueEvents
+    {
+        public void DebugMessageEvent(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExceptionEvent(Exception exception)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendEvent(ISendEventInfo sendCompleteEventArgs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void QueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class AccSenderAgent : ISenderAgent
+    {
+        public string TargetDescription { get; }
+
+        public Task<ISendResponse> SendAsync(Point[] points)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string PointToString(Point point)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class NullSenderAgent : ISenderAgent
+    {
+        public string TargetDescription { get; }
+
+        public Task<ISendResponse> SendAsync(Point[] points)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string PointToString(Point point)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class KafkaSenderAgent : ISenderAgent
+    {
+        public string TargetDescription { get; }
+
+        public Task<ISendResponse> SendAsync(Point[] points)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string PointToString(Point point)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class InfluxDbSenderAgent : ISenderAgent
+    {
+        public string TargetDescription { get; }
+
+        public Task<ISendResponse> SendAsync(Point[] points)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string PointToString(Point point)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     [ExcludeFromCodeCoverage]
     public class InfluxDbAgent : IInfluxDbAgent
     {

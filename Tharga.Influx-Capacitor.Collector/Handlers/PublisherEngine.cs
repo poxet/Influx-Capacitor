@@ -47,7 +47,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             try
             {
                 _timer.Stop();
-                var value = _counterPublisher.GetValue();                
+                var value = _counterPublisher.GetValue();
                 _perfCounter.RawValue = value;
 
                 //Console.WriteLine("{0} read {1} and published to {2}", _counterPublisher.CounterName, value, _perfCounter.CounterName);

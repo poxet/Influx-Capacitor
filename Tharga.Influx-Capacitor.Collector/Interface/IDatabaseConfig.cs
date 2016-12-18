@@ -11,6 +11,9 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string Password { get; }
         string Name { get; }
         TimeSpan? RequestTimeout { get; }
+        ISenderAgent GetSenderAgent();
+
+        [Obsolete("Use GetSenderAgent instead.")]
         IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize);
     }
 }

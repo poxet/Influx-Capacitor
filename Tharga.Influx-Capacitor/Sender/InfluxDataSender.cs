@@ -10,6 +10,7 @@ using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Sender
 {
+    [Obsolete("Use the Queue and ISenderAgent (InfluxDbSenderAgent) insterad.")]
     public class InfluxDataSender : IDataSender
     {
         private readonly object _syncRoot = new object();

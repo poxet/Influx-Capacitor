@@ -1,4 +1,5 @@
 using System;
+using Tharga.InfluxCapacitor.Agents;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Interface;
@@ -23,6 +24,11 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
         {
             return new KafkaDataSender(this, maxQueueSize);
+        }
+
+        public ISenderAgent GetSenderAgent()
+        {
+            return new InfluxDbSenderAgent();
         }
     }
 }

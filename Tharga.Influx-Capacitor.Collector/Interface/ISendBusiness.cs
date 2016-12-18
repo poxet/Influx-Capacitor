@@ -5,7 +5,6 @@ using Tharga.InfluxCapacitor.Entities;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
 {
-    [Obsolete("Use Tharga.InfluxCapacitor.IQuene instead.")]
     public interface ISendBusiness
     {
         void Enqueue(Point[] points);

@@ -26,7 +26,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             _publisherBusiness = publisherBusiness;
         }
 
-        public async override Task<bool> InvokeAsync(string paramList)
+        public override async Task<bool> InvokeAsync(string paramList)
         {
             var config = _configBusiness.LoadFiles(new string[] { });
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
