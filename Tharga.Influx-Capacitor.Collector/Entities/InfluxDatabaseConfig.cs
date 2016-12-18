@@ -2,7 +2,6 @@ using System;
 using Tharga.InfluxCapacitor.Agents;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Interface;
-using Tharga.InfluxCapacitor.Sender;
 
 namespace Tharga.InfluxCapacitor.Collector.Entities
 {
@@ -33,14 +32,11 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public string Name { get { return _name; } }
         public TimeSpan? RequestTimeout { get { return _requestTimeout; } }
 
-        public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
-        {
-            return new InfluxDataSender(new InfluxDataSenderConfiguration(IsEnabled, maxQueueSize, Url, Name, Username, Password, RequestTimeout));
-        }
-
         public ISenderAgent GetSenderAgent()
         {
-            return new InfluxDbSenderAgent();
+            if (!IsEnabled)
+                return null;
+            return new InfluxDbSenderAgent(new InfluxDbAgent(Url, Name, Username, Password, RequestTimeout));
         }
     }
 }

@@ -307,7 +307,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             {
                 yield return GetTag(tag);
             }
-            
+
             foreach (XmlElement child in document.LastChild.ChildNodes)
             {
                 if (child.Name == "Tag")
@@ -506,7 +506,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             float? max = null;
 
             var tags = new List<ITag>();
-            
+
             var tagElements1 = counter.GetElementsByTagName("CounterTag");
             foreach (XmlElement tagElement in tagElements1)
             {
@@ -605,7 +605,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         private static IEnumerable<IDatabaseConfig> GetDatabaseConfig(XmlDocument document)
         {
-            var databases = document.GetElementsByTagName("Database");            
+            var databases = document.GetElementsByTagName("Database");
             foreach (XmlNode database in databases)
             {
                 var databaseType = GetDatabaseType(database);

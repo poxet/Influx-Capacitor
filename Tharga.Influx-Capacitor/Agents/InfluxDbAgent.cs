@@ -10,106 +10,18 @@ using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Agents
 {
-    public class QueueSettings : IQueueSettings
-    {
-        public int FlushSecondsInterval { get; }
-        public bool DropOnFail { get; }
-        public int MaxQueueSize { get; }
-    }
-
-    public class QueueEvents : IQueueEvents
-    {
-        public void DebugMessageEvent(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ExceptionEvent(Exception exception)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendEvent(ISendEventInfo sendCompleteEventArgs)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void QueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class AccSenderAgent : ISenderAgent
-    {
-        public string TargetDescription { get; }
-
-        public Task<ISendResponse> SendAsync(Point[] points)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string PointToString(Point point)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class NullSenderAgent : ISenderAgent
-    {
-        public string TargetDescription { get; }
-
-        public Task<ISendResponse> SendAsync(Point[] points)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string PointToString(Point point)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class KafkaSenderAgent : ISenderAgent
-    {
-        public string TargetDescription { get; }
-
-        public Task<ISendResponse> SendAsync(Point[] points)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string PointToString(Point point)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class InfluxDbSenderAgent : ISenderAgent
-    {
-        public string TargetDescription { get; }
-
-        public Task<ISendResponse> SendAsync(Point[] points)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string PointToString(Point point)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     [ExcludeFromCodeCoverage]
     public class InfluxDbAgent : IInfluxDbAgent
     {
         private readonly string _databaseName;
-        private readonly string _userName;
-        private readonly string _password;
         private readonly InfluxDb _influxDb;
+        private readonly string _password;
+        private readonly string _url;
+        private readonly string _userName;
 
         public InfluxDbAgent(string url, string databaseName, string userName, string password, TimeSpan? requestTimeout, InfluxVersion influxVersion = InfluxVersion.Auto)
         {
+            _url = url;
             _databaseName = databaseName;
             _userName = userName;
             _password = password;
@@ -155,10 +67,7 @@ namespace Tharga.InfluxCapacitor.Agents
             return _influxDb.GetFormatter();
         }
 
-        public async Task<InfluxDbApiResponse> AuthenticateDatabaseUserAsync()
-        {
-            return await _influxDb.AuthenticateDatabaseUserAsync(_databaseName, _userName, _password);
-        }
+        public string Description => _url + " " + _databaseName;
 
         public async Task<bool> CanConnect()
         {
@@ -175,6 +84,11 @@ namespace Tharga.InfluxCapacitor.Agents
         {
             var pong = await _influxDb.PingAsync();
             return pong.Version;
+        }
+
+        public async Task<InfluxDbApiResponse> AuthenticateDatabaseUserAsync()
+        {
+            return await _influxDb.AuthenticateDatabaseUserAsync(_databaseName, _userName, _password);
         }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using Tharga.InfluxCapacitor.Agents;
-using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Interface;
 
@@ -18,11 +17,6 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         public AccDatabaseConfig(bool enabled)
         {
             IsEnabled = enabled;
-        }
-
-        public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
-        {
-            return new AccDataSender(maxQueueSize);
         }
 
         public ISenderAgent GetSenderAgent()

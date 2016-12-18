@@ -8,15 +8,40 @@ using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Entities;
+using Tharga.InfluxCapacitor.Interface;
+using Tharga.InfluxCapacitor.Managers;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Service
 {
+    //internal class ServiceQueueEvents : IQueueEvents
+    //{
+    //    public void DebugMessageEvent(string message)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public void ExceptionEvent(Exception exception)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public void SendEvent(ISendEventInfo sendCompleteEventArgs)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    public void QueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
     public class WindowsService : ServiceBase
     {
         private readonly Processor _processor;
         private readonly ServerConsole _console;
-        private readonly MyLogger _logger;
+        //private readonly MyLogger _logger;
 
         public WindowsService()
         {
@@ -31,12 +56,12 @@ namespace Tharga.InfluxCapacitor.Service
             var publisherBusiness = new PublisherBusiness();
             counterBusiness.GetPerformanceCounterEvent += GetPerformanceCounterEvent;
             CounterBusiness.ChangedCurrentCultureEvent += ChangedCurrentCultureEvent;
-            var sendBusiness = new SendBusiness(configBusiness, influxDbAgentLoader);
+            var sendBusiness = new SendBusiness(configBusiness, influxDbAgentLoader, new ConsoleQueueEvents(_console));
             sendBusiness.SendBusinessEvent += SendBusinessEvent;
             var tagLoader = new TagLoader(configBusiness);
             _processor = new Processor(configBusiness, counterBusiness, publisherBusiness, sendBusiness, tagLoader);
             _processor.EngineActionEvent += _processor_EngineActionEvent;
-            _logger = new MyLogger();
+            //_logger = new MyLogger();
 
             // These Flags set whether or not to handle that specific
             //  type of event. Set to true if you need it, false otherwise.
@@ -51,25 +76,25 @@ namespace Tharga.InfluxCapacitor.Service
 
         private void _console_LineWrittenEvent(object sender, LineWrittenEventArgs e)
         {
-            switch (e.Level.ToString())
-            {
-                case "Default":
-                    _logger.Debug(e.Value);
-                    break;
-                case "Information":
-                    _logger.Info(e.Value);
-                    break;
-                case "Warning":
-                    _logger.Warn(e.Value);
-                    break;
-                case "Error":
-                    _logger.Error(e.Value);
-                    break;
-                default:
-                    _logger.Error(string.Format("Unknown output level: {0}", e.Level));
-                    _logger.Info(e.Value);
-                    break;
-            }
+            //switch (e.Level.ToString())
+            //{
+            //    case "Default":
+            //        _logger.Debug(e.Value);
+            //        break;
+            //    case "Information":
+            //        _logger.Info(e.Value);
+            //        break;
+            //    case "Warning":
+            //        _logger.Warn(e.Value);
+            //        break;
+            //    case "Error":
+            //        _logger.Error(e.Value);
+            //        break;
+            //    default:
+            //        _logger.Error(string.Format("Unknown output level: {0}", e.Level));
+            //        _logger.Info(e.Value);
+            //        break;
+            //}
 
             Trace.WriteLine(e.Value, e.Level.ToString());
         }

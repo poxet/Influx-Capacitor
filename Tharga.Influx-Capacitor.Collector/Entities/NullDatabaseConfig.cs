@@ -20,10 +20,10 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             IsEnabled = enabled;
         }
 
-        public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
-        {
-            return new NullDataSender(maxQueueSize);
-        }
+        //public IDataSender GetDataSender(IInfluxDbAgentLoader influxDbAgentLoader, int maxQueueSize)
+        //{
+        //    return new NullDataSender(maxQueueSize);
+        //}
 
         public ISenderAgent GetSenderAgent()
         {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Tharga.InfluxCapacitor
+namespace Tharga.InfluxCapacitor.Interface
 {
     public interface IQueueEvents
     {

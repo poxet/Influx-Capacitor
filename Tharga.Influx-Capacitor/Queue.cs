@@ -23,9 +23,9 @@ namespace Tharga.InfluxCapacitor
         ////private const string MutexId = "InfluxQueue";
         ////private static readonly IInfluxDbAgent _agent;
         ////private static readonly IFormatter _formatter;
-        private static readonly Queue<Point[]> _queue = new Queue<Point[]>();
+        private readonly Queue<Point[]> _queue = new Queue<Point[]>();
         private readonly Queue<Tuple<int, Point[]>> _failQueue = new Queue<Tuple<int, Point[]>>();
-        private QueueAction _queueAction;
+        private readonly QueueAction _queueAction;
         ////private static readonly MyLogger _logger = new MyLogger();
         ////private static Timer _sendTimer;
         ////private static MutexSecurity _securitySettings;
@@ -34,6 +34,7 @@ namespace Tharga.InfluxCapacitor
 
         public Queue(ISenderAgent senderAgent, IQueueEvents queueEvents, IQueueSettings queueSettings)
         {
+            queueEvents.DebugMessageEvent("Preparing new queue with target " + senderAgent.TargetDescription + ".");
             _queueAction = new QueueAction(queueEvents, GetQueueInfo);
 
             _senderAgent = senderAgent;
@@ -44,6 +45,7 @@ namespace Tharga.InfluxCapacitor
             {
                 var timer = new Timer(queueSettings.FlushSecondsInterval * 1000);
                 timer.Elapsed += Elapsed;
+                timer.Start();
             }
 
             //    //try
@@ -164,9 +166,16 @@ namespace Tharga.InfluxCapacitor
 
                         _queueEvents.DebugMessageEvent("Sending:" + Environment.NewLine + GetPointsString(points));
                         var response = _senderAgent.SendAsync(points).Result;
-
-                        _canSucceed = true;
-                        _queueEvents.SendEvent(new SendEventInfo(string.Format("Sent {0} points to server, with response '{1}'.", points.Length, response), points.Length, SendEventInfo.OutputLevel.Information));
+                        if (response.IsSuccess)
+                        {
+                            _canSucceed = true;
+                            _queueEvents.SendEvent(new SendEventInfo($"Sent {points.Length} points to server, with response '{response.StatusName}'.", points.Length, SendEventInfo.OutputLevel.Information));
+                        }
+                        else
+                        {
+                            _queueEvents.SendEvent(new SendEventInfo($"Failed to send {points.Length} points to server. Code '{response.StatusName}', Body '{response.Body ?? "n/a"}'.", points.Length, SendEventInfo.OutputLevel.Error));
+                            _queueAction.Execute(() => { _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points)); });
+                        }
                     }
                 }
                 catch (Exception exception)

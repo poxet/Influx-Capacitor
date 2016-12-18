@@ -6,7 +6,7 @@ namespace Tharga.InfluxCapacitor.Interface
     public interface ISenderAgent
     {
         string TargetDescription { get; }
-        Task<ISendResponse> SendAsync(Point[] points);
+        Task<IAgentSendResponse> SendAsync(Point[] points);
         string PointToString(Point point);
     }
 }

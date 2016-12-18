@@ -46,6 +46,10 @@
       <HintPath>..\Solutions\packages\InfluxDB.MultiVersion.Client.1.0.20\lib\net45\InfluxDB.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="kafka-net, Version=0.9.0.65, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Solutions\packages\kafka-net.0.9.0.65\lib\net45\kafka-net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\Solutions\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -94,12 +98,19 @@
     <Compile Include="..\Build\AssemblyVersionInfo.cs">
       <Link>Properties\AssemblyVersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Agents\AccSenderAgent.cs" />
     <Compile Include="Agents\InfluxDbAgent.cs" />
+    <Compile Include="Agents\InfluxDbSenderAgent.cs" />
+    <Compile Include="Agents\KafkaAgent.cs" />
+    <Compile Include="Agents\KafkaSenderAgent.cs" />
+    <Compile Include="Agents\NullSenderAgent.cs" />
+    <Compile Include="Agents\QueueSettings.cs" />
+    <Compile Include="Managers\ConsoleQueueEvents.cs" />
     <Compile Include="Entities\QueueChangeEventInfo.cs" />
     <Compile Include="Entities\QueueCountInfo.cs" />
     <Compile Include="Entities\SendEventInfo.cs" />
     <Compile Include="Interface\ISenderAgent.cs" />
-    <Compile Include="Interface\ISendResponse.cs" />
+    <Compile Include="Interface\IAgentSendResponse.cs" />
     <Compile Include="Queue.cs" />
     <Compile Include="Entities\SendCompleteEventArgs.cs" />
     <Compile Include="Entities\SendResponse.cs" />

@@ -4,6 +4,7 @@ using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Entities;
+using Tharga.InfluxCapacitor.Managers;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console
@@ -12,7 +13,7 @@ namespace Tharga.InfluxCapacitor.Console
     {
         public CompositeRoot()
         {
-            Logger = new MyLogger();
+            //Logger = new MyLogger();
             ClientConsole = new ClientConsole();
             InfluxDbAgentLoader = new InfluxDbAgentLoader();
             FileLoaderAgent = new FileLoaderAgent();
@@ -20,7 +21,7 @@ namespace Tharga.InfluxCapacitor.Console
             ConfigBusiness.InvalidConfigEvent += InvalidConfigEvent;
             CounterBusiness = new CounterBusiness();
             PublisherBusiness = new PublisherBusiness();
-            SendBusiness = new SendBusiness(ConfigBusiness, InfluxDbAgentLoader);
+            SendBusiness = new SendBusiness(ConfigBusiness, InfluxDbAgentLoader, new ConsoleQueueEvents(ClientConsole));
             SendBusiness.SendBusinessEvent += SendBusinessEvent;
             TagLoader = new TagLoader(ConfigBusiness);
         }
@@ -35,7 +36,7 @@ namespace Tharga.InfluxCapacitor.Console
             ClientConsole.WriteLine(e.Message, OutputLevel.Warning, null);
         }
 
-        internal MyLogger Logger { get; private set; }
+        //internal MyLogger Logger { get; private set; }
         public IConsole ClientConsole { get; private set; }
         public IInfluxDbAgentLoader InfluxDbAgentLoader { get; private set; }
         public ISendBusiness SendBusiness { get; private set; }

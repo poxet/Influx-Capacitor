@@ -133,6 +133,7 @@
     <Compile Include="Commands\Config\ConfigListCommand.cs" />
     <Compile Include="Commands\Config\ConfigShowCommand.cs" />
     <Compile Include="CompositeRoot.cs" />
+    <Compile Include="ConsoleQueueEvents.cs" />
     <Compile Include="ICompositeRoot.cs" />
     <Compile Include="OutputLevelExtension.cs" />
     <Compile Include="Program.cs" />

@@ -12,10 +12,10 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Config
 {
-    abstract class ConfigCommandBase : ActionCommandBase
+    internal abstract class ConfigCommandBase : ActionCommandBase
     {
-        private readonly IInfluxDbAgentLoader _influxDbAgentLoader;
         private readonly IConfigBusiness _configBusiness;
+        private readonly IInfluxDbAgentLoader _influxDbAgentLoader;
 
         protected ConfigCommandBase(string name, string description, IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
             : base(name, description)
@@ -87,7 +87,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
         }
 
         protected async Task<IDatabaseConfig> GetUsernameAsync(string paramList, int index, IDatabaseConfig config, string action)
-        {            
+        {
             var dataChanged = false;
 
             var url = config.Url;
@@ -132,7 +132,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 {
                     if (exception.StatusCode == HttpStatusCode.NotFound)
                     {
-                        var create = QueryParam("Database does not exist, create?", GetParam(paramList, index++), new Dictionary<bool, string>() { { true, "Yes" }, { false, "No" } });
+                        var create = QueryParam("Database does not exist, create?", GetParam(paramList, index++), new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } });
                         if (create)
                         {
                             client.CreateDatabaseAsync(database);

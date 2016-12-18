@@ -45,7 +45,7 @@ namespace Tharga.InfluxCapacitor.Console
 
         private static void ClientConsole_KeyReadEvent(object sender, KeyReadEventArgs e)
         {
-            _compositeRoot.Logger.Debug(string.Format("Key '{0}' pressed. ({1}.{2})", e.ReadKey.Key, e.ReadKey.KeyChar, e.ReadKey.Modifiers));
+            //_compositeRoot.Logger.Debug(string.Format("Key '{0}' pressed. ({1}.{2})", e.ReadKey.Key, e.ReadKey.KeyChar, e.ReadKey.Modifiers));
         }
     }
 }

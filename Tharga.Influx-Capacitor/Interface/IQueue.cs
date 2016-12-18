@@ -1,6 +1,6 @@
 using InfluxDB.Net.Models;
 
-namespace Tharga.InfluxCapacitor
+namespace Tharga.InfluxCapacitor.Interface
 {
     public interface IQueue
     {
