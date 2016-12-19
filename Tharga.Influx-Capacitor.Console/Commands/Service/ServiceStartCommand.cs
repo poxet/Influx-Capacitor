@@ -10,7 +10,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
         {
         }
 
-        public async override Task<bool> InvokeAsync(string paramList)
+        public override async Task<bool> InvokeAsync(string paramList)
         {
             var result = await ServiceCommands.GetServiceStatusAsync();
             if (result == null)

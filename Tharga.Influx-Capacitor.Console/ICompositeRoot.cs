@@ -10,5 +10,6 @@ namespace Tharga.InfluxCapacitor.Console
         ISendBusiness SendBusiness { get; }
         ITagLoader TagLoader { get; }
         IPublisherBusiness PublisherBusiness { get; }
+        ISocketClient SocketClient { get; }
     }
 }

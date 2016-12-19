@@ -6,12 +6,8 @@ using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Handlers
 {
-    public enum CollectorEngineType { Safe, Exact }
-
     public class Processor
     {
-        public event EventHandler<EngineActionEventArgs> EngineActionEvent;
-
         private readonly IConfigBusiness _configBusiness;
         private readonly ICounterBusiness _counterBusiness;
         private readonly IPublisherBusiness _publisherBusiness;
@@ -27,27 +23,25 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             _publisherBusiness = publisherBusiness;
         }
 
+        public event EventHandler<EngineActionEventArgs> EngineActionEvent;
+
         public async Task RunAsync(IPerformanceCounterGroup[] counterGroups, ICounterPublisher[] counterPublishers, bool metadata)
         {
             if (counterGroups != null)
-            {
                 foreach (var counterGroup in counterGroups)
                 {
                     var engine = GetCollectorEngine(counterGroup, counterGroup.CollectorEngineType, metadata);
                     engine.CollectRegisterCounterValuesEvent += CollectRegisterCounterValuesEvent;
                     await engine.StartAsync();
                 }
-            }
 
             if (counterPublishers != null)
-            {
                 foreach (var counterPublisher in counterPublishers)
                 {
                     var engine = GetPublisherEngine(counterPublisher);
                     engine.PublishRegisterCounterValuesEvent += PublishRegisterCounterValuesEvent;
                     await engine.StartAsync();
                 }
-            }
         }
 
         public async Task RunAsync(string[] configFileNames)
@@ -80,7 +74,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     return new SafeCollectorEngine(counterGroup, _sendBusiness, _tagLoader, metadata);
                 default:
                     throw new ArgumentOutOfRangeException(string.Format("Unknown collector engine type {0}.", collectorEngineType));
-            }            
+            }
         }
 
         private void PublishRegisterCounterValuesEvent(object sender, PublishRegisterCounterValuesEventArgs e)
@@ -97,9 +91,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         {
             var handler = EngineActionEvent;
             if (handler != null)
-            {
                 handler(this, e);
-            }
         }
     }
 }

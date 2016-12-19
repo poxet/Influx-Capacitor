@@ -112,6 +112,7 @@
     <Compile Include="Entities\Tag.cs" />
     <Compile Include="Event\PublishRegisterCounterValuesEventArgs.cs" />
     <Compile Include="Extensions\PerformanceCounterHelper.cs" />
+    <Compile Include="Handlers\CollectorEngineType.cs" />
     <Compile Include="Handlers\PublisherEngine.cs" />
     <Compile Include="Interface\ICounterInstanceFilter.cs" />
     <Compile Include="Interface\ICounterProviderConfig.cs" />

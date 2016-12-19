@@ -9,7 +9,7 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Service
 {
-    class ServiceCommands : ContainerCommandBase
+    internal class ServiceCommands : ContainerCommandBase
     {
         public ServiceCommands(ICompositeRoot compositeRoot)
             : base("Service")
@@ -18,9 +18,14 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
             RegisterCommand(new ServiceStopCommand());
             RegisterCommand(new ServiceStartCommand());
             RegisterCommand(new ServiceRestartCommand());
+            RegisterCommand(new ServiceConnectCommand(compositeRoot.SocketClient));
+            RegisterCommand(new ServiceDisconnectCommand(compositeRoot.SocketClient));
+            RegisterCommand(new ServiceSendCommand(compositeRoot.SocketClient));
+            RegisterCommand(new ServiceStartListeningCommand(compositeRoot.SocketClient));
+            RegisterCommand(new ServiceStopListeningCommand(compositeRoot.SocketClient));
         }
 
-        public async static Task<ServiceControllerStatus?> GetServiceStatusAsync()
+        public static async Task<ServiceControllerStatus?> GetServiceStatusAsync()
         {
             var service = new ServiceController(Constants.ServiceName);
             try
@@ -29,7 +34,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
             }
             catch (InvalidOperationException)
             {
-                return null;    
+                return null;
             }
         }
 
@@ -40,7 +45,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
             if (service.Status == ServiceControllerStatus.Running)
                 return service.Status.ToString();
 
-            if (service.Status != ServiceControllerStatus.Stopped && service.Status != ServiceControllerStatus.Paused)
+            if ((service.Status != ServiceControllerStatus.Stopped) && (service.Status != ServiceControllerStatus.Paused))
             {
                 var exp = new InvalidOperationException("Cannot start service because of current state.");
                 exp.Data.Add("service.Status", service.Status);
@@ -60,7 +65,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
             if (service.Status == ServiceControllerStatus.Stopped)
                 return service.Status.ToString();
 
-            if (service.Status != ServiceControllerStatus.Running && service.Status != ServiceControllerStatus.Paused)
+            if ((service.Status != ServiceControllerStatus.Running) && (service.Status != ServiceControllerStatus.Paused))
             {
                 var exp = new InvalidOperationException("Cannot stop service because of current state.");
                 exp.Data.Add("service.Status", service.Status);
@@ -92,7 +97,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
                         service.Stop();
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(string.Format("Unknown action {0}.", serviceAction));
+                        throw new ArgumentOutOfRangeException($"Unknown action {serviceAction}.");
                 }
             }
             else
@@ -117,7 +122,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
                 {
                     UseShellExecute = true,
                     FileName = Assembly.GetExecutingAssembly().Location,
-                    Verb = "runas",                    
+                    Verb = "runas",
                     Arguments = arguments, //start ? "\"service start\"" : "\"service stop\"",
                     WindowStyle = ProcessWindowStyle.Hidden
                 };
@@ -128,13 +133,11 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
 
         private static async Task WaitForStatusAsync(ServiceController service, ServiceControllerStatus status)
         {
-            await Task.Factory.StartNew(async () =>
+            await Task.Run(() =>
             {
                 service.WaitForStatus(status, new TimeSpan(0, 0, 15));
                 if (service.Status != status)
-                {
-                    throw new InvalidOperationException(string.Format("Waiting for the service state to change to {0} timed out.", status));
-                }
+                    throw new InvalidOperationException($"Waiting for the service state to change to {status} timed out.");
             });
         }
 
@@ -149,11 +152,8 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
                 ExecuteServiceAction(service, ServiceAction.Restart);
                 return service.Status.ToString();
             }
-            else
-            {
-                await StopServiceAsync();
-                return await StartServiceAsync();
-            }
+            await StopServiceAsync();
+            return await StartServiceAsync();
         }
     }
 }

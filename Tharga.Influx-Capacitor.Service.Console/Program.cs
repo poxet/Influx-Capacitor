@@ -14,6 +14,7 @@ namespace Tharga.Influx_Capacitor.Service.Console
             var engine = new CommandEngine(command);
             ws.Start(args);
             engine.Run(args);
+            ws.End();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
             _configBusiness = configBusiness;
         }
 
-        public async override Task<bool> InvokeAsync(string paramList)
+        public override async Task<bool> InvokeAsync(string paramList)
         {
             var configs = _configBusiness.OpenDatabaseConfig().ToArray();
             if (configs.Length > 1)

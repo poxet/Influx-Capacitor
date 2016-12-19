@@ -3,14 +3,14 @@ using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Service
 {
-    class ServiceRestartCommand : ActionCommandBase
+    internal class ServiceRestartCommand : ActionCommandBase
     {
         public ServiceRestartCommand()
             : base("Restart", "Restarts or starts the service.")
         {
         }
 
-        public async override Task<bool> InvokeAsync(string paramList)
+        public override async Task<bool> InvokeAsync(string paramList)
         {
             var result = await ServiceCommands.GetServiceStatusAsync();
             if (result == null)
