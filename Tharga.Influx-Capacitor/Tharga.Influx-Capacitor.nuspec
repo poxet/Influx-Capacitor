@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Influx-Capacitor</id>
-    <version>1.0.0-alfa</version>
+    <version>1.0.0</version>
     <title>Influx Capacitor</title>
     <authors>Daniel Bohlin (poxet)</authors>
     <owners>poxet</owners>
     <licenseUrl>https://github.com/poxet/Influx-Capacitor/blob/master/LICENSE</licenseUrl>
     <projectUrl>http://influx-capacitor.com/</projectUrl>
-	<iconUrl>http://influx-capacitor.com/Images/icon-72x72.png</iconUrl>
+    <iconUrl>http://influx-capacitor.com/Images/icon-72x72.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
       Client component for sending managed measurements to InfluxDB.
@@ -16,13 +16,15 @@
     </description>
     <summary>Sends performance counter data and custom data to InfluxDB.</summary>
     <copyright />
-	<tags>InfluxDB queue performance counter metrics</tags>
+    <tags>InfluxDB queue performance counter metrics</tags>
     <dependencies>
-      <dependency id="InfluxDB.MultiVersion.Client" version="1.0.20" />
-      <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
-      <dependency id="Newtonsoft.Json" version="6.0.5" />
-      <dependency id="Microsoft.Net.Http" version="2.2.28" />
+      <dependency id="InfluxDB.Net-Main" version="1.0.20" />
       <dependency id="kafka-net" version="0.9.0.65" />
+      <dependency id="Microsoft.Bcl" version="1.1.10" />
+      <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
+      <dependency id="Microsoft.Bcl.Build" version="1.0.21" />
+      <dependency id="Microsoft.Net.Http" version="2.2.29" />
+      <dependency id="Newtonsoft.Json" version="9.0.1" />
     </dependencies>
   </metadata>
 </package>
