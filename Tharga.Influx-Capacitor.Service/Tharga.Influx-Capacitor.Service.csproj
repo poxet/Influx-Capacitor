@@ -118,6 +118,10 @@
       <Project>{e3fb3f45-87f5-4339-ac0c-90d8ec6102f2}</Project>
       <Name>Tharga.Influx-Capacitor.Collector</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tharga.Influx-Capacitor.Console\Tharga.Influx-Capacitor.Console.csproj">
+      <Project>{840B45F9-F50E-449A-B132-63B80FCF1337}</Project>
+      <Name>Tharga.Influx-Capacitor.Console</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tharga.Influx-Capacitor\Tharga.Influx-Capacitor.csproj">
       <Project>{c60c4133-a221-4ef8-8f69-d407752dce3f}</Project>
       <Name>Tharga.Influx-Capacitor</Name>

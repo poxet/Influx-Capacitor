@@ -7,41 +7,16 @@ using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
+using Tharga.InfluxCapacitor.Console;
 using Tharga.InfluxCapacitor.Entities;
-using Tharga.InfluxCapacitor.Interface;
-using Tharga.InfluxCapacitor.Managers;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Service
 {
-    //internal class ServiceQueueEvents : IQueueEvents
-    //{
-    //    public void DebugMessageEvent(string message)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public void ExceptionEvent(Exception exception)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public void SendEvent(ISendEventInfo sendCompleteEventArgs)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public void QueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
-
     public class WindowsService : ServiceBase
     {
         private readonly Processor _processor;
         private readonly ServerConsole _console;
-        //private readonly MyLogger _logger;
 
         public WindowsService()
         {
@@ -61,7 +36,6 @@ namespace Tharga.InfluxCapacitor.Service
             var tagLoader = new TagLoader(configBusiness);
             _processor = new Processor(configBusiness, counterBusiness, publisherBusiness, sendBusiness, tagLoader);
             _processor.EngineActionEvent += _processor_EngineActionEvent;
-            //_logger = new MyLogger();
 
             // These Flags set whether or not to handle that specific
             //  type of event. Set to true if you need it, false otherwise.

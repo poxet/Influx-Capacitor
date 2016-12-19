@@ -45,7 +45,10 @@ namespace Tharga.InfluxCapacitor
             try
             {
                 var response = Send();
-                _queueEvents.TimerEvent(response);
+                if (response.PointCount != 0)
+                {
+                    _queueEvents.TimerEvent(response);
+                }
             }
             catch (Exception exception)
             {
