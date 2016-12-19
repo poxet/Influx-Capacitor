@@ -117,7 +117,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 {
                     database = QueryParam<string>("DatabaseName", GetParam(paramList, index++));
                     var user = QueryParam<string>("Username", GetParam(paramList, index++));
-                    var password = QueryParam<string>("Password", GetParam(paramList, index++));
+                    var password = QueryPassword("Password", GetParam(paramList, index++));
                     config = new InfluxDatabaseConfig(true, url, user, password, database, null);
 
                     client = _influxDbAgentLoader.GetAgent(config);
