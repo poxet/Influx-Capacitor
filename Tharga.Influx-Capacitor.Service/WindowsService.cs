@@ -9,6 +9,8 @@ using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Console;
 using Tharga.InfluxCapacitor.Entities;
+using Tharga.Toolkit.Console;
+using Tharga.Toolkit.Console.Command;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Service
@@ -123,7 +125,9 @@ namespace Tharga.InfluxCapacitor.Service
                 _console.WriteLine(message, OutputLevel.Information, null);
 
                 //TODO: Read from config
-                var socketServer = new SocketServer();
+                var rc = new RootCommand(_console);
+                var ce = new CommandEngine(rc);
+                var socketServer = new SocketServer(rc, _console);
                 socketServer.Start(8888);
                 //TODO: Write about the socket service to log
 

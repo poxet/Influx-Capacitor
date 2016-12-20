@@ -4,15 +4,24 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Service
 {
     internal class SocketServer
     {
+        private readonly RootCommandBase _rootCommandBase;
+        private readonly IConsole _console;
         private CancellationTokenSource _listenerTokenSource;
         private TcpListener _serverSocket;
         private TcpClient _clientSocket;
         private TcpListener _tcpListener;
+
+        public SocketServer(RootCommandBase rootCommandBase, IConsole console)
+        {
+            _rootCommandBase = rootCommandBase;
+            _console = console;
+        }
 
         public void Stop()
         {
@@ -51,11 +60,12 @@ namespace Tharga.InfluxCapacitor.Service
                             {
                                 try
                                 {
-                                    while (true)
-                                    {
-                                        SendToClient("Blah", networkStream);
-                                        Thread.Sleep(3000);
-                                    }
+                                    //TODO: MESSAGE: Wait here and return with events from the console
+                                    //while (true)
+                                    //{
+                                    //    SendToClient("Blah", networkStream);
+                                    //    Thread.Sleep(3000);
+                                    //}
                                 }
                                 finally
                                 {
@@ -67,11 +77,12 @@ namespace Tharga.InfluxCapacitor.Service
                             SendToClient("Events stopped", networkStream);
                             break;
                         default:
-                            //TODO: Perform the command and collect the response
-                            System.Console.WriteLine("Execute message from client '" + dataFromClient + "'.");
-
-                            //NOTE: Send response to the server
-                            SendToClient("RESPONSE_TO_COMMAND " + dataFromClient, networkStream);
+                            _rootCommandBase.ExecuteCommand(dataFromClient);
+                            //_console.Read();
+                            //_commandEngine.con
+                            //TODO: Implement
+                            //_commandEngine.Execute(dataFromClient);
+                            SendToClient(".", networkStream);
                             break;
                     }
                 }
