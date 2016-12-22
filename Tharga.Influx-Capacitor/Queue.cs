@@ -189,6 +189,11 @@ namespace Tharga.InfluxCapacitor
             return sb.ToString();
         }
 
+        public void Enqueue(Point point)
+        {
+            Enqueue(new[] { point });
+        }
+
         public void Enqueue(Point[] points)
         {
             lock (_syncRoot)
