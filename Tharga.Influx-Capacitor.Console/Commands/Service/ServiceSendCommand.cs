@@ -23,9 +23,9 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
             var index = 0;
             var command = QueryParam<string>("Command", GetParam(paramList, index++));
 
-            var response = await _socketClient.SendAsync(command);
+            await _socketClient.SendAsync(command);
 
-            OutputInformation(response);
+            //OutputInformation(response);
 
             return true;
         }

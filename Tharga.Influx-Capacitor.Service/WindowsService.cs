@@ -9,7 +9,6 @@ using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Console;
 using Tharga.InfluxCapacitor.Entities;
-using Tharga.Toolkit.Console;
 using Tharga.Toolkit.Console.Command;
 using Tharga.Toolkit.Console.Command.Base;
 
@@ -126,7 +125,6 @@ namespace Tharga.InfluxCapacitor.Service
 
                 //TODO: Read from config
                 var rc = new RootCommand(_console);
-                var ce = new CommandEngine(rc);
                 var socketServer = new SocketServer(rc, _console);
                 socketServer.Start(8888);
                 //TODO: Write about the socket service to log
@@ -186,7 +184,7 @@ namespace Tharga.InfluxCapacitor.Service
         //    int port = 80;
 
         //    //if (args.Length == 0)
-        //        // If no server name is passed as argument to this program, 
+        //        // If no server name is passed as argument to this program,
         //        // use the current host name as the default.
         //        host = Dns.GetHostName();
         //    //else
@@ -280,7 +278,7 @@ namespace Tharga.InfluxCapacitor.Service
         //        {
         //            Console.WriteLine($"[SERVER] Exception:\n    {e.Message}",OutputLevel.Information);
         //        }
-               
+
         //        Console.WriteLine($"[SERVER] Current TransmissionMode: {pipeServer.TransmissionMode}.", OutputLevel.Information);
 
         //        // Pass the client process a handle to the server.

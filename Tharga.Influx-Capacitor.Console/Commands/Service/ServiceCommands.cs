@@ -21,8 +21,8 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Service
             RegisterCommand(new ServiceConnectCommand(compositeRoot.SocketClient));
             RegisterCommand(new ServiceDisconnectCommand(compositeRoot.SocketClient));
             RegisterCommand(new ServiceSendCommand(compositeRoot.SocketClient));
-            RegisterCommand(new ServiceStartListeningCommand(compositeRoot.SocketClient));
-            RegisterCommand(new ServiceStopListeningCommand(compositeRoot.SocketClient));
+            //RegisterCommand(new ServiceStartListeningCommand(compositeRoot.SocketClient));
+            //RegisterCommand(new ServiceStopListeningCommand(compositeRoot.SocketClient));
         }
 
         public static async Task<ServiceControllerStatus?> GetServiceStatusAsync()
