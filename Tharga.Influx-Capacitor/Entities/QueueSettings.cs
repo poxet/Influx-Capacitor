@@ -4,7 +4,7 @@ namespace Tharga.InfluxCapacitor.Entities
 {
     public class QueueSettings : IQueueSettings
     {
-        internal QueueSettings(int flushSecondsInterval, bool dropOnFail, int maxQueueSize)
+        public QueueSettings(int flushSecondsInterval = 30, bool dropOnFail = false, int maxQueueSize = 20000)
         {
             FlushSecondsInterval = flushSecondsInterval;
             DropOnFail = dropOnFail;
