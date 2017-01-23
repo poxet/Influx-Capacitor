@@ -96,6 +96,7 @@
     <Compile Include="Agents\KafkaAgent.cs" />
     <Compile Include="Agents\KafkaSenderAgent.cs" />
     <Compile Include="Agents\NullSenderAgent.cs" />
+    <Compile Include="QueueEvents\DropQueueEvents.cs" />
     <Compile Include="Entities\QueueSettings.cs" />
     <Compile Include="Entities\AgentSendResponse.cs" />
     <Compile Include="Interface\IKafkaAgent.cs" />
@@ -105,11 +106,12 @@
     <Compile Include="Entities\SendEventInfo.cs" />
     <Compile Include="Interface\ISenderAgent.cs" />
     <Compile Include="Interface\IAgentSendResponse.cs" />
+    <Compile Include="Measure.cs" />
+    <Compile Include="Entities\Measurement.cs" />
     <Compile Include="Queue.cs" />
     <Compile Include="Entities\SendCompleteEventArgs.cs" />
     <Compile Include="Entities\SendResponse.cs" />
     <Compile Include="Extensions\SenderExceptionExtension.cs" />
-    <Compile Include="Interface\IDataSender.cs" />
     <Compile Include="Interface\IInfluxDbAgent.cs" />
     <Compile Include="Interface\ISenderConfiguration.cs" />
     <Compile Include="Interface\IQueue.cs" />
@@ -118,10 +120,7 @@
     <Compile Include="Interface\IQueueEvents.cs" />
     <Compile Include="Interface\IQueueSettings.cs" />
     <Compile Include="Interface\ISendEventInfo.cs" />
-    <Compile Include="MyLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sender\InfluxDataSender.cs" />
-    <Compile Include="Sender\InfluxDataSenderConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

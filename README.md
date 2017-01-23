@@ -436,3 +436,50 @@ This compact mode suffers from some limitations you have to be aware of:
 * You can not use counter tags, are they could conflict with other tags defined in other counters of the same group. Only counter group tags can be used.
 * The instance alias is ignored, since the instance tag is ignored. But you can still use instance specific counter: you have to add a counter element for each of them, with a different fieldname.
 * Schema is less self-descriptive, as you have to know which field name corresponds to which performance counter by yourself.
+
+## Nuget
+There is a [nuget package](https://www.nuget.org/packages/Influx-Capacitor/) that contains the core fuctions. This package can be used within your C# code.
+
+Besides the different targets included in Influx-Capacitor (InfluxDB and Kafka) there are some main features that can be useful.
+
+### Queue
+Uning this feature you can place measurements on a queue to be sent as a batch. There is a resend feature that sends the measurements as soon as you get a connection to the server.
+
+### Managed functions (measure function)
+You can place a measurement executor around your function that will measure how long a function take. It also listens to exceptions and send a 'Success' attribute to the database.
+This feature is implemented as a visitor pattern (execute around).
+
+Simple void action
+```
+var measure = new Measure(new Queue(new InfluxDbSenderAgent(new InfluxDbAgent("http://localhost:8086", "MyDatabase", "root", "MyPassword"))));
+measure.Execute(() =>
+{
+    //TODO: Do some stuff that you want to measure here.
+    //Exceptions here will be captured, logged and re-thrown.
+});
+```
+
+Also work with async functions
+```
+var measure = new Measure(new Queue(new InfluxDbSenderAgent(new InfluxDbAgent("http://localhost:8086", "MyDatabase", "root", "MyPassword"))));
+var someResult = await measure.ExecuteAsync("MyMeasurement", () =>
+{
+    //TODO: Do some stuff that you want to measure here.
+    //Exceptions here will be captured, logged and re-thrown.
+    //The response will be logged.
+
+    return Task.Run(() =>
+    {
+        return "Foo";
+    });
+});
+```
+
+Providing extra measurements
+```
+var measure = new Measure(new Queue(new InfluxDbSenderAgent(new InfluxDbAgent("http://localhost:8086", "MyDatabase", "root", "MyPassword"))));
+measure.Execute((measurement) =>
+{
+    measurement.Tags.Add("A", 1);
+});
+```

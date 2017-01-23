@@ -19,7 +19,7 @@ namespace Tharga.InfluxCapacitor.Agents
         private readonly string _url;
         private readonly string _userName;
 
-        public InfluxDbAgent(string url, string databaseName, string userName, string password, TimeSpan? requestTimeout, InfluxVersion influxVersion = InfluxVersion.Auto)
+        public InfluxDbAgent(string url, string databaseName, string userName, string password, TimeSpan? requestTimeout = null, InfluxVersion influxVersion = InfluxVersion.Auto)
         {
             _url = url;
             _databaseName = databaseName;

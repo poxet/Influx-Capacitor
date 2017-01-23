@@ -1,5 +1,4 @@
 using System;
-using Tharga.InfluxCapacitor.Entities;
 
 namespace Tharga.InfluxCapacitor.Interface
 {

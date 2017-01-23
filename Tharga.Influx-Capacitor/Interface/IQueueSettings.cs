@@ -1,4 +1,4 @@
-﻿namespace Tharga.InfluxCapacitor
+﻿namespace Tharga.InfluxCapacitor.Interface
 {
     public interface IQueueSettings
     {

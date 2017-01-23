@@ -7,6 +7,7 @@ using System.Timers;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
+using Tharga.InfluxCapacitor.QueueEvents;
 
 namespace Tharga.InfluxCapacitor
 {
@@ -22,6 +23,11 @@ namespace Tharga.InfluxCapacitor
         private readonly Queue<Point[]> _queue = new Queue<Point[]>();
         private readonly Queue<Tuple<int, Point[]>> _failQueue = new Queue<Tuple<int, Point[]>>();
         private readonly QueueAction _queueAction;
+
+        public Queue(ISenderAgent senderAgent)
+            : this(senderAgent, new DropQueueEvents(), new QueueSettings(10, false, 20000))
+        {
+        }
 
         public Queue(ISenderAgent senderAgent, IQueueEvents queueEvents, IQueueSettings queueSettings)
         {

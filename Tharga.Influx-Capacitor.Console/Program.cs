@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Tharga.InfluxCapacitor.Agents;
 using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;

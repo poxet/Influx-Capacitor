@@ -1,4 +1,6 @@
-namespace Tharga.InfluxCapacitor.Agents
+using Tharga.InfluxCapacitor.Interface;
+
+namespace Tharga.InfluxCapacitor.Entities
 {
     public class QueueSettings : IQueueSettings
     {
