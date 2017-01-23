@@ -87,6 +87,7 @@ namespace Tharga.InfluxCapacitor.Service
             }
             catch (Exception exception)
             {
+                System.Diagnostics.Debug.WriteLine(exception.Message);
                 throw;
             }
         }
@@ -97,8 +98,8 @@ namespace Tharga.InfluxCapacitor.Service
                 message += Environment.NewLine;
 
             var sendBytes = Encoding.ASCII.GetBytes(message);
-            _networkStream.Write(sendBytes, 0, sendBytes.Length);
-            _networkStream.Flush();
+            _networkStream?.Write(sendBytes, 0, sendBytes.Length);
+            _networkStream?.Flush();
         }
 
         public void Start(int port)

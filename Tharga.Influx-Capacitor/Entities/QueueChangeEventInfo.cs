@@ -5,7 +5,7 @@ namespace Tharga.InfluxCapacitor.Entities
 {
     public class QueueChangeEventInfo : IQueueChangeEventInfo
     {
-        public QueueChangeEventInfo(IQueueCountInfo before, IQueueCountInfo after)
+        internal QueueChangeEventInfo(IQueueCountInfo before, IQueueCountInfo after)
         {
             Before = before;
             After = after;

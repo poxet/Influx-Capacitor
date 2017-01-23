@@ -31,7 +31,7 @@ namespace Tharga.InfluxCapacitor
 
         public Queue(ISenderAgent senderAgent, IQueueEvents queueEvents, IQueueSettings queueSettings)
         {
-            queueEvents.DebugMessageEvent("Preparing new queue with target " + senderAgent.TargetDescription + ".");
+            queueEvents.OnDebugMessageEvent($"Preparing new queue with target {senderAgent.TargetDescription}.");
             _queueAction = new QueueAction(queueEvents, GetQueueInfo);
 
             _senderAgent = senderAgent;
@@ -53,12 +53,12 @@ namespace Tharga.InfluxCapacitor
                 var response = Send();
                 if (response.PointCount != 0)
                 {
-                    _queueEvents.TimerEvent(response);
+                    _queueEvents.OnTimerEvent(response);
                 }
             }
             catch (Exception exception)
             {
-                _queueEvents.ExceptionEvent(exception);
+                _queueEvents.OnExceptionEvent(exception);
                 throw;
             }
         }
@@ -100,7 +100,7 @@ namespace Tharga.InfluxCapacitor
                             }
                         });
 
-                        _queueEvents.DebugMessageEvent("Sending:" + Environment.NewLine + GetPointsString(points));
+                        _queueEvents.OnDebugMessageEvent($"Sending:{Environment.NewLine}{GetPointsString(points)}");
                         pointCount = points.Length;
                         var response = _senderAgent.SendAsync(points).Result;
                         if (response.IsSuccess)
@@ -108,12 +108,12 @@ namespace Tharga.InfluxCapacitor
                             _canSucceed = true;
                             isSuccess = true;
                             responseMessage = $"Sent {points.Length} points to server, with response '{response.StatusName}'.";
-                            _queueEvents.SendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Information));
+                            _queueEvents.OnSendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Information));
                         }
                         else
                         {
                             responseMessage = $"Failed to send {points.Length} points to server. Code '{response.StatusName}', Body '{response.Body ?? "n/a"}'.";
-                            _queueEvents.SendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Error));
+                            _queueEvents.OnSendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Error));
                             _queueAction.Execute(() => { _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points)); });
                         }
                     }
@@ -126,11 +126,11 @@ namespace Tharga.InfluxCapacitor
                         //sb.AppendLine(exception.Message);
                         ////sb.AppendLine(GetPointsString(points));
                         //_queueEvents.Message(sb.ToString(), QueueEventLevel.Error);
-                        _queueEvents.ExceptionEvent(exception);
+                        _queueEvents.OnExceptionEvent(exception);
                     }
                     else
                     {
-                        _queueEvents.ExceptionEvent(exception);
+                        _queueEvents.OnExceptionEvent(exception);
                     }
 
                     if (exception is AggregateException)
@@ -138,8 +138,8 @@ namespace Tharga.InfluxCapacitor
                         exception = exception.InnerException;
                     }
 
-                    responseMessage = exception.Message;
-                    _queueEvents.SendEvent(new SendEventInfo(exception));
+                    responseMessage = exception?.Message ?? "Unknown";
+                    _queueEvents.OnSendEvent(new SendEventInfo(exception));
                     if (points != null)
                     {
                         if (!_queueSettings.DropOnFail)
@@ -148,26 +148,26 @@ namespace Tharga.InfluxCapacitor
 
                             if (invalidExceptionType != null)
                             {
-                                _queueEvents.SendEvent(new SendEventInfo(string.Format("Dropping {0} since the exception type {1} is not allowed for resend.", points.Length, invalidExceptionType), points.Length, SendEventInfo.OutputLevel.Warning));
+                                _queueEvents.OnSendEvent(new SendEventInfo(string.Format("Dropping {0} since the exception type {1} is not allowed for resend.", points.Length, invalidExceptionType), points.Length, SendEventInfo.OutputLevel.Warning));
                             }
                             else if (!_canSucceed)
                             {
-                                _queueEvents.SendEvent(new SendEventInfo(string.Format("Dropping {0} points because there have never yet been a successful send.", points.Length), points.Length, SendEventInfo.OutputLevel.Warning));
+                                _queueEvents.OnSendEvent(new SendEventInfo(string.Format("Dropping {0} points because there have never yet been a successful send.", points.Length), points.Length, SendEventInfo.OutputLevel.Warning));
                             }
                             else if (retryCount > 5)
                             {
-                                _queueEvents.SendEvent(new SendEventInfo(string.Format("Dropping {0} points after {1} retries.", points.Length, retryCount), points.Length, SendEventInfo.OutputLevel.Warning));
+                                _queueEvents.OnSendEvent(new SendEventInfo(string.Format("Dropping {0} points after {1} retries.", points.Length, retryCount), points.Length, SendEventInfo.OutputLevel.Warning));
                             }
                             else
                             {
-                                _queueEvents.SendEvent(new SendEventInfo(string.Format("Putting {0} points back in the queue.", points.Length), points.Length, SendEventInfo.OutputLevel.Warning));
+                                _queueEvents.OnSendEvent(new SendEventInfo(string.Format("Putting {0} points back in the queue.", points.Length), points.Length, SendEventInfo.OutputLevel.Warning));
                                 retryCount++;
                                 _queueAction.Execute(() => { _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points)); });
                             }
                         }
                         else
                         {
-                            _queueEvents.SendEvent(new SendEventInfo(string.Format("Dropping {0} points.", points.Length), points.Length, SendEventInfo.OutputLevel.Warning));
+                            _queueEvents.OnSendEvent(new SendEventInfo(string.Format("Dropping {0} points.", points.Length), points.Length, SendEventInfo.OutputLevel.Warning));
                         }
                     }
                 }
@@ -206,7 +206,7 @@ namespace Tharga.InfluxCapacitor
             {
                 if (_queueSettings.MaxQueueSize - GetQueueInfo().TotalQueueCount < points.Length)
                 {
-                    _queueEvents.ExceptionEvent(new InvalidOperationException(string.Format("Queue will reach max limit, cannot add more points. Have {0} points, want to add {1} more. The limit is {2}.", GetQueueInfo().TotalQueueCount, points.Length, _queueSettings.MaxQueueSize)));
+                    _queueEvents.OnExceptionEvent(new InvalidOperationException(string.Format("Queue will reach max limit, cannot add more points. Have {0} points, want to add {1} more. The limit is {2}.", GetQueueInfo().TotalQueueCount, points.Length, _queueSettings.MaxQueueSize)));
                     return;
                 }
 
@@ -229,7 +229,7 @@ namespace Tharga.InfluxCapacitor
             {
                 var before = _getQueueInfo();
                 action();
-                _queueEvents.QueueChangedEvent(new QueueChangeEventInfo(before, _getQueueInfo()));
+                _queueEvents.OnQueueChangedEvent(new QueueChangeEventInfo(before, _getQueueInfo()));
             }
         }
     }

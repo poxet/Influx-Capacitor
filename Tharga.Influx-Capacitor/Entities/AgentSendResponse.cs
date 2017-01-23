@@ -5,7 +5,7 @@ namespace Tharga.InfluxCapacitor.Entities
 {
     public class AgentSendResponse : IAgentSendResponse
     {
-        public AgentSendResponse(bool isSuccess, HttpStatusCode httpStatusCode, string body)
+        internal AgentSendResponse(bool isSuccess, HttpStatusCode httpStatusCode, string body)
         {
             IsSuccess = isSuccess;
             StatusCode = (int)httpStatusCode;

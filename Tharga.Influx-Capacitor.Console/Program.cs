@@ -8,6 +8,7 @@ using Tharga.InfluxCapacitor.Console.Commands.Counter;
 using Tharga.InfluxCapacitor.Console.Commands.Publish;
 using Tharga.InfluxCapacitor.Console.Commands.Sender;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
+using Tharga.InfluxCapacitor.Entities;
 using Tharga.Toolkit.Console;
 using Tharga.Toolkit.Console.Command;
 using Tharga.Toolkit.Console.Command.Base;
@@ -21,14 +22,15 @@ namespace Tharga.InfluxCapacitor.Console
 
         private static void Main(string[] args)
         {
+            _compositeRoot = new CompositeRoot();
+            var clientConsole = _compositeRoot.ClientConsole;
+            var command = new RootCommand(clientConsole);
+
             System.Console.Title = Constants.ServiceName + " Management Console";
 
             CounterBusiness.ChangedCurrentCultureEvent += CounterBusiness_ChangedCurrentCultureEvent;
-            _compositeRoot = new CompositeRoot();
 
-            var clientConsole = _compositeRoot.ClientConsole;
             clientConsole.KeyReadEvent += ClientConsole_KeyReadEvent;
-            var command = new RootCommand(clientConsole);
 
             command.RegisterCommand(new ConfigCommands(_compositeRoot));
             command.RegisterCommand(new ServiceCommands(_compositeRoot));

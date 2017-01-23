@@ -13,8 +13,8 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
         {
             if (pattern == null) throw new ArgumentNullException("pattern");
 
-            this._pattern = pattern;
-            this._replacement = replacement;
+            _pattern = pattern;
+            _replacement = replacement;
         }
 
         public string Execute(string input)

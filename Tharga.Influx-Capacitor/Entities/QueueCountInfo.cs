@@ -2,7 +2,7 @@ namespace Tharga.InfluxCapacitor.Entities
 {
     public class QueueCountInfo : IQueueCountInfo
     {
-        public QueueCountInfo(int queueCount, int failQueueCount)
+        internal QueueCountInfo(int queueCount, int failQueueCount)
         {
             QueueCount = queueCount;
             FailQueueCount = failQueueCount;

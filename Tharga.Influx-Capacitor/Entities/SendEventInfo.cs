@@ -15,13 +15,13 @@ namespace Tharga.InfluxCapacitor.Entities
         private readonly string _message;
         private readonly Exception _exception;
 
-        public SendEventInfo(Exception exception)
+        internal SendEventInfo(Exception exception)
         {
             _exception = exception;
             Level = OutputLevel.Error;
         }
 
-        public SendEventInfo(string message, int count, OutputLevel outputLevel)
+        internal SendEventInfo(string message, int count, OutputLevel outputLevel)
         {
             _message = message;
             Level = outputLevel;

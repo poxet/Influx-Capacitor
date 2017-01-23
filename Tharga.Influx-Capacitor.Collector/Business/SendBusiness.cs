@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using InfluxDB.Net.Enums;
 using InfluxDB.Net.Models;
-using Tharga.InfluxCapacitor.Agents;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
@@ -17,7 +13,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         public event EventHandler<SendCompleteEventArgs> SendBusinessEvent;
 
-        public SendBusiness(IConfigBusiness configBusiness, IInfluxDbAgentLoader influxDbAgentLoader, IQueueEvents queueEvents)
+        public SendBusiness(IConfigBusiness configBusiness, //IInfluxDbAgentLoader influxDbAgentLoader, 
+            IQueueEvents queueEvents)
         {
             var config = configBusiness.LoadFiles();
             foreach (var databaseConfig in config.Databases)
@@ -32,7 +29,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 }
                 catch (Exception exception)
                 {
-                    queueEvents.ExceptionEvent(exception);
+                    queueEvents.OnExceptionEvent(exception);
                 }
 
                 if (senderAgent != null)
@@ -56,10 +53,10 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             throw new NotImplementedException();
         }
 
-        protected virtual void OnSendBusinessEvent(object sender, SendCompleteEventArgs e)
-        {
-            var handler = SendBusinessEvent;
-            if (handler != null) handler.Invoke(this, e);
-        }
+        //protected virtual void OnSendBusinessEvent(object sender, SendCompleteEventArgs e)
+        //{
+        //    var handler = SendBusinessEvent;
+        //    if (handler != null) handler.Invoke(this, e);
+        //}
     }
 }

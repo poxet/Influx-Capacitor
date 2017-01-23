@@ -4,10 +4,10 @@ namespace Tharga.InfluxCapacitor.Interface
 {
     public interface IQueueEvents
     {
-        void DebugMessageEvent(string message);
-        void ExceptionEvent(Exception exception);
-        void SendEvent(ISendEventInfo sendCompleteEventArgs);
-        void QueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo);
-        void TimerEvent(ISendResponse sendResponse);
+        void OnDebugMessageEvent(string message);
+        void OnExceptionEvent(Exception exception);
+        void OnSendEvent(ISendEventInfo sendCompleteEventArgs);
+        void OnQueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo);
+        void OnTimerEvent(ISendResponse sendResponse);
     }
 }

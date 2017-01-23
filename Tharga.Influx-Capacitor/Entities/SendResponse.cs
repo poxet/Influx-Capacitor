@@ -5,7 +5,7 @@ namespace Tharga.InfluxCapacitor.Entities
 {
     public class SendResponse : ISendResponse
     {
-        public SendResponse(bool isSuccess, string message, int pointCount, TimeSpan elapsed)
+        internal SendResponse(bool isSuccess, string message, int pointCount, TimeSpan elapsed)
         {
             IsSuccess = isSuccess;
             Message = message;

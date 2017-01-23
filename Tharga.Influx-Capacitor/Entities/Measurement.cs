@@ -7,7 +7,7 @@ namespace Tharga.InfluxCapacitor.Entities
         public Dictionary<string, object> Fields { get; }
         public Dictionary<string, object> Tags { get; }
 
-        public Measurement()
+        internal Measurement()
         {
             Fields = new Dictionary<string, object>();
             Tags = new Dictionary<string, object>();

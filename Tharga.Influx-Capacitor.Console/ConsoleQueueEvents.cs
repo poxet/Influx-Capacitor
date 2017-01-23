@@ -14,18 +14,18 @@ namespace Tharga.InfluxCapacitor.Console
             _console = console;
         }
 
-        public void DebugMessageEvent(string message)
+        public void OnDebugMessageEvent(string message)
         {
             //NOTE: Use this to se debug information
             //_console.WriteLine(message, OutputLevel.Information);
         }
 
-        public void ExceptionEvent(Exception exception)
+        public void OnExceptionEvent(Exception exception)
         {
             _console.WriteLine(exception.Message, OutputLevel.Error);
         }
 
-        public void SendEvent(ISendEventInfo sendCompleteEventArgs)
+        public void OnSendEvent(ISendEventInfo sendCompleteEventArgs)
         {
             _console.WriteLine(sendCompleteEventArgs.Message, ToLevel(sendCompleteEventArgs.Level));
         }
@@ -45,12 +45,12 @@ namespace Tharga.InfluxCapacitor.Console
             }
         }
 
-        public void QueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo)
+        public void OnQueueChangedEvent(IQueueChangeEventInfo queueChangeEventInfo)
         {
             _console.WriteLine(queueChangeEventInfo.Message, OutputLevel.Information);
         }
 
-        public void TimerEvent(ISendResponse sendResponse)
+        public void OnTimerEvent(ISendResponse sendResponse)
         {
             _console.WriteLine($"{sendResponse.Message} in {sendResponse.Elapsed.TotalMilliseconds:N2}ms.", OutputLevel.Information);
         }
