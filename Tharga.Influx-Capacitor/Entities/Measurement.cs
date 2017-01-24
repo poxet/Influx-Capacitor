@@ -15,20 +15,20 @@ namespace Tharga.InfluxCapacitor.Entities
 
         public void AddTag(string key, object value)
         {
-            if (string.IsNullOrEmpty(value?.ToString())) return;
-
             if (Tags.ContainsKey(key))
                 Tags.Remove(key);
+
+            if (string.IsNullOrEmpty(value?.ToString())) return;
 
             Tags.Add(key, value);
         }
 
         public void AddField(string key, object value)
         {
-            if (string.IsNullOrEmpty(value?.ToString())) return;
-
             if (Fields.ContainsKey(key))
                 Fields.Remove(key);
+
+            if (string.IsNullOrEmpty(value?.ToString())) return;
 
             Fields.Add(key, value);
         }

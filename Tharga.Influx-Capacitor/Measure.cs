@@ -136,6 +136,9 @@ namespace Tharga.InfluxCapacitor
 
         private T DoExecute<T>(string measurement, Measurement m, Func<T> action)
         {
+            if (string.IsNullOrEmpty(measurement))
+                measurement = "Unknown";
+
             var point = new Point
             {
                 Measurement = measurement,
