@@ -165,7 +165,7 @@ namespace Tharga.InfluxCapacitor
             sw.Stop();
 
             m.AddField("Elapsed", sw.Elapsed.TotalMilliseconds);
-            m.AddTag("Response", response);
+            //m.AddTag("Response", response);
 
             point.Fields = m.Fields;
             point.Tags = m.Tags;
