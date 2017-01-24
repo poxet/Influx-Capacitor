@@ -25,7 +25,7 @@ namespace Tharga.InfluxCapacitor
         private readonly QueueAction _queueAction;
 
         public Queue(ISenderAgent senderAgent)
-            : this(senderAgent, new DropQueueEvents(), new QueueSettings(10, false, 20000))
+            : this(senderAgent, new DropQueueEvents(), new QueueSettings())
         {
         }
 
@@ -122,10 +122,6 @@ namespace Tharga.InfluxCapacitor
                 {
                     if (points != null)
                     {
-                        //var sb = new StringBuilder();
-                        //sb.AppendLine(exception.Message);
-                        ////sb.AppendLine(GetPointsString(points));
-                        //_queueEvents.Message(sb.ToString(), QueueEventLevel.Error);
                         _queueEvents.OnExceptionEvent(exception);
                     }
                     else
@@ -148,19 +144,19 @@ namespace Tharga.InfluxCapacitor
 
                             if (invalidExceptionType != null)
                             {
-                                _queueEvents.OnSendEvent(new SendEventInfo(string.Format("Dropping {0} since the exception type {1} is not allowed for resend.", points.Length, invalidExceptionType), points.Length, SendEventInfo.OutputLevel.Warning));
+                                _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} since the exception type {invalidExceptionType} is not allowed for resend.", points.Length, SendEventInfo.OutputLevel.Warning));
                             }
                             else if (!_canSucceed)
                             {
-                                _queueEvents.OnSendEvent(new SendEventInfo(string.Format("Dropping {0} points because there have never yet been a successful send.", points.Length), points.Length, SendEventInfo.OutputLevel.Warning));
+                                _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points because there have never yet been a successful send.", points.Length, SendEventInfo.OutputLevel.Warning));
                             }
                             else if (retryCount > 5)
                             {
-                                _queueEvents.OnSendEvent(new SendEventInfo(string.Format("Dropping {0} points after {1} retries.", points.Length, retryCount), points.Length, SendEventInfo.OutputLevel.Warning));
+                                _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points after {retryCount} retries.", points.Length, SendEventInfo.OutputLevel.Warning));
                             }
                             else
                             {
-                                _queueEvents.OnSendEvent(new SendEventInfo(string.Format("Putting {0} points back in the queue.", points.Length), points.Length, SendEventInfo.OutputLevel.Warning));
+                                _queueEvents.OnSendEvent(new SendEventInfo($"Putting {points.Length} points back in the queue.", points.Length, SendEventInfo.OutputLevel.Warning));
                                 retryCount++;
                                 _queueAction.Execute(() => { _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points)); });
                             }
