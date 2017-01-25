@@ -17,7 +17,7 @@ namespace Tharga.InfluxCapacitor
             _queue = queue;
         }
 
-        public T Execute<T>(Func<Measurement, T> action)
+        public T Execute<T>(Func<IMeasurement, T> action)
         {
             return Execute(GetName(action.Method.Name), action);
         }
@@ -32,12 +32,12 @@ namespace Tharga.InfluxCapacitor
             Execute(GetName(action.Method.Name), action);
         }
 
-        public void Execute(Action<Measurement> action)
+        public void Execute(Action<IMeasurement> action)
         {
             Execute(GetName(action.Method.Name), action);
         }
 
-        public async Task<T> ExecuteAsync<T>(Func<Measurement, T> action)
+        public async Task<T> ExecuteAsync<T>(Func<IMeasurement, T> action)
         {
             return await ExecuteAsync(GetName(action.Method.Name), action);
         }
@@ -52,12 +52,12 @@ namespace Tharga.InfluxCapacitor
             await ExecuteAsync(GetName(action.Method.Name), action);
         }
 
-        public async Task ExecuteAsync(Action<Measurement> action)
+        public async Task ExecuteAsync(Action<IMeasurement> action)
         {
             await ExecuteAsync(GetName(action.Method.Name), action);
         }
 
-        public T Execute<T>(string measurement, Func<Measurement, T> action)
+        public T Execute<T>(string measurement, Func<IMeasurement, T> action)
         {
             var m = new Measurement();
             return DoExecute(measurement, m, () => action(m));
@@ -77,7 +77,7 @@ namespace Tharga.InfluxCapacitor
             });
         }
 
-        public void Execute(string measurement, Action<Measurement> action)
+        public void Execute(string measurement, Action<IMeasurement> action)
         {
             var m = new Measurement();
             DoExecute(measurement, m, () =>
@@ -87,7 +87,7 @@ namespace Tharga.InfluxCapacitor
             });
         }
 
-        public async Task<T> ExecuteAsync<T>(string measurement, Func<Measurement, T> action)
+        public async Task<T> ExecuteAsync<T>(string measurement, Func<IMeasurement, T> action)
         {
             return await Task.Run(() =>
             {
@@ -113,7 +113,7 @@ namespace Tharga.InfluxCapacitor
             });
         }
 
-        public async Task ExecuteAsync(string measurement, Action<Measurement> action)
+        public async Task ExecuteAsync(string measurement, Action<IMeasurement> action)
         {
             await Task.Run(() =>
             {
@@ -134,7 +134,7 @@ namespace Tharga.InfluxCapacitor
             return result;
         }
 
-        private T DoExecute<T>(string measurement, Measurement m, Func<T> action)
+        private T DoExecute<T>(string measurement, IMeasurement m, Func<T> action)
         {
             if (string.IsNullOrEmpty(measurement))
                 measurement = "Unknown";

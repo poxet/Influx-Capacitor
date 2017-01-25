@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Entities
 {
-    public class Measurement
+    public class Measurement : IMeasurement
     {
         public Dictionary<string, object> Fields { get; }
         public Dictionary<string, object> Tags { get; }
 
-        internal Measurement()
+        public Measurement()
         {
             Fields = new Dictionary<string, object>();
             Tags = new Dictionary<string, object>();
