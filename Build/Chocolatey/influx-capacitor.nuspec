@@ -18,7 +18,10 @@
     <tags>influx-capacitor admin influx capacitor kapacitor collect metrics influx influxdb performance counter grafana time series server kafka</tags>
     <summary>Influx Capacitor collects metrics from windows machines using Performance Counters.</summary>
     <description>Influx Capacitor collects metrics from windows machines using Performance Counters. Data is sent to influxDB to be viewable by grafana.</description>
-    <releaseNotes>Added support for influxDB version 1.1.</releaseNotes>
+    <!--<releaseNotes>Added support for influxDB version 1.1.</releaseNotes>-->
+    <dependencies>
+      <dependency id="InfluxDB.Net-Main" version="1.0.34" />
+    </dependencies>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
