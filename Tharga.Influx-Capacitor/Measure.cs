@@ -149,19 +149,24 @@ namespace Tharga.InfluxCapacitor
             var sw = new Stopwatch();
             sw.Start();
 
-            Exception exception = null;
-            var response = default(T);
             try
             {
-                response = action();
+                var response = action();
                 m.AddTag("IsSuccess", true);
+                Finalize(m, point, sw);
+                return response;
             }
             catch (Exception exp)
             {
-                exception = exp;
                 m.AddTag("IsSuccess", false);
+                m.AddTag("Exception", exp.Message);
+                Finalize(m, point, sw);
+                throw;
             }
+        }
 
+        private void Finalize(IMeasurement m, Point point, Stopwatch sw)
+        {
             sw.Stop();
 
             m.AddField("Elapsed", sw.Elapsed.TotalMilliseconds);
@@ -170,13 +175,6 @@ namespace Tharga.InfluxCapacitor
             point.Fields = m.Fields;
             point.Tags = m.Tags;
             _queue.Enqueue(point);
-
-            if (exception != null)
-            {
-                throw exception;
-            }
-
-            return response;
         }
     }
 }
