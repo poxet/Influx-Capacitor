@@ -95,6 +95,8 @@
     <Compile Include="Agents\InfluxDbSenderAgent.cs" />
     <Compile Include="Agents\KafkaAgent.cs" />
     <Compile Include="Agents\KafkaSenderAgent.cs" />
+    <Compile Include="Agents\NullAgent.cs" />
+    <Compile Include="Agents\NullFormatter.cs" />
     <Compile Include="Agents\NullSenderAgent.cs" />
     <Compile Include="Interface\IMeasure.cs" />
     <Compile Include="Entities\DebugMessageEventArgs.cs" />
