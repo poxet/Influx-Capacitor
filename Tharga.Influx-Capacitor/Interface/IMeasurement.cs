@@ -9,5 +9,7 @@ namespace Tharga.InfluxCapacitor.Interface
 
         void AddTag(string key, object value);
         void AddField(string key, object value);
+
+        void Elapsed(string position);
     }
 }

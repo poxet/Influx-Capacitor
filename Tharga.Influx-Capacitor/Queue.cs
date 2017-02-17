@@ -187,6 +187,11 @@ namespace Tharga.InfluxCapacitor
             }
         }
 
+        public IEnumerable<Point> Items
+        {
+            get { return _queue.SelectMany(x => x); }
+        }
+
         private string GetPointsString(Point[] points)
         {
             var sb = new StringBuilder();

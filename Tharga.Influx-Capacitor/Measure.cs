@@ -134,7 +134,7 @@ namespace Tharga.InfluxCapacitor
             return result;
         }
 
-        private T DoExecute<T>(string measurement, IMeasurement m, Func<T> action)
+        private T DoExecute<T>(string measurement, Measurement m, Func<T> action)
         {
             if (string.IsNullOrEmpty(measurement))
                 measurement = "Unknown";
@@ -146,22 +146,26 @@ namespace Tharga.InfluxCapacitor
                 Timestamp = DateTime.UtcNow,
             };
 
-            var sw = new Stopwatch();
-            sw.Start();
+            m.Stopwatch.Reset();
+            m.Stopwatch.Start();
 
             try
             {
                 var response = action();
                 m.AddTag("IsSuccess", true);
-                Finalize(m, point, sw);
+                Finalize(m, point, m.Stopwatch);
                 return response;
             }
             catch (Exception exp)
             {
                 m.AddTag("IsSuccess", false);
                 m.AddTag("Exception", exp.Message);
-                Finalize(m, point, sw);
+                Finalize(m, point, m.Stopwatch);
                 throw;
+            }
+            finally
+            {
+                m.Stopwatch.Stop();
             }
         }
 
