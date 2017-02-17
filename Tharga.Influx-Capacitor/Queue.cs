@@ -11,12 +11,49 @@ using Tharga.InfluxCapacitor.QueueEvents;
 
 namespace Tharga.InfluxCapacitor
 {
+    public class PointValidator
+    {
+        public IEnumerable<string> Validate(Point point)
+        {
+            if (string.IsNullOrEmpty(point.Measurement)) yield return "There is no name for measurement.";
+
+            if (!point.Fields.Any()) yield return $"There are no fields for measurement {point.Measurement ?? "n/a"}.";
+            foreach(var missing in point.Fields.Where(x => x.Value == null))
+            {
+                yield return $"Value missing for field {missing.Key} for measurement {point.Measurement ?? "n/a"}.";
+            }
+
+            foreach (var missing in point.Tags.Where(x => x.Value == null))
+            {
+                yield return $"Value missing for tag {missing.Key} for measurement {point.Measurement ?? "n/a"}.";
+            }
+        }
+
+        public IEnumerable<string> Validate(IEnumerable<Point> points)
+        {
+            return points.SelectMany(Validate);
+        }
+
+
+        public IEnumerable<Point> Clean(IEnumerable<Point> points)
+        {
+            foreach (var point in points)
+            {
+                if (!Validate(point).Any())
+                {
+                    yield return point;
+                }
+            }
+        }
+    }
+
     public class Queue : IQueue
     {
         private readonly object _syncRoot = new object();
         private readonly ISenderAgent _senderAgent;
         private readonly IQueueEvents _queueEvents;
         private readonly IQueueSettings _queueSettings;
+        private readonly PointValidator _pointValidator;
 
         private bool _canSucceed; //Has successed to send at least once.
 
@@ -32,6 +69,7 @@ namespace Tharga.InfluxCapacitor
 
         public Queue(ISenderAgent senderAgent, IQueueEvents queueEvents, IQueueSettings queueSettings)
         {
+            _pointValidator = new PointValidator();
             queueEvents.OnDebugMessageEvent($"Preparing new queue with target {senderAgent.TargetDescription}.");
             _queueAction = new QueueAction(queueEvents, GetQueueInfo);
 
@@ -210,16 +248,21 @@ namespace Tharga.InfluxCapacitor
 
         public void Enqueue(Point[] points)
         {
+            Point[] validPoints;
+
             lock (_syncRoot)
             {
                 if (_queueSettings.MaxQueueSize - GetQueueInfo().TotalQueueCount < points.Length)
                 {
-                    _queueEvents.OnExceptionEvent(new InvalidOperationException(string.Format("Queue will reach max limit, cannot add more points. Have {0} points, want to add {1} more. The limit is {2}.", GetQueueInfo().TotalQueueCount, points.Length, _queueSettings.MaxQueueSize)));
+                    _queueEvents.OnExceptionEvent(new InvalidOperationException($"Queue will reach max limit, cannot add more points. Have {GetQueueInfo().TotalQueueCount} points, want to add {points.Length} more. The limit is {_queueSettings.MaxQueueSize}."));
                     return;
                 }
 
-                _queueAction.Execute(() => { _queue.Enqueue(points); });
+                validPoints = _pointValidator.Clean(points).ToArray();
+                _queueAction.Execute(() => { _queue.Enqueue(validPoints); });
             }
+
+            _queueEvents.OnEnqueueEvent(validPoints, points, _pointValidator.Validate(points).ToArray());
         }
 
         private class QueueAction

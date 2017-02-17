@@ -34,7 +34,7 @@ namespace Tharga.InfluxCapacitor.Service
             CounterBusiness.ChangedCurrentCultureEvent += ChangedCurrentCultureEvent;
             var sendBusiness = new SendBusiness(configBusiness, //influxDbAgentLoader, 
                 new ConsoleQueueEvents(_console));
-            sendBusiness.SendBusinessEvent += SendBusinessEvent;
+            //sendBusiness.SendBusinessEvent += SendBusinessEvent;
             var tagLoader = new TagLoader(configBusiness);
             _processor = new Processor(configBusiness, counterBusiness, publisherBusiness, sendBusiness, tagLoader);
             _processor.EngineActionEvent += _processor_EngineActionEvent;
@@ -82,10 +82,10 @@ namespace Tharga.InfluxCapacitor.Service
             _console.WriteLine(e.Message, e.OutputLevel, null);
         }
 
-        private void SendBusinessEvent(object sender, SendCompleteEventArgs e)
-        {
-            _console.WriteLine(e.Message, e.Level.ToOutputLevel(), null);
-        }
+        //private void SendBusinessEvent(object sender, SendCompleteEventArgs e)
+        //{
+        //    _console.WriteLine(e.Message, e.Level.ToOutputLevel(), null);
+        //}
 
         private void ChangedCurrentCultureEvent(object sender, ChangedCurrentCultureEventArgs e)
         {

@@ -66,6 +66,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{25F8AE5C
 		..\Build\Chocolatey\tools\chocolateyuninstall.ps1 = ..\Build\Chocolatey\tools\chocolateyuninstall.ps1
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.Influx-Capacitor.Tests", "Tharga.Influx-Capacitor.Tests\Tharga.Influx-Capacitor.Tests.csproj", "{663E42FE-D333-41EA-A119-AC066DA245CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CI|Any CPU = CI|Any CPU
@@ -109,6 +111,12 @@ Global
 		{C60C4133-A221-4EF8-8F69-D407752DCE3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C60C4133-A221-4EF8-8F69-D407752DCE3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C60C4133-A221-4EF8-8F69-D407752DCE3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{663E42FE-D333-41EA-A119-AC066DA245CF}.CI|Any CPU.ActiveCfg = Release|Any CPU
+		{663E42FE-D333-41EA-A119-AC066DA245CF}.CI|Any CPU.Build.0 = Release|Any CPU
+		{663E42FE-D333-41EA-A119-AC066DA245CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{663E42FE-D333-41EA-A119-AC066DA245CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{663E42FE-D333-41EA-A119-AC066DA245CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{663E42FE-D333-41EA-A119-AC066DA245CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

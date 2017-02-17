@@ -21,7 +21,7 @@ namespace Tharga.InfluxCapacitor.Console
             PublisherBusiness = new PublisherBusiness();
             SendBusiness = new SendBusiness(ConfigBusiness, //InfluxDbAgentLoader, 
                 new ConsoleQueueEvents(ClientConsole));
-            SendBusiness.SendBusinessEvent += SendBusinessEvent;
+            //SendBusiness.SendBusinessEvent += SendBusinessEvent;
             TagLoader = new TagLoader(ConfigBusiness);
             SocketClient = new SocketClient();
         }

@@ -1,0 +1,209 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using InfluxDB.Net.Models;
+using NUnit.Framework;
+using Tharga.InfluxCapacitor;
+
+namespace Tharga.Influx_Capacitor.Tests
+{
+    [TestFixture]
+    public class PointValidatorCleanTests
+    {
+        [Test]
+        public void Should_return_all_if_all_are_valid()
+        {
+            //Arrange
+            var points = new[]
+            {
+                new Point
+                {
+                    Measurement = "x",
+                    Fields = new Dictionary<string, object> { { "A", "1" } },
+                    Tags = new Dictionary<string, object> { { "B", "2" } }
+                },
+                new Point
+                {
+                    Measurement = "x",
+                    Fields = new Dictionary<string, object> { { "A", "1" } },
+                    Tags = new Dictionary<string, object> { { "B", "2" } }
+                },
+            };
+            var validator = new PointValidator();
+
+            //Act
+            var response = validator.Clean(points);
+
+            //Assert
+            Assert.That(response, Is.Not.Empty);
+            Assert.That(response.Count(), Is.EqualTo(points.Length));
+        }
+
+        [Test]
+        public void Should_return_none_if_none_are_valud()
+        {
+            //Arrange
+            var points = new[]
+            {
+                new Point
+                {
+                },
+                new Point
+                {
+                },
+            };
+            var validator = new PointValidator();
+
+            //Act
+            var response = validator.Clean(points);
+
+            //Assert
+            Assert.That(response, Is.Empty);
+        }
+
+        [Test]
+        public void Should_return_some_if_some_are_valid()
+        {
+            //Arrange
+            var points = new[]
+            {
+                new Point
+                {
+                    Measurement = "x",
+                    Fields = new Dictionary<string, object> { { "A", "1" } },
+                    Tags = new Dictionary<string, object> { { "B", "2" } }
+                },
+                new Point
+                {
+                },
+            };
+            var validator = new PointValidator();
+
+            //Act
+            var response = validator.Clean(points);
+
+            //Assert
+            Assert.That(response, Is.Not.Empty);
+            Assert.That(response.Count(), Is.EqualTo(1));
+        }
+
+    }
+
+    [TestFixture]
+    public class PointValidatorTests
+    {
+        [Test]
+        public void Should_be_valid()
+        {
+            //Arrange
+            var point = new Point
+            {
+                Measurement = "x",
+                Fields = new Dictionary<string, object> { { "A", "1" } },
+                Tags = new Dictionary<string, object> { { "B", "2" } }
+            };
+            var validator = new PointValidator();
+
+            //Act
+            var response = validator.Validate(point);
+
+            //Assert
+            Assert.That(response, Is.Empty);
+        }
+
+        [Test]
+        public void Should_be_invalid_if_there_is_no_measurement_name()
+        {
+            //Arrange
+            var point = new Point
+            {
+                Fields = new Dictionary<string, object> { { "A", "1" } },
+                Tags = new Dictionary<string, object> { { "B", "2" } }
+            };
+            var validator = new PointValidator();
+
+            //Act
+            var response = validator.Validate(point);
+
+            //Assert
+            Assert.That(response, Is.Not.Empty);
+            Assert.That(response.First(), Is.EqualTo("There is no name for measurement."));
+        }
+
+        [Test]
+        public void Should_be_invalid_if_there_are_no_fields()
+        {
+            //Arrange
+            var point = new Point
+            {
+                Measurement = "x",
+                Tags = new Dictionary<string, object> { { "B", "2" } }
+            };
+            var validator = new PointValidator();
+
+            //Act
+            var response = validator.Validate(point);
+
+            //Assert
+            Assert.That(response, Is.Not.Empty);
+            Assert.That(response.First(), Is.EqualTo("There are no fields for measurement x."));
+        }
+
+        [Test]
+        public void Should_be_valid_if_there_are_no_tags()
+        {
+            //Arrange
+            var point = new Point
+            {
+                Measurement = "x",
+                Fields = new Dictionary<string, object> { { "A", "1" } },
+            };
+            var validator = new PointValidator();
+
+            //Act
+            var response = validator.Validate(point);
+
+            //Assert
+            Assert.That(response, Is.Empty);
+        }
+
+        [Test]
+        public void Should_be_invalid_when_field_value_is_missing()
+        {
+            //Arrange
+            var point = new Point
+            {
+                Measurement = "x",
+                Fields = new Dictionary<string, object> { { "A", null } },
+                Tags = new Dictionary<string, object> { { "B", "2" } }
+            };
+            var validator = new PointValidator();
+
+            //Act
+            var response = validator.Validate(point);
+
+            //Assert
+            Assert.That(response, Is.Not.Empty);
+            Assert.That(response.First(), Is.EqualTo("Value missing for field A for measurement x."));
+        }
+
+        [Test]
+        public void Should_be_invalid_when_Tag_value_is_missing()
+        {
+            //Arrange
+            var point = new Point
+            {
+                Measurement = "x",
+                Fields = new Dictionary<string, object> { { "A", "1" } },
+                Tags = new Dictionary<string, object> { { "B", null } }
+            };
+            var validator = new PointValidator();
+
+            //Act
+            var response = validator.Validate(point);
+
+            //Assert
+            Assert.That(response, Is.Not.Empty);
+            Assert.That(response.First(), Is.EqualTo("Value missing for tag B for measurement x."));
+        }
+    }
+}

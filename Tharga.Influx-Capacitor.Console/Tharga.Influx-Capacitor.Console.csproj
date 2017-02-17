@@ -120,6 +120,7 @@
     <Compile Include="Commands\Publish\PublishCommands.cs" />
     <Compile Include="Commands\Publish\PublishStartCommand.cs" />
     <Compile Include="Commands\Sender\SenderCommands.cs" />
+    <Compile Include="Commands\Sender\SenderQueueCommand.cs" />
     <Compile Include="Commands\Service\ServiceAction.cs" />
     <Compile Include="Commands\Service\ServiceConnectCommand.cs" />
     <Compile Include="Commands\Service\ServiceDisconnectCommand.cs" />

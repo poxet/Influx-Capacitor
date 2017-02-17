@@ -1,4 +1,5 @@
 using System;
+using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -53,6 +54,22 @@ namespace Tharga.InfluxCapacitor.Console
         public void OnTimerEvent(ISendResponse sendResponse)
         {
             _console.WriteLine($"{sendResponse.Message} in {sendResponse.Elapsed.TotalMilliseconds:N2}ms.", OutputLevel.Information);
+        }
+
+        public void OnEnqueueEvent(Point[] enqueuedPoints, Point[] providedPoints, string[] validationErrors)
+        {
+            if (enqueuedPoints.Length != providedPoints.Length)
+            {
+                _console.WriteLine($"Not all provided {providedPoints.Length} points where enqueued...", OutputLevel.Warning);
+                foreach (var validationError in validationErrors)
+                {
+                    _console.WriteLine($"\t{validationError}", OutputLevel.Warning);
+                }
+            }
+            else
+            {
+                _console.WriteLine($"All provided {providedPoints.Length} points where enqueued.", OutputLevel.Information);
+            }
         }
     }
 }

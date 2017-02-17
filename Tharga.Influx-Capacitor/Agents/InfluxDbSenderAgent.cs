@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Entities;
@@ -24,8 +25,15 @@ namespace Tharga.InfluxCapacitor.Agents
 
         public string PointToString(Point point)
         {
-            var formatter = _influxDbAgent.GetFormatter();
-            return formatter.PointToString(point);
+            try
+            {
+                var formatter = _influxDbAgent.GetFormatter();
+                return formatter.PointToString(point);
+            }
+            catch (Exception exception)
+            {
+                return $"Cannot convert point '{point.Measurement}' to string. {exception.Message}";
+            }
         }
     }
 }

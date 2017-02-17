@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
 
@@ -11,6 +13,7 @@ namespace Tharga.InfluxCapacitor.QueueEvents
         public event EventHandler<SendEventArgs> SendEvent;
         public event EventHandler<QueueChangedEventArgs> QueueChangedEvent;
         public event EventHandler<TimerEventArgs> TimerEvent;
+        public event EventHandler<EnqueueEventArgs> EnqueueEvent;
 
         public virtual void OnDebugMessageEvent(string message)
         {
@@ -35,6 +38,11 @@ namespace Tharga.InfluxCapacitor.QueueEvents
         public void OnTimerEvent(ISendResponse sendResponse)
         {
             TimerEvent?.Invoke(this, new TimerEventArgs(sendResponse));
+        }
+
+        public void OnEnqueueEvent(Point[] enqueuedPoints, Point[] providedPoints, string[] validationErrors)
+        {
+            EnqueueEvent?.Invoke(this, new EnqueueEventArgs(enqueuedPoints, providedPoints, validationErrors));
         }
     }
 }

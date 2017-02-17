@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using InfluxDB.Net.Models;
 using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.QueueEvents
@@ -22,6 +24,10 @@ namespace Tharga.InfluxCapacitor.QueueEvents
         }
 
         public void OnTimerEvent(ISendResponse sendResponse)
+        {
+        }
+
+        public void OnEnqueueEvent(Point[] enqueuedPoints, Point[] providedPoints, string[] validationErrors)
         {
         }
     }

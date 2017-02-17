@@ -48,9 +48,10 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
         //    }
         }
 
-        public IEnumerable<Tuple<string, int>> GetQueueInfo()
+        public IEnumerable<IQueueCountInfo> GetQueueInfo()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            yield break;
         }
     }
 }

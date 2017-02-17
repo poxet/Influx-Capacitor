@@ -11,9 +11,9 @@ namespace Tharga.InfluxCapacitor.Collector.Business
     {
         private readonly List<IQueue> _queues = new List<IQueue>();
 
-        public event EventHandler<SendCompleteEventArgs> SendBusinessEvent;
+        //public event EventHandler<SendCompleteEventArgs> SendBusinessEvent;
 
-        public SendBusiness(IConfigBusiness configBusiness, //IInfluxDbAgentLoader influxDbAgentLoader, 
+        public SendBusiness(IConfigBusiness configBusiness,
             IQueueEvents queueEvents)
         {
             var config = configBusiness.LoadFiles();
@@ -48,15 +48,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
             }
         }
 
-        public IEnumerable<Tuple<string, int>> GetQueueInfo()
+        public IEnumerable<IQueueCountInfo> GetQueueInfo()
         {
-            throw new NotImplementedException();
+            foreach (var queue in _queues)
+            {
+                yield return queue.GetQueueInfo();
+            }
         }
-
-        //protected virtual void OnSendBusinessEvent(object sender, SendCompleteEventArgs e)
-        //{
-        //    var handler = SendBusinessEvent;
-        //    if (handler != null) handler.Invoke(this, e);
-        //}
     }
 }
