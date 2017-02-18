@@ -12,18 +12,6 @@ using Tharga.InfluxCapacitor.QueueEvents;
 
 namespace Tharga.InfluxCapacitor
 {
-    internal class FailPoint
-    {
-        public FailPoint(int retryCount, Point point)
-        {
-            RetryCount = retryCount;
-            Point = point;
-        }
-
-        public int RetryCount { get; }
-        public Point Point { get; }
-    }
-
     public class Queue : IQueue
     {
         private readonly object _syncRoot = new object();
@@ -36,7 +24,7 @@ namespace Tharga.InfluxCapacitor
         private bool _canSucceed; //Has successed to send at least once.
 
         private readonly Queue<Point[]> _queue = new Queue<Point[]>();
-        private readonly Queue<FailPoint> _failQueue = new Queue<FailPoint>();
+        private readonly Queue<RetryPoint> _failQueue = new Queue<RetryPoint>();
         private readonly QueueAction _queueAction;
         private bool _singlePointStream = true;
         private Timer _timer;
@@ -68,7 +56,7 @@ namespace Tharga.InfluxCapacitor
                     _queueEvents.OnTimerEvent(response);
                 }
 
-                if (_queueSettings.MetaCounter && response.PointCount > 1)
+                if (_queueSettings.Metadata && response.PointCount > 1)
                 {
                     var metaPoint = _metaDataBusiness.BuildQueueMetadata("send", response, _senderAgent, GetQueueInfo());
                     EnqueueEx(new[] { metaPoint });
@@ -126,7 +114,7 @@ namespace Tharga.InfluxCapacitor
                             SendPointsNow(new[] { failPoint.Point }, failPoint.RetryCount);
                             //if (!r.Item1)
                             //{
-                            //    _failQueue.Enqueue(new FailPoint(failPoint.RetryCount + 1, failPoint.Point));
+                            //    _failQueue.Enqueue(new RetryPoint(failPoint.RetryCount + 1, failPoint.Point));
                             //}
                         }
                     }
@@ -239,7 +227,7 @@ namespace Tharga.InfluxCapacitor
                     {
                         if (retryCount < 5)
                         {
-                            _failQueue.Enqueue(new FailPoint(retryCount + 1, point));
+                            _failQueue.Enqueue(new RetryPoint(retryCount + 1, point));
                         }
                         else
                         {
@@ -287,7 +275,7 @@ namespace Tharga.InfluxCapacitor
         {
             var response = EnqueueEx(points);
 
-            if (_queueSettings.MetaCounter)
+            if (_queueSettings.Metadata)
             {
                 var metaPoint = _metaDataBusiness.BuildQueueMetadata("enqueue", response, _senderAgent, GetQueueInfo());
                 EnqueueEx(new[] { metaPoint });

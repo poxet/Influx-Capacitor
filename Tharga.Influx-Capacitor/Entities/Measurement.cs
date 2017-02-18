@@ -9,6 +9,7 @@ namespace Tharga.InfluxCapacitor.Entities
         private readonly Stopwatch _sw;
         public Dictionary<string, object> Fields { get; }
         public Dictionary<string, object> Tags { get; }
+        public Dictionary<string, double> Checkpoints { get; }
 
         public Measurement()
             : this(new Stopwatch())
@@ -20,6 +21,7 @@ namespace Tharga.InfluxCapacitor.Entities
             _sw = sw;
             Fields = new Dictionary<string, object>();
             Tags = new Dictionary<string, object>();
+            Checkpoints = new Dictionary<string, double>();
         }
 
         public Stopwatch Stopwatch => _sw;
@@ -29,6 +31,7 @@ namespace Tharga.InfluxCapacitor.Entities
             if (Tags.ContainsKey(key))
                 Tags.Remove(key);
 
+            if (string.IsNullOrEmpty(key)) return;
             if (string.IsNullOrEmpty(value?.ToString())) return;
 
             Tags.Add(key, value);
@@ -39,14 +42,20 @@ namespace Tharga.InfluxCapacitor.Entities
             if (Fields.ContainsKey(key))
                 Fields.Remove(key);
 
+            if (string.IsNullOrEmpty(key)) return;
             if (string.IsNullOrEmpty(value?.ToString())) return;
 
             Fields.Add(key, value);
         }
 
-        public void Elapsed(string positionName)
+        public void AddCheckpoint(string name)
         {
-            AddField($"Elapsed-{positionName}", _sw.Elapsed);
+            if (Checkpoints.ContainsKey(name))
+                Checkpoints.Remove(name);
+
+            if (string.IsNullOrEmpty(name)) return;
+
+            Checkpoints.Add(name, _sw.Elapsed.TotalMilliseconds);
         }
     }
 }

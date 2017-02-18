@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using InfluxDB.Net.Enums;
 using InfluxDB.Net.Models;
@@ -152,14 +153,14 @@ namespace Tharga.InfluxCapacitor
             try
             {
                 var response = action();
-                m.AddTag("IsSuccess", true);
+                m.AddTag("isSuccess", true);
                 Finalize(m, point, m.Stopwatch);
                 return response;
             }
             catch (Exception exp)
             {
-                m.AddTag("IsSuccess", false);
-                m.AddTag("Exception", exp.Message);
+                m.AddTag("isSuccess", false);
+                m.AddTag("exception", exp.Message);
                 Finalize(m, point, m.Stopwatch);
                 throw;
             }
@@ -173,12 +174,60 @@ namespace Tharga.InfluxCapacitor
         {
             sw.Stop();
 
-            m.AddField("Elapsed", sw.Elapsed.TotalMilliseconds);
-            //m.AddTag("Response", response);
+            m.AddField("elapsed", sw.Elapsed.TotalMilliseconds);
+            m.AddTag("isCheckpoint", false);
 
             point.Fields = m.Fields;
             point.Tags = m.Tags;
             _queue.Enqueue(point);
+
+            if (m.Checkpoints.Any())
+            {
+                //NOTE: Prepare all checkpoints
+                double prev = 0;
+                var index = 0;
+                foreach (var checkpoint in m.Checkpoints)
+                {
+                    var pointFields = point.Fields.Where(x => x.Key != "value").ToDictionary(x => x.Key, x => x.Value);
+                    var pointTags = point.Tags.Where(x => x.Key != "checkpoint" && x.Key != "isCheckpoint" && x.Key != "index").ToDictionary(x => x.Key, x => x.Value);
+                    pointFields.Add("value", checkpoint.Value - prev);
+                    pointTags.Add("isCheckpoint", true);
+                    pointTags.Add("checkpoint", checkpoint.Key);
+                    pointTags.Add("index", index++);
+
+                    var check = new Point
+                    {
+                        Measurement = point.Measurement,
+                        Fields = pointFields,
+                        Tags = pointTags,
+                        Timestamp = point.Timestamp,
+                        Precision = point.Precision,
+                    };
+                    _queue.Enqueue(check);
+
+                    prev = checkpoint.Value;
+                }
+
+                //NOTE: Prepare the end point checkpoint
+                {
+                    var pointFields = point.Fields.Where(x => x.Key != "value").ToDictionary(x => x.Key, x => x.Value);
+                    var pointTags = point.Tags.Where(x => x.Key != "elapsed" && x.Key != "isCheckpoint").ToDictionary(x => x.Key, x => x.Value);
+                    pointFields.Add("value", sw.Elapsed.TotalMilliseconds - prev);
+                    pointTags.Add("isCheckpoint", true);
+                    pointTags.Add("checkpoint", "End");
+                    pointTags.Add("index", index);
+
+                    var check = new Point
+                    {
+                        Measurement = point.Measurement,
+                        Fields = pointFields,
+                        Tags = pointTags,
+                        Timestamp = point.Timestamp,
+                        Precision = point.Precision,
+                    };
+                    _queue.Enqueue(check);
+                }
+            }
         }
     }
 }

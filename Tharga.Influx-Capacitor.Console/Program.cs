@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Tharga.InfluxCapacitor.Agents;
 using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
@@ -8,7 +7,6 @@ using Tharga.InfluxCapacitor.Console.Commands.Counter;
 using Tharga.InfluxCapacitor.Console.Commands.Publish;
 using Tharga.InfluxCapacitor.Console.Commands.Sender;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
-using Tharga.InfluxCapacitor.Entities;
 using Tharga.Toolkit.Console;
 using Tharga.Toolkit.Console.Command;
 using Tharga.Toolkit.Console.Command.Base;
@@ -37,7 +35,7 @@ namespace Tharga.InfluxCapacitor.Console
             command.RegisterCommand(new CounterCommands(_compositeRoot));
             command.RegisterCommand(new PublishCommands(_compositeRoot));
             command.RegisterCommand(new SenderCommands(_compositeRoot));
-
+            
             new CommandEngine(command).Run(args);
         }
 
