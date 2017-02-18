@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Tharga.InfluxCapacitor.Collector.Entities;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
 {
@@ -27,12 +28,12 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         /// <summary>
         /// Gets the performance counter name.
         /// </summary>
-        string CounterName { get; }
+        Naming CounterName { get; }
 
         /// <summary>
         /// Gets the read instance name for this counter, based on system instance name (without filtering).
         /// </summary>
-        string InstanceName { get; set; }
+        Naming InstanceName { get; set; }
 
         /// <summary>
         /// Gets the name to use as a field for this counter. Can be the value of <see cref="CounterName"/> or <see cref="InstanceName"/> with an eventual filter applied.
@@ -44,9 +45,9 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         /// </summary>
         string MachineName { get; }
 
-        string Alias { get; }
-
         IEnumerable<ITag> Tags { get; }
+
+        float? Reverse { get; }
 
         /// <summary>
         /// Gets the maximum value authorized for this counter.
@@ -55,6 +56,8 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         /// <seealso cref="ICounter.Max"/>
         /// <seealso href="https://support.microsoft.com/en-us/kb/310067"/>
         float? Max { get; }
+
+        float? Min { get; }
 
         /// <summary>
         /// Obtains the next counter value and returns it.

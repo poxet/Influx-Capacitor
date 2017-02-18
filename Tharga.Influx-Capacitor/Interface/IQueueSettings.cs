@@ -5,5 +5,6 @@
         int FlushSecondsInterval { get; }
         bool DropOnFail { get; }
         int MaxQueueSize { get; }
+        bool MetaCounter { get; }
     }
 }

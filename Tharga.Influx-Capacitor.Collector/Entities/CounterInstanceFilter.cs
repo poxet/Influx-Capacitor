@@ -17,7 +17,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             _replacement = replacement;
         }
 
-        public string Execute(string input)
+        public Naming Execute(Naming input)
         {
             if (input == null)
             {
@@ -26,10 +26,10 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 
             if (_replacement != null)
             {
-                return Regex.Replace(input, _pattern, _replacement);
+                return new Naming(Regex.Replace(input.Name, _pattern, _replacement), input.Alias);
             }
 
-            if (Regex.IsMatch(input, _pattern))
+            if (Regex.IsMatch(input.Name, _pattern))
             {
                 return input;
             }

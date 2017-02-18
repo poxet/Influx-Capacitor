@@ -13,7 +13,7 @@ namespace Tharga.InfluxCapacitor.Business
 {
     public class MetaDataBusiness : IMetaDataBusiness
     {
-        private const string MetaMeasurementName = "Influx-Capacitor-Metadata";
+        public const string MetaMeasurementName = "Influx-Capacitor-Metadata";
 
         public async Task<InfluxDbApiResponse> TestWriteAccess(IInfluxDbAgent client, string action)
         {
@@ -53,19 +53,21 @@ namespace Tharga.InfluxCapacitor.Business
             {
                 { "counter", "queueCount" },
                 { "hostname", Environment.MachineName },
-                { "version", Assembly.GetExecutingAssembly().GetName().Version.ToString() },
-                { "application", assemblyName.FullName },
-                { "target", senderAgent.TargetDescription },
-                { "message", sendResponse.Message },
+                { "version", assemblyName.Version.ToString() },
+                { "application", assemblyName.Name },
+                //{ "target", senderAgent.TargetDescription },
                 { "isSuccess", sendResponse.IsSuccess },
                 { "action", action }
-            };            
+            };
+
+            if (!string.IsNullOrEmpty(sendResponse.Message))
+                tags.Add("message", sendResponse.Message);
 
             var fields = new Dictionary<string, object>
             {
-                //{ "value", sendResponse.PointCount },
-                { "value", queueCountInfo.TotalQueueCount },
-                { "elapsed", sendResponse.Elapsed },
+                //{ "value", (decimal)sendResponse.PointCount },
+                { "value", (decimal)queueCountInfo.TotalQueueCount },
+                { "elapsed", sendResponse.Elapsed.TotalMilliseconds.ToString("0") },
                 { "failQueueCount", queueCountInfo.FailQueueCount },
                 { "totalQueueCount", queueCountInfo.TotalQueueCount },
                 { "queueCount", queueCountInfo.QueueCount },

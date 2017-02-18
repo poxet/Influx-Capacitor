@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
@@ -50,7 +51,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
 
                 addAnother = QueryParam("Add another counter?", GetParam(paramList, index++), new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } });
 
-                var collector = new Collector.Entities.Counter(categoryName, counterName, instanceName, fieldName, null, null, null, machineName);
+                var collector = new Collector.Entities.Counter(categoryName, new Naming(counterName), new Naming(instanceName), fieldName, null, null, null, machineName, null);
                 collectors.Add(collector);
             }
 
@@ -58,7 +59,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Counter
             var secondsInterval = QueryParam<int>("Seconds Interval", GetParam(paramList, index++));
 
             var refreshInstanceInterval = 0;
-            if (collectors.Any(x => x.InstanceName.Contains("*") || x.InstanceName.Contains("?")))
+            if (collectors.Any(x => x.InstanceName.Name.Contains("*") || x.InstanceName.Name.Contains("?")))
             {
                 refreshInstanceInterval = QueryParam<int>("Refresh Instance Interval", GetParam(paramList, index++));
             }

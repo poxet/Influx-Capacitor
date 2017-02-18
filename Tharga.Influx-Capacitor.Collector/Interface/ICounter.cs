@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Tharga.InfluxCapacitor.Collector.Entities;
 
 namespace Tharga.InfluxCapacitor.Collector.Interface
 {
@@ -7,10 +8,9 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         string Name { get; }
         string MachineName { get; }
         string CategoryName { get; }
-        string CounterName { get; }
-        string InstanceName { get; }
+        Naming CounterName { get; }
+        Naming InstanceName { get; }
         string FieldName { get; }
-        string Alias { get; }
         IEnumerable<ITag> Tags { get; }
 
         /// <summary>
@@ -20,5 +20,8 @@ namespace Tharga.InfluxCapacitor.Collector.Interface
         /// <seealso cref="IPerformanceCounterInfo.Max"/>
         /// <seealso href="https://support.microsoft.com/en-us/kb/310067"/>
         float? Max { get; }
+        float? Min { get; }
+
+        float? Reverse { get; }
     }
 }

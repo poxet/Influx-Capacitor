@@ -116,8 +116,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.ConfigBusinessTests
             Assert.That(config.Groups.Single().SecondsInterval, Is.EqualTo(secondsInterval));
             Assert.That(config.Groups.Single().Counters.Count(), Is.EqualTo(1));
             Assert.That(config.Groups.Single().Counters.Single().CategoryName, Is.EqualTo(categoryName));
-            Assert.That(config.Groups.Single().Counters.Single().CounterName, Is.EqualTo(counterName));
-            Assert.That(config.Groups.Single().Counters.Single().InstanceName, Is.EqualTo(instanceName));
+            Assert.That(config.Groups.Single().Counters.Single().CounterName.Name, Is.EqualTo(counterName));
+            Assert.That(config.Groups.Single().Counters.Single().InstanceName.Name, Is.EqualTo(instanceName));
             Assert.That(config.Groups.Single().Counters.Single().FieldName, Is.EqualTo(fieldName));
             Assert.That(config.Groups.Single().Counters.Single().Max, Is.EqualTo(max));
         }

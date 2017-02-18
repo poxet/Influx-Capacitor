@@ -107,8 +107,8 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("cpu");
             performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo>
             {
-                new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total"), null, "processor_pct_active", null, null, null),
-                new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Idle Time", "_Total"), null,"processor_pct_idle", null, null, null)
+                new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Processor Time", "_Total"), null, "processor_pct_active", null, null, null, null, null),
+                new PerformanceCounterInfo(string.Empty, new PerformanceCounter("Processor", "% Idle Time", "_Total"), null,"processor_pct_idle", null, null, null, null, null)
             });
             performanceCounterGroupMock.SetupGet(x => x.Tags).Returns(new ITag[] { });
             var sendBusinessMock = new Mock<ISendBusiness>(MockBehavior.Strict);
@@ -142,7 +142,7 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.CollectorEngineTests
             performanceCounterGroupMock.SetupGet(x => x.Name).Returns("cpu");
             performanceCounterGroupMock.Setup(x => x.GetFreshCounters()).Returns(new List<IPerformanceCounterInfo>
             {
-                new PerformanceCounterInfo(string.Empty, perfCounter, null, null, null, null, 100f),
+                new PerformanceCounterInfo(string.Empty, perfCounter, null, null, null, 100f, null, null, null),
             });
             performanceCounterGroupMock.SetupGet(x => x.Tags).Returns(new ITag[0]);
 

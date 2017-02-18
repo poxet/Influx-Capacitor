@@ -4,6 +4,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
 namespace Tharga.InfluxCapacitor.Collector.Tests.Business.CounterBusinessTests
@@ -41,7 +42,9 @@ namespace Tharga.InfluxCapacitor.Collector.Tests.Business.CounterBusinessTests
         {
             //Arrange
             var counterBusiness = new CounterBusiness();
-            var config = Mock.Of<IConfig>(x => x.Groups == Mocks.Of<ICounterGroup>(y => y.Name == "A" && y.SecondsInterval == 10 && y.Counters == Mocks.Of<ICounter>(z => z.CategoryName == "Processor" && z.CounterName == "% Processor Time" && z.InstanceName == "_Total").Take(2).ToList()).Take(2).ToList());
+            var counterName = new Naming("% Processor Time");
+            var instanceName = new Naming("_Total");
+            var config = Mock.Of<IConfig>(x => x.Groups == Mocks.Of<ICounterGroup>(y => y.Name == "A" && y.SecondsInterval == 10 && y.Counters == Mocks.Of<ICounter>(z => z.CategoryName == "Processor" && z.CounterName == counterName && z.InstanceName == instanceName).Take(2).ToList()).Take(2).ToList());
             Exception exception = null;
 
             //Act

@@ -103,12 +103,12 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                             {
                                 int count;
                                 var instanceName = performanceCounters[i].InstanceName;
-                                if (filteredNames.TryGetValue(instanceName, out count))
+                                if (filteredNames.TryGetValue(instanceName.Name, out count))
                                 {
-                                    performanceCounters[i].InstanceName = instanceName + "#" + (count + 1);
+                                    performanceCounters[i].InstanceName = new Naming(instanceName.Name + "#" + (count + 1), string.IsNullOrEmpty(instanceName.Alias) ? null : instanceName.Alias + "#" + (count + 1));
                                 }
 
-                                filteredNames[instanceName] = count + 1;
+                                filteredNames[instanceName.Name] = count + 1;
                             }
                         }
                     }
@@ -122,7 +122,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                         }
                         catch (Exception ex)
                         {
-                            OnGetPerformanceCounters(ex, counter.CategoryName, counter.CounterName, counter.InstanceName, counter.MachineName);
+                            OnGetPerformanceCounters(ex, counter.CategoryName, counter.CounterName.Name, counter.InstanceName.Name, counter.MachineName);
                         }
                     }
 
@@ -140,7 +140,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         private IEnumerable<PerformanceCounterInfo> GetPerformanceCounterInfos(ICounter counter)
         {
-            return this.GetPerformanceCounters(counter.CategoryName, counter.CounterName, counter.InstanceName, counter.MachineName)
+            return this.GetPerformanceCounters(counter.CategoryName, counter.CounterName.Name, counter.InstanceName.Name, counter.MachineName)
                 .Select(p => new PerformanceCounterInfo(p, counter))
                 .ToList();
         }

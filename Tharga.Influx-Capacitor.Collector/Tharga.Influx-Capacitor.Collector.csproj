@@ -98,6 +98,7 @@
     <Compile Include="Business\PublisherBusiness.cs" />
     <Compile Include="Entities\CounterInstanceFilter.cs" />
     <Compile Include="Entities\CounterProviderConfig.cs" />
+    <Compile Include="Entities\Naming.cs" />
     <Compile Include="Event\ChangedCurrentCultureEventArgs.cs" />
     <Compile Include="Extensions\OutputLevelExtension.cs" />
     <Compile Include="Business\TagLoader.cs" />

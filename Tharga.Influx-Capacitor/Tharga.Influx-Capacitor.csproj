@@ -103,6 +103,7 @@
     <Compile Include="Interface\IMeasure.cs" />
     <Compile Include="Entities\DebugMessageEventArgs.cs" />
     <Compile Include="Interface\IMeasurement.cs" />
+    <Compile Include="Interface\IMetaDataBusiness.cs" />
     <Compile Include="PointValidator.cs" />
     <Compile Include="QueueEvents\DropQueueEvents.cs" />
     <Compile Include="Entities\QueueSettings.cs" />

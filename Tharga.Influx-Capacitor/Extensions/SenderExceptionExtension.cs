@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Tharga.InfluxCapacitor
 {
@@ -9,6 +10,10 @@ namespace Tharga.InfluxCapacitor
         {
             var exceptionToUse = exception;
             if (exceptionToUse is HttpRequestException)
+            {
+                return null;
+            }
+            else if (exceptionToUse is TaskCanceledException)
             {
                 return null;
             }

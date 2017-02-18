@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.PerformanceData;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -498,12 +499,13 @@ namespace Tharga.InfluxCapacitor.Collector.Business
         private ICounter GetCounter(XmlElement counter)
         {
             string categoryName = null;
-            string counterName = null;
-            string instanceName = null;
-            string instanceAlias = null;
+            Naming counterName = null;
+            Naming instanceName = null;
             string fieldName = null;
             string machineName = null;
             float? max = null;
+            float? min = null;
+            float? reverse = null;
 
             var tags = new List<ITag>();
 
@@ -525,12 +527,11 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     case "CategoryName":
                         categoryName = item.InnerText;
                         break;
-                    case "CounterName":
-                        counterName = item.InnerText;
+                    case "CounterName":                        
+                        counterName = new Naming(item.InnerText, item.GetAttribute("Alias"));
                         break;
                     case "InstanceName":
-                        instanceName = item.InnerText;
-                        instanceAlias = item.GetAttribute("Alias");
+                        instanceName = new Naming(item.InnerText, item.GetAttribute("Alias"));
                         break;
                     case "FieldName":
                         fieldName = item.InnerText;
@@ -548,12 +549,32 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                                 max = maxValue;
                             }
                         }
-                        break;
 
+                        var minText = item.GetAttribute("Min");
+                        if (!string.IsNullOrEmpty(minText))
+                        {
+                            float minValue;
+                            if (float.TryParse(minText, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out minValue))
+                            {
+                                min = minValue;
+                            }
+                        }
+
+                        var reverseText = item.GetAttribute("Reverse");
+                        if (!string.IsNullOrEmpty(reverseText))
+                        {
+                            float reverseValue;
+                            if (float.TryParse(reverseText, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out reverseValue))
+                            {
+                                reverse = reverseValue;
+                            }
+                        }
+
+                        break;
                 }
             }
 
-            return new Counter(categoryName, counterName, instanceName, fieldName, instanceAlias, tags, max, machineName);
+            return new Counter(categoryName, counterName, instanceName, fieldName, tags, max, min, machineName, reverse);
         }
 
         private static ApplicationConfig GetApplicationConfig(XmlDocument document)
@@ -796,11 +817,15 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     counterElement.AppendChild(categoryName);
 
                     var counterName = document.CreateElement("CounterName");
-                    counterName.InnerText = counter.CounterName;
+                    counterName.InnerText = counter.CounterName.Name;
+                    if (!string.IsNullOrEmpty(counter.CounterName.Alias))
+                        counterName.SetAttribute("Alias", counter.CounterName.Alias);
                     counterElement.AppendChild(counterName);
 
                     var instanceName = document.CreateElement("InstanceName");
-                    instanceName.InnerText = counter.InstanceName;
+                    instanceName.InnerText = counter.InstanceName.Name;
+                    if(!string.IsNullOrEmpty(counter.InstanceName.Alias))
+                        instanceName.SetAttribute("Alias", counter.InstanceName.Alias);
                     counterElement.AppendChild(instanceName);
 
                     // we add the "FieldName" element only if a value is specified
@@ -808,6 +833,29 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                     {
                         var fieldName = document.CreateElement("FieldName");
                         fieldName.InnerText = counter.FieldName;
+                        counterElement.AppendChild(fieldName);
+                    }
+
+                    if (!string.IsNullOrEmpty(counter.MachineName))
+                    {
+                        var fieldName = document.CreateElement("MachineName");
+                        fieldName.InnerText = counter.MachineName;
+                        counterElement.AppendChild(fieldName);
+                    }
+
+                    if (counter.Max.HasValue || counter.Min.HasValue || counter.Reverse.HasValue)
+                    {
+                        var fieldName = document.CreateElement("Limits");
+
+                        if (counter.Max.HasValue)
+                            fieldName.SetAttribute("Max", counter.Max.ToString());
+
+                        if(counter.Min.HasValue)
+                            fieldName.SetAttribute("Min", counter.Min.ToString());
+
+                        if(counter.Reverse.HasValue)
+                            fieldName.SetAttribute("Reverse", counter.Reverse.Value.ToString(CultureInfo.InvariantCulture));
+
                         counterElement.AppendChild(fieldName);
                     }
                 }

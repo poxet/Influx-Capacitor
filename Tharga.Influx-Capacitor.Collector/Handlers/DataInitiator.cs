@@ -36,7 +36,12 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         {
             var name = "processor";
 
-            var counters = new List<ICounter> { new Counter("Processor", "% Processor Time", "*", null, null, null, null, null) };
+            var counters = new List<ICounter>
+            {
+                new Counter("Processor", new Naming("% Processor Time"), new Naming("*"), null, null, 100, 0, null, null),
+                new Counter("Processor", new Naming("% Idle Time"), new Naming("*"), null, null, 100, 0, null, null),
+                new Counter("Processor", new Naming("% Processor Time","% Idle Processor Time"), new Naming("*"), null, null, 100, 0, null, 100)
+            };
             var response = new CounterGroup(name, 10, 0, counters, new ITag[] { }, CollectorEngineType.Safe, null, null, false);
             return ConvertErrorsToWarnings(CreateFile(name, response));
         }
@@ -45,7 +50,12 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         {
             var name = "memory";
 
-            var counters = new List<ICounter> { new Counter("Memory", "*", string.Empty, null, null, null, null, null) };
+            var counters = new List<ICounter>
+            {
+                //new Counter("Memory", new Naming("*"), new Naming(string.Empty), null, null, null, null, null, null),
+                new Counter("Memory", new Naming("% Committed Bytes In Use"), new Naming(string.Empty), null, null, null, null, null, null),
+                new Counter("Memory", new Naming("% Committed Bytes In Use","% Committed Bytes Free"), new Naming(string.Empty), null, null, null, null, null, 100),
+            };
             var response = new CounterGroup(name, 10, 0, counters, new ITag[] { }, CollectorEngineType.Safe, null, null, false);
             return ConvertErrorsToWarnings(CreateFile(name, response));
         }
@@ -56,8 +66,9 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
             var counters = new List<ICounter>
             {
-                new Counter("LogicalDisk", "Free Megabytes", "*", null, null, null, null, null),
-                new Counter("LogicalDisk", "% Free Space", "*", null, null, null, null, null),
+                new Counter("LogicalDisk", new Naming("Free Megabytes"), new Naming("*"), null, null, null, null, null, null),
+                new Counter("LogicalDisk", new Naming("% Free Space"), new Naming("*"), null, null, 100, 0, null, null),
+                new Counter("LogicalDisk", new Naming("% Free Space", "% Used Space"), new Naming("*"), null, null, 100, 0, null, 100),
             };
             var response = new CounterGroup(name, 600, 0, counters, new ITag[] { }, CollectorEngineType.Safe, null, null, false);
             return ConvertErrorsToWarnings(CreateFile(name, response));
@@ -68,17 +79,17 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             return result.Item2 == OutputLevel.Error ? new Tuple<string, OutputLevel>(result.Item1, OutputLevel.Warning) : result;
         }
 
-        private Tuple<string,OutputLevel> CreateFile(string name, CounterGroup response)
+        private Tuple<string,OutputLevel> CreateFile(string name, CounterGroup counterGroup)
         {
             var config = _configBusiness.LoadFiles(new string[] { });
             var counterGroups = _counterBusiness.GetPerformanceCounterGroups(config).ToArray();
 
-            if (counterGroups.Any(x => x.Name == response.Name))
+            if (counterGroups.Any(x => x.Name == counterGroup.Name))
             {
-                return new Tuple<string, OutputLevel>(string.Format("There is already a counter group named {0}.", response.Name), OutputLevel.Error);
+                return new Tuple<string, OutputLevel>(string.Format("There is already a counter group named {0}.", counterGroup.Name), OutputLevel.Error);
             }
 
-            if (!_configBusiness.CreateConfig(name + ".xml", new List<ICounterGroup> { response }))
+            if (!_configBusiness.CreateConfig(name + ".xml", new List<ICounterGroup> { counterGroup }))
             {
                 return new Tuple<string, OutputLevel>(string.Format("Did not create {0}, the file {0}.xml" + " already exists.", name), OutputLevel.Error);
             }

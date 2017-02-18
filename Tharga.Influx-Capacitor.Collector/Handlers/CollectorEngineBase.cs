@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using InfluxDB.Net.Enums;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 
@@ -162,12 +163,21 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                 {
                     var infos = performanceCounterInfos[i];
                     var value = infos.NextValue();
+                    if (infos.Reverse.HasValue)
+                    {
+                        value = infos.Reverse.Value - value;
+                    }
 
                     // if the counter value is greater than the max limit, then we use the max value
                     // see https://support.microsoft.com/en-us/kb/310067
                     if (infos.Max.HasValue)
                     {
                         value = Math.Min(infos.Max.Value, value);
+                    }
+
+                    if (infos.Min.HasValue)
+                    {
+                        value = Math.Max(infos.Min.Value, value);
                     }
 
                     values[i] = value;
@@ -215,10 +225,10 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var key = performanceCounterInfo.InstanceName;
 
                     Dictionary<string, object> fields;
-                    if (!valuesByInstance.TryGetValue(key ?? string.Empty, out fields))
+                    if (!valuesByInstance.TryGetValue(key.Name ?? string.Empty, out fields))
                     {
                         fields = new Dictionary<string, object>();
-                        valuesByInstance[key ?? string.Empty] = fields;
+                        valuesByInstance[key.Name ?? string.Empty] = fields;
                     }
 
                     fields[fieldName] = value;
@@ -262,7 +272,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                     var categoryName = performanceCounterInfo.CategoryName;
                     var counterName = performanceCounterInfo.CounterName;
                     var key = performanceCounterInfo.InstanceName;
-                    var instanceAlias = performanceCounterInfo.Alias;
+                    var instanceAlias = performanceCounterInfo.InstanceName.Alias;
                     var machineName = performanceCounterInfo.MachineName;
 
                     var tags = GetTags(Tags.Union(performanceCounterInfo.Tags), categoryName, counterName, machineName);
@@ -280,7 +290,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
                         Timestamp = timestamp
                     };
 
-                    if (!string.IsNullOrEmpty(key))
+                    if (!string.IsNullOrEmpty(key.Name))
                     {
                         point.Tags.Add("instance", key);
                         if (!string.IsNullOrEmpty(instanceAlias))
@@ -294,7 +304,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
             }
         }
 
-        private static Dictionary<string, object> GetTags(IEnumerable<ITag> globalTags, string categoryName, string counterName, string machineName)
+        private static Dictionary<string, object> GetTags(IEnumerable<ITag> globalTags, string categoryName, Naming counterName, string machineName)
         {
             var dictionary = new Dictionary<string, object>();
 
@@ -314,7 +324,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
             if (counterName != null)
             {
-                dictionary.Add("counter", counterName);
+                dictionary.Add("counter", string.IsNullOrEmpty(counterName.Alias) ? counterName.Name : counterName.Alias);
             }
 
             foreach (var tag in globalTags)

@@ -28,7 +28,8 @@ namespace Tharga.InfluxCapacitor.Console
 
         public void OnSendEvent(ISendEventInfo sendCompleteEventArgs)
         {
-            _console.WriteLine(sendCompleteEventArgs.Message, ToLevel(sendCompleteEventArgs.Level));
+            if(sendCompleteEventArgs.Level != SendEventInfo.OutputLevel.Information)
+                _console.WriteLine(sendCompleteEventArgs.Message, ToLevel(sendCompleteEventArgs.Level));
         }
 
         private OutputLevel ToLevel(SendEventInfo.OutputLevel level)

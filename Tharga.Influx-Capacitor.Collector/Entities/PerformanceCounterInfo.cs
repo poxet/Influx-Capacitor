@@ -9,36 +9,42 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
     {
         private readonly string _name;
         private readonly PerformanceCounter _performanceCounters;
-        private readonly string _alias;
         private readonly string _fieldName;
         private readonly List<ITag> _tags;
         private readonly float? _max;
-        private string _instanceName;
+        private readonly float? _min;
+        private readonly float? _reverse;
+        private readonly string _counterAlias;
+        private Naming _instanceName;
 
         public PerformanceCounterInfo(string name, PerformanceCounter performanceCounters, ICounter counter)
         {
             _name = name;
             _performanceCounters = performanceCounters;
-            _alias = counter.Alias;
             _fieldName = counter.FieldName;
             _tags = (counter.Tags ?? new List<ITag>()).ToList();
             _max = counter.Max;
+            _min = counter.Min;
+            _reverse = counter.Reverse;
+            _counterAlias = counter.CounterName.Alias;
         }
 
-        public PerformanceCounterInfo(string name, PerformanceCounter performanceCounters, string instanceName, string fieldName, string alias, IEnumerable<ITag> tags, float? max)
+        internal PerformanceCounterInfo(string name, PerformanceCounter performanceCounters, Naming instanceName, string fieldName, IEnumerable<ITag> tags, float? max, float? min, float? reverse, string counterAlias)
         {
             _name = name;
             _performanceCounters = performanceCounters;
             _instanceName = instanceName;
             _fieldName = fieldName;
+            _counterAlias = counterAlias;
 
-            _alias = alias;
             _tags = (tags ?? new List<ITag>()).ToList();
             _max = max;
+            _min = min;
+            _reverse = reverse;
         }
 
         internal PerformanceCounterInfo(string name, PerformanceCounter performanceCounters)
-            : this(name, performanceCounters, null, null, null, null, null)
+            : this(name, performanceCounters, null, null, null, null, null, null, null)
         {
         }
 
@@ -54,14 +60,14 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 
         public string Name { get { return _name; } }
 
-        public string CounterName { get { return _performanceCounters == null ? null : _performanceCounters.CounterName; } }
+        public Naming CounterName { get { return _performanceCounters == null ? null : new Naming(_performanceCounters.CounterName, _counterAlias); } }
 
         public string CategoryName { get { return _performanceCounters == null ? null : _performanceCounters.CategoryName; } }
 
         /// <summary>
         /// Gets the read instance name for this counter.
         /// </summary>
-        public string InstanceName
+        public Naming InstanceName
         {
             get
             {
@@ -72,7 +78,7 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
                 if (_performanceCounters == null)
                     return null;
 
-                return _performanceCounters.InstanceName;
+                return new Naming(_performanceCounters.InstanceName);
             }
 
             set { _instanceName = value; }
@@ -85,11 +91,13 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 
         public string MachineName { get { return _performanceCounters == null ? null : _performanceCounters.MachineName; } }
 
-        public string Alias { get { return _alias; } }
-
         public IEnumerable<ITag> Tags { get { return _tags; } }
 
         public float? Max { get { return _max; } }
+
+        public float? Min { get { return _min; } }
+
+        public float? Reverse { get { return _reverse; } }
 
         public bool HasPerformanceCounter { get { return _performanceCounters != null; } }
 

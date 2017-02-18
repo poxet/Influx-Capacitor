@@ -20,6 +20,18 @@ namespace Tharga.InfluxCapacitor
             {
                 yield return $"Value missing for tag {missing.Key} for measurement {point.Measurement ?? "n/a"}.";
             }
+
+            //Filter out duplicate fields
+            if (point.Fields.GroupBy(x => x.Key).Any(y => y.Count() > 1))
+            {
+
+            }
+
+            //Filter out duplicate tags
+            if (point.Tags.GroupBy(x => x.Key).Any(y => y.Count() > 1))
+            {
+                
+            }
         }
 
         public IEnumerable<string> Validate(IEnumerable<Point> points)

@@ -27,6 +27,7 @@ namespace Tharga.InfluxCapacitor
         private readonly Queue<Tuple<int, Point[]>> _failQueue = new Queue<Tuple<int, Point[]>>();
         private readonly QueueAction _queueAction;
         private bool _singlePointStream = true;
+        private Timer _timer;
 
         public Queue(ISenderAgent senderAgent)
             : this(senderAgent, new DropQueueEvents(), new MetaDataBusiness(), new QueueSettings())
@@ -43,13 +44,6 @@ namespace Tharga.InfluxCapacitor
             _queueEvents = queueEvents;
             _metaDataBusiness = metaDataBusiness;
             _queueSettings = queueSettings;
-
-            if (queueSettings.FlushSecondsInterval > 0)
-            {
-                var timer = new Timer(queueSettings.FlushSecondsInterval * 1000);
-                timer.Elapsed += Elapsed;
-                timer.Start();
-            }
         }
 
         private void Elapsed(object sender, ElapsedEventArgs e)
@@ -62,9 +56,15 @@ namespace Tharga.InfluxCapacitor
                     _queueEvents.OnTimerEvent(response);
                 }
 
-                //TODO: Have a configuration to enable metadata
-                var metaPoint = _metaDataBusiness.BuildQueueMetadata("send", response, _senderAgent, GetQueueInfo());
-                EnqueueEx(new[] { metaPoint });
+                if (_queueSettings.MetaCounter && response.PointCount > 1)
+                {
+                    var metaPoint = _metaDataBusiness.BuildQueueMetadata("send", response, _senderAgent, GetQueueInfo());
+                    EnqueueEx(new[] { metaPoint });
+                }
+                else
+                {
+                    
+                }
             }
             catch (Exception exception)
             {
@@ -221,9 +221,11 @@ namespace Tharga.InfluxCapacitor
         {
             var response = EnqueueEx(points);
 
-            //TODO: Have a configuration to enable metadata
-            var metaPoint = _metaDataBusiness.BuildQueueMetadata("enqueue", response, _senderAgent, GetQueueInfo());
-            EnqueueEx(new [] { metaPoint });
+            if (_queueSettings.MetaCounter)
+            {
+                var metaPoint = _metaDataBusiness.BuildQueueMetadata("enqueue", response, _senderAgent, GetQueueInfo());
+                EnqueueEx(new[] { metaPoint });
+            }
         }
 
         private ISendResponse EnqueueEx(Point[] points)
@@ -262,6 +264,13 @@ namespace Tharga.InfluxCapacitor
             {
                 stopwatch.Stop();
                 _queueEvents.OnEnqueueEvent(validPoints, points, _pointValidator.Validate(points).ToArray());
+
+                if (_queueSettings.FlushSecondsInterval > 0 && _timer == null)
+                {
+                    _timer = new Timer(_queueSettings.FlushSecondsInterval * 1000);
+                    _timer.Elapsed += Elapsed;
+                    _timer.Start();
+                }
             }
 
             return new SendResponse(success, message, validPoints.Length, stopwatch.Elapsed);
