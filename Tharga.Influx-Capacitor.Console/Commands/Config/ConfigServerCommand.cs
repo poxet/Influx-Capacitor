@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Tharga.InfluxCapacitor.Collector.Entities;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
+using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Config
 {
@@ -10,8 +11,8 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
     {
         private readonly IConfigBusiness _configBusiness;
 
-        public ConfigServerCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
-            : base("Server", "Change the database and server settings.", influxDbAgentLoader, configBusiness)
+        public ConfigServerCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness, IMetaDataBusiness metaDataBusiness)
+            : base("Server", "Change the database and server settings.", influxDbAgentLoader, configBusiness, metaDataBusiness)
         {
             _configBusiness = configBusiness;
         }

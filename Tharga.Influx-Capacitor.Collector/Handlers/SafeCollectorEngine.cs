@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InfluxDB.Net.Enums;
-using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -13,10 +13,12 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
     public class SafeCollectorEngine : CollectorEngineBase
     {
         private readonly object _syncRoot = new object();
+        private readonly MetaDataBusiness _metaDataBusiness;
 
         public SafeCollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader, bool metadata)
             : base(performanceCounterGroup, sendBusiness, tagLoader, metadata)
         {
+            _metaDataBusiness = new MetaDataBusiness();
         }
 
         public override async Task<int> CollectRegisterCounterValuesAsync()
@@ -67,7 +69,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                     if (_metadata)
                     {
-                        Enqueue(MetaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, null).ToArray());
+                        Enqueue(_metaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, null).ToArray());
                     }
 
                     OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Length, timeInfo, 0, OutputLevel.Default));

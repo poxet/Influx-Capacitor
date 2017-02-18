@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Business;
 using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
 using Tharga.InfluxCapacitor.QueueEvents;
@@ -16,6 +17,7 @@ namespace Tharga.InfluxCapacitor
         private readonly object _syncRoot = new object();
         private readonly ISenderAgent _senderAgent;
         private readonly IQueueEvents _queueEvents;
+        private readonly IMetaDataBusiness _metaDataBusiness;
         private readonly IQueueSettings _queueSettings;
         private readonly PointValidator _pointValidator;
 
@@ -27,11 +29,11 @@ namespace Tharga.InfluxCapacitor
         private bool _singlePointStream = true;
 
         public Queue(ISenderAgent senderAgent)
-            : this(senderAgent, new DropQueueEvents(), new QueueSettings())
+            : this(senderAgent, new DropQueueEvents(), new MetaDataBusiness(), new QueueSettings())
         {
         }
 
-        public Queue(ISenderAgent senderAgent, IQueueEvents queueEvents, IQueueSettings queueSettings)
+        public Queue(ISenderAgent senderAgent, IQueueEvents queueEvents, IMetaDataBusiness metaDataBusiness, IQueueSettings queueSettings)
         {
             _pointValidator = new PointValidator();
             queueEvents.OnDebugMessageEvent($"Preparing new queue with target {senderAgent.TargetDescription}.");
@@ -39,6 +41,7 @@ namespace Tharga.InfluxCapacitor
 
             _senderAgent = senderAgent;
             _queueEvents = queueEvents;
+            _metaDataBusiness = metaDataBusiness;
             _queueSettings = queueSettings;
 
             if (queueSettings.FlushSecondsInterval > 0)
@@ -58,6 +61,10 @@ namespace Tharga.InfluxCapacitor
                 {
                     _queueEvents.OnTimerEvent(response);
                 }
+
+                //TODO: Have a configuration to enable metadata
+                var metaPoint = _metaDataBusiness.BuildQueueMetadata("send", response, _senderAgent, GetQueueInfo());
+                EnqueueEx(new[] { metaPoint });
             }
             catch (Exception exception)
             {
@@ -212,21 +219,52 @@ namespace Tharga.InfluxCapacitor
 
         public void Enqueue(Point[] points)
         {
-            Point[] validPoints;
+            var response = EnqueueEx(points);
 
-            lock (_syncRoot)
+            //TODO: Have a configuration to enable metadata
+            var metaPoint = _metaDataBusiness.BuildQueueMetadata("enqueue", response, _senderAgent, GetQueueInfo());
+            EnqueueEx(new [] { metaPoint });
+        }
+
+        private ISendResponse EnqueueEx(Point[] points)
+        {
+            var validPoints = new Point[] { };
+            var stopwatch = new Stopwatch();
+            var success = true;
+            var message = string.Empty;
+
+            try
             {
-                if (_queueSettings.MaxQueueSize - GetQueueInfo().TotalQueueCount < points.Length)
-                {
-                    _queueEvents.OnExceptionEvent(new InvalidOperationException($"Queue will reach max limit, cannot add more points. Have {GetQueueInfo().TotalQueueCount} points, want to add {points.Length} more. The limit is {_queueSettings.MaxQueueSize}."));
-                    return;
-                }
+                stopwatch.Start();
 
-                validPoints = _pointValidator.Clean(points).ToArray();
-                _queueAction.Execute(() => { _queue.Enqueue(validPoints); });
+                lock (_syncRoot)
+                {
+                    if (_queueSettings.MaxQueueSize - GetQueueInfo().TotalQueueCount < points.Length)
+                    {
+                        message = $"Queue will reach max limit, cannot add more points. Have {GetQueueInfo().TotalQueueCount} points, want to add {points.Length} more. The limit is {_queueSettings.MaxQueueSize}.";
+                        _queueEvents.OnExceptionEvent(new InvalidOperationException(message));
+                        success = false;
+                    }
+                    else
+                    {
+                        validPoints = _pointValidator.Clean(points).ToArray();
+                        _queueAction.Execute(() => { _queue.Enqueue(validPoints); });
+                        message = string.Join(", ", _pointValidator.Validate(points).ToArray());
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                message = exception.Message;
+                success = false;
+            }
+            finally
+            {
+                stopwatch.Stop();
+                _queueEvents.OnEnqueueEvent(validPoints, points, _pointValidator.Validate(points).ToArray());
             }
 
-            _queueEvents.OnEnqueueEvent(validPoints, points, _pointValidator.Validate(points).ToArray());
+            return new SendResponse(success, message, validPoints.Length, stopwatch.Elapsed);
         }
 
         private class QueueAction

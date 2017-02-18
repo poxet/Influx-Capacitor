@@ -1,9 +1,11 @@
+using Tharga.InfluxCapacitor.Business;
 using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Agents;
 using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Entities;
+using Tharga.InfluxCapacitor.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console
@@ -19,9 +21,8 @@ namespace Tharga.InfluxCapacitor.Console
             ConfigBusiness.InvalidConfigEvent += InvalidConfigEvent;
             CounterBusiness = new CounterBusiness();
             PublisherBusiness = new PublisherBusiness();
-            SendBusiness = new SendBusiness(ConfigBusiness, //InfluxDbAgentLoader, 
-                new ConsoleQueueEvents(ClientConsole));
-            //SendBusiness.SendBusinessEvent += SendBusinessEvent;
+            MetaDataBusiness = new MetaDataBusiness();
+            SendBusiness = new SendBusiness(ConfigBusiness, new ConsoleQueueEvents(ClientConsole));
             TagLoader = new TagLoader(ConfigBusiness);
             SocketClient = new SocketClient();
         }
@@ -45,5 +46,6 @@ namespace Tharga.InfluxCapacitor.Console
         public ICounterBusiness CounterBusiness { get; }
         public IPublisherBusiness PublisherBusiness { get; }
         public ISocketClient SocketClient { get; }
+        public IMetaDataBusiness MetaDataBusiness { get; }
     }
 }

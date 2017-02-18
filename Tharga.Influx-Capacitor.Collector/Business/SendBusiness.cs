@@ -1,6 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using InfluxDB.Net.Enums;
+using InfluxDB.Net.Infrastructure.Influx;
 using InfluxDB.Net.Models;
+using Tharga.InfluxCapacitor.Business;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
@@ -13,8 +19,7 @@ namespace Tharga.InfluxCapacitor.Collector.Business
 
         //public event EventHandler<SendCompleteEventArgs> SendBusinessEvent;
 
-        public SendBusiness(IConfigBusiness configBusiness,
-            IQueueEvents queueEvents)
+        public SendBusiness(IConfigBusiness configBusiness, IQueueEvents queueEvents)
         {
             var config = configBusiness.LoadFiles();
             foreach (var databaseConfig in config.Databases)
@@ -35,7 +40,8 @@ namespace Tharga.InfluxCapacitor.Collector.Business
                 if (senderAgent != null)
                 {
                     var queueSettings = new QueueSettings(config.Application.FlushSecondsInterval, false, config.Application.MaxQueueSize);
-                    _queues.Add(new Queue(senderAgent, queueEvents, queueSettings));
+                    var metaDataBusiness = new MetaDataBusiness();
+                    _queues.Add(new Queue(senderAgent, queueEvents, metaDataBusiness, queueSettings));
                 }
             }
         }

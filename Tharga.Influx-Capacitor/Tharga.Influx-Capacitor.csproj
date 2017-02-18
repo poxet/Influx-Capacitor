@@ -98,6 +98,7 @@
     <Compile Include="Agents\NullAgent.cs" />
     <Compile Include="Agents\NullFormatter.cs" />
     <Compile Include="Agents\NullSenderAgent.cs" />
+    <Compile Include="Business\MetaDataBusiness.cs" />
     <Compile Include="Entities\EnqueueEventArgs.cs" />
     <Compile Include="Interface\IMeasure.cs" />
     <Compile Include="Entities\DebugMessageEventArgs.cs" />

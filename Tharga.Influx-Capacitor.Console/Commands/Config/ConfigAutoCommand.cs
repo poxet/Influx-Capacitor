@@ -5,6 +5,7 @@ using Tharga.InfluxCapacitor.Collector;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.InfluxCapacitor.Console.Commands.Service;
+using Tharga.InfluxCapacitor.Interface;
 using Tharga.Toolkit.Console.Command.Base;
 
 namespace Tharga.InfluxCapacitor.Console.Commands.Config
@@ -14,8 +15,8 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
         private readonly IConfigBusiness _configBusiness;
         private readonly ICounterBusiness _counterBusiness;
 
-        public ConfigAutoCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness, ICounterBusiness counterBusiness)
-            : base("Auto", "Automatically run full setup.", influxDbAgentLoader, configBusiness)
+        public ConfigAutoCommand(IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness, ICounterBusiness counterBusiness, IMetaDataBusiness metaDataBusiness)
+            : base("Auto", "Automatically run full setup.", influxDbAgentLoader, configBusiness, metaDataBusiness)
         {
             _configBusiness = configBusiness;
             _counterBusiness = counterBusiness;

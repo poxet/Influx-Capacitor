@@ -16,12 +16,14 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
     {
         private readonly IConfigBusiness _configBusiness;
         private readonly IInfluxDbAgentLoader _influxDbAgentLoader;
+        private readonly IMetaDataBusiness _metaDataBusiness;
 
-        protected ConfigCommandBase(string name, string description, IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness)
+        protected ConfigCommandBase(string name, string description, IInfluxDbAgentLoader influxDbAgentLoader, IConfigBusiness configBusiness, IMetaDataBusiness metaDataBusiness)
             : base(name, description)
         {
             _influxDbAgentLoader = influxDbAgentLoader;
             _configBusiness = configBusiness;
+            _metaDataBusiness = metaDataBusiness;
         }
 
         protected async Task<string> GetServerUrlAsync(string paramList, int index, string defaultUrl)
@@ -99,7 +101,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                 if (!string.IsNullOrEmpty(config.Name) && !string.IsNullOrEmpty(config.Username) && !string.IsNullOrEmpty(config.Password))
                 {
                     client = _influxDbAgentLoader.GetAgent(config);
-                    response = await MetaDataBusiness.TestWriteAccess(client, action);
+                    response = await _metaDataBusiness.TestWriteAccess(client, action);
                 }
             }
             catch (Exception exception)
@@ -121,7 +123,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                     config = new InfluxDatabaseConfig(true, url, user, password, database, null);
 
                     client = _influxDbAgentLoader.GetAgent(config);
-                    response = await MetaDataBusiness.TestWriteAccess(client, action);
+                    response = await _metaDataBusiness.TestWriteAccess(client, action);
                     dataChanged = true;
                 }
                 catch (CommandEscapeException)
@@ -136,7 +138,7 @@ namespace Tharga.InfluxCapacitor.Console.Commands.Config
                         if (create)
                         {
                             client.CreateDatabaseAsync(database);
-                            response = MetaDataBusiness.TestWriteAccess(client, action).Result;
+                            response = _metaDataBusiness.TestWriteAccess(client, action).Result;
                             dataChanged = true;
                         }
                     }

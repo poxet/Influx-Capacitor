@@ -149,7 +149,6 @@
     <Compile Include="Entities\InfluxDatabaseConfig.cs" />
     <Compile Include="Entities\PerformanceCounterGroup.cs" />
     <Compile Include="Interface\IInfluxDbAgentLoader.cs" />
-    <Compile Include="Interface\IMetaDataBusiness.cs" />
     <Compile Include="Interface\IPerformanceCounterGroup.cs" />
     <Compile Include="Interface\IPerformanceCounterInfo.cs" />
     <Compile Include="Interface\ISendBusiness.cs" />

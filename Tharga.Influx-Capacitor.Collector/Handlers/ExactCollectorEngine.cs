@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using InfluxDB.Net;
 using InfluxDB.Net.Enums;
-using Tharga.InfluxCapacitor.Collector.Business;
+using Tharga.InfluxCapacitor.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Interface;
 using Tharga.Toolkit.Console.Command.Base;
@@ -14,6 +13,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
     internal class ExactCollectorEngine : CollectorEngineBase
     {
         private readonly object _syncRoot = new object();
+        private readonly MetaDataBusiness _metaDataBusiness;
         private StopwatchHighPrecision _sw;
         private long _counter;
         private int _missCounter;
@@ -21,6 +21,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
         public ExactCollectorEngine(IPerformanceCounterGroup performanceCounterGroup, ISendBusiness sendBusiness, ITagLoader tagLoader, bool metadata)
             : base(performanceCounterGroup, sendBusiness, tagLoader, metadata)
         {
+            _metaDataBusiness = new MetaDataBusiness();
         }
 
         public override async Task<int> CollectRegisterCounterValuesAsync()
@@ -112,7 +113,7 @@ namespace Tharga.InfluxCapacitor.Collector.Handlers
 
                     if (_metadata)
                     {
-                        Enqueue(MetaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, elapseOffsetSeconds).ToArray());
+                        Enqueue(_metaDataBusiness.GetCollectorPoint(EngineName, Name, points.Length, timeInfo, elapseOffsetSeconds).ToArray());
                     }
 
                     OnCollectRegisterCounterValuesEvent(new CollectRegisterCounterValuesEventArgs(Name, points.Count(), timeInfo, elapseOffsetSeconds, OutputLevel.Default));
