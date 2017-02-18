@@ -12,6 +12,18 @@ using Tharga.InfluxCapacitor.QueueEvents;
 
 namespace Tharga.InfluxCapacitor
 {
+    internal class FailPoint
+    {
+        public FailPoint(int retryCount, Point point)
+        {
+            RetryCount = retryCount;
+            Point = point;
+        }
+
+        public int RetryCount { get; }
+        public Point Point { get; }
+    }
+
     public class Queue : IQueue
     {
         private readonly object _syncRoot = new object();
@@ -24,7 +36,7 @@ namespace Tharga.InfluxCapacitor
         private bool _canSucceed; //Has successed to send at least once.
 
         private readonly Queue<Point[]> _queue = new Queue<Point[]>();
-        private readonly Queue<Tuple<int, Point[]>> _failQueue = new Queue<Tuple<int, Point[]>>();
+        private readonly Queue<FailPoint> _failQueue = new Queue<FailPoint>();
         private readonly QueueAction _queueAction;
         private bool _singlePointStream = true;
         private Timer _timer;
@@ -61,10 +73,6 @@ namespace Tharga.InfluxCapacitor
                     var metaPoint = _metaDataBusiness.BuildQueueMetadata("send", response, _senderAgent, GetQueueInfo());
                     EnqueueEx(new[] { metaPoint });
                 }
-                else
-                {
-                    
-                }
             }
             catch (Exception exception)
             {
@@ -75,124 +83,182 @@ namespace Tharga.InfluxCapacitor
 
         private SendResponse Send()
         {
-            string responseMessage = null;
+            var responseMessage = new Tuple<bool, string>(true, string.Empty);
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            var isSuccess = false;
             var pointCount = 0;
 
             lock (_syncRoot)
             {
-                Point[] points = null;
-                var retryCount = 0;
+                //Point[] points = null;
                 try
                 {
-                    while (_queue.Count + _failQueue.Count > 0)
+                    //Send points added to the latest batch
+                    while (_queue.Count > 0)
                     {
-                        _queueAction.Execute(() =>
+                    Point[] points = null;
+                    _queueAction.Execute(() =>
                         {
                             if (_queue.Count > 0)
                             {
                                 var pts = new List<Point>();
-                                retryCount = 0;
                                 while (_queue.Count > 0)
                                 {
                                     pts.AddRange(_queue.Dequeue());
                                 }
                                 points = pts.ToArray();
                             }
-                            else
-                            {
-                                var meta = _failQueue.Dequeue();
-                                retryCount = meta.Item1;
-                                points = meta.Item2;
-                            }
                         });
 
                         _queueEvents.OnDebugMessageEvent($"Sending:{Environment.NewLine}{GetPointsString(points)}");
                         pointCount = points.Length;
-                        var response = _senderAgent.SendAsync(points).Result;
-                        if (response.IsSuccess)
+                        responseMessage = SendPointsNow(points, 0);
+                    }
+
+                    //Try to resend items from the fail quee, one by one
+                    if (responseMessage.Item1)
+                    {
+                        while (_failQueue.Count > 0)
                         {
-                            _canSucceed = true;
-                            isSuccess = true;
-                            responseMessage = $"Sent {points.Length} points to server, with response '{response.StatusName}'.";
-                            _queueEvents.OnSendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Information));
-                        }
-                        else
-                        {
-                            responseMessage = $"Failed to send {points.Length} points to server. Code '{response.StatusName}', Body '{response.Body ?? "n/a"}'.";
-                            _queueEvents.OnSendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Error));
-                            _queueAction.Execute(() => { _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points)); });
+                            var failPoint = _failQueue.Dequeue();
+
+                            SendPointsNow(new[] { failPoint.Point }, failPoint.RetryCount);
+                            //if (!r.Item1)
+                            //{
+                            //    _failQueue.Enqueue(new FailPoint(failPoint.RetryCount + 1, failPoint.Point));
+                            //}
                         }
                     }
                 }
                 catch (Exception exception)
                 {
-                    if (points != null)
-                    {
-                        _queueEvents.OnExceptionEvent(exception);
-                    }
-                    else
-                    {
-                        _queueEvents.OnExceptionEvent(exception);
-                    }
+                //    if (points != null)
+                //    {
+                //        _queueEvents.OnExceptionEvent(exception);
+                //    }
+                //    else
+                //    {
+                //        _queueEvents.OnExceptionEvent(exception);
+                //    }
+                //
 
-                    if (exception is AggregateException)
-                    {
-                        exception = exception.InnerException;
-                    }
-
-                    responseMessage = exception?.Message ?? "Unknown";
+                    responseMessage = new Tuple<bool, string>(false, exception?.Message ?? "Unknown");
                     _queueEvents.OnSendEvent(new SendEventInfo(exception));
-                    if (points != null)
-                    {
-                        var sb = new StringBuilder();
-                        foreach (var point in points)
-                        {
-                            sb.AppendLine(_senderAgent.PointToString(point));
-                        }
-
-                        if (!_queueSettings.DropOnFail)
-                        {
-                            var invalidExceptionType = exception.IsExceptionValidForPutBack();
-
-                            if (invalidExceptionType != null)
-                            {
-                                _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} since the exception type {invalidExceptionType} is not allowed for resend. {sb}", points.Length, SendEventInfo.OutputLevel.Warning));
-                            }
-                            else if (!_canSucceed)
-                            {
-                                _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points because there have never yet been a successful send. {sb}", points.Length, SendEventInfo.OutputLevel.Warning));
-                            }
-                            else if (retryCount > 5)
-                            {
-                                _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points after {retryCount} retries. {sb}", points.Length, SendEventInfo.OutputLevel.Warning));
-                            }
-                            else
-                            {
-                                _queueEvents.OnSendEvent(new SendEventInfo($"Putting {points.Length} points back in the queue. {sb}", points.Length, SendEventInfo.OutputLevel.Warning));
-                                retryCount++;
-                                _queueAction.Execute(() => { _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points)); });
-                            }
-                        }
-                        else
-                        {
-                            _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points {sb}.", points.Length, SendEventInfo.OutputLevel.Warning));
-                        }
-                    }
+                //    if (points != null)
+                //    {
+                //        var sb = new StringBuilder();
+                //        foreach (var point in points)
+                //        {
+                //            sb.AppendLine(_senderAgent.PointToString(point));
+                //        }
+                //
+                //        if (!_queueSettings.DropOnFail)
+                //        {
+                //            var invalidExceptionType = exception.IsExceptionValidForPutBack();
+                //
+                //            if (invalidExceptionType != null)
+                //            {
+                //                _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} since the exception type {invalidExceptionType} is not allowed for resend. {sb}", points.Length, SendEventInfo.OutputLevel.Warning));
+                //            }
+                //            else if (!_canSucceed)
+                //            {
+                //                _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points because there have never yet been a successful send. {sb}", points.Length, SendEventInfo.OutputLevel.Warning));
+                //            }
+                //            //else if (retryCount > 5)
+                //            //{
+                //            //    _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points after {retryCount} retries. {sb}", points.Length, SendEventInfo.OutputLevel.Warning));
+                //            //}
+                //            //else
+                //            //{
+                //            //    _queueEvents.OnSendEvent(new SendEventInfo($"Putting {points.Length} points back in the queue. {sb}", points.Length, SendEventInfo.OutputLevel.Warning));
+                //            //    retryCount++;
+                //            //    _queueAction.Execute(() => { _failQueue.Enqueue(new Tuple<int, Point[]>(retryCount, points)); });
+                //            //}
+                //        }
+                //        else
+                //        {
+                //            _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points {sb}.", points.Length, SendEventInfo.OutputLevel.Warning));
+                //        }
+                //    }
                 }
             }
 
-            return new SendResponse(isSuccess, responseMessage, pointCount , stopWatch.Elapsed);
+            return new SendResponse(responseMessage.Item1, responseMessage.Item2, pointCount, stopWatch.Elapsed);
+        }
+
+        private Tuple<bool, string> SendPointsNow(Point[] points, int retryCount)
+        {
+            try
+            {
+                bool isSuccess = false;
+                string responseMessage;
+                var response = _senderAgent.SendAsync(points).Result;
+                if (response.IsSuccess)
+                {
+                    _canSucceed = true;
+                    isSuccess = true;
+                    responseMessage = $"Sent {points.Length} points to server, with response '{response.StatusName}'.";
+                    _queueEvents.OnSendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Information));
+                }
+                else
+                {
+                    responseMessage = $"Failed to send {points.Length} points to server. Code '{response.StatusName}', Body '{response.Body ?? "n/a"}'.";
+                    _queueEvents.OnSendEvent(new SendEventInfo(responseMessage, points.Length, SendEventInfo.OutputLevel.Error));
+                    ReQueue(points, retryCount, null);
+                }
+
+                return new Tuple<bool, string>(isSuccess, responseMessage);
+            }
+            catch (Exception exception)
+            {
+                if (exception is AggregateException)
+                {
+                    exception = exception.InnerException;
+                }
+
+                ReQueue(points, retryCount, exception);
+
+                return new Tuple<bool, string>(false, exception?.Message ?? "Unknown");
+            }
+        }
+
+        private void ReQueue(Point[] points, int retryCount, Exception exception)
+        {
+            var invalidExceptionType = exception?.IsExceptionValidForPutBack();
+
+            _queueAction.Execute(() =>
+            {
+                if (invalidExceptionType != null)
+                {
+                    _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} since the exception type {invalidExceptionType} is not allowed for resend.", points.Length, SendEventInfo.OutputLevel.Warning));
+                }
+                if (_canSucceed)
+                {
+                    foreach (var point in points)
+                    {
+                        if (retryCount < 5)
+                        {
+                            _failQueue.Enqueue(new FailPoint(retryCount + 1, point));
+                        }
+                        else
+                        {
+                            _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points after {retryCount} retries.", points.Length, SendEventInfo.OutputLevel.Warning));
+                        }
+                    }
+                }
+                else
+                {
+                    _queueEvents.OnSendEvent(new SendEventInfo($"Dropping {points.Length} points because there have never yet been a successful send.", points.Length, SendEventInfo.OutputLevel.Warning));
+                }
+            });
         }
 
         public IQueueCountInfo GetQueueInfo()
         {
             lock (_syncRoot)
             {
-                return new QueueCountInfo(_queue.Sum(x => x.Length), _failQueue.Sum(x => x.Item2.Length));
+                return new QueueCountInfo(_queue.Sum(x => x.Length), _failQueue.Count);
             }
         }
 
