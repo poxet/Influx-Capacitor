@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Tharga.InfluxCapacitor
 {
     public class Queue : IQueue
     {
-        private readonly object _syncRoot = new object();
+        //private readonly object _syncRoot = new object();
         private readonly ISenderAgent _senderAgent;
         private readonly IQueueEvents _queueEvents;
         private readonly IMetaDataBusiness _metaDataBusiness;
@@ -23,8 +24,8 @@ namespace Tharga.InfluxCapacitor
 
         private bool _canSucceed; //Has successed to send at least once.
 
-        private readonly Queue<Point[]> _queue = new Queue<Point[]>();
-        private readonly Queue<RetryPoint> _failQueue = new Queue<RetryPoint>();
+        private readonly ConcurrentQueue<Point[]> _queue = new ConcurrentQueue<Point[]>();
+        private readonly ConcurrentQueue<RetryPoint> _failQueue = new ConcurrentQueue<RetryPoint>();
         private readonly QueueAction _queueAction;
         private bool _singlePointStream = true;
         private Timer _timer;
@@ -77,8 +78,8 @@ namespace Tharga.InfluxCapacitor
 
             var pointCount = 0;
 
-            lock (_syncRoot)
-            {
+            //lock (_syncRoot)
+            //{
                 //Point[] points = null;
                 try
                 {
@@ -91,9 +92,10 @@ namespace Tharga.InfluxCapacitor
                             if (_queue.Count > 0)
                             {
                                 var pts = new List<Point>();
-                                while (_queue.Count > 0)
+                                Point[] localValue;
+                                while (_queue.TryDequeue(out localValue))
                                 {
-                                    pts.AddRange(_queue.Dequeue());
+                                    pts.AddRange(localValue);
                                 }
                                 points = pts.ToArray();
                             }
@@ -107,18 +109,20 @@ namespace Tharga.InfluxCapacitor
                     //Try to resend items from the fail quee, one by one
                     if (responseMessage.Item1)
                     {
-                        while (_failQueue.Count > 0)
+                        RetryPoint localValue;
+                        while (_failQueue.TryDequeue(out localValue))
                         {
-                            var failPoint = _failQueue.Dequeue();
-
-                            SendPointsNow(new[] { failPoint.Point }, failPoint.RetryCount);
-                            //if (!r.Item1)
-                            //{
-                            //    _failQueue.Enqueue(new RetryPoint(failPoint.RetryCount + 1, failPoint.Point));
-                            //}
+                            SendPointsNow(new[] { localValue.Point }, localValue.RetryCount);
+                            //pts.AddRange(localValue);
                         }
-                    }
+
+                    //while (_failQueue.Count > 0)
+                    //{
+                    //    var failPoint = _failQueue.Dequeue();
+                    //    SendPointsNow(new[] { failPoint.Point }, failPoint.RetryCount);
+                    //}
                 }
+            }
                 catch (Exception exception)
                 {
                 //    if (points != null)
@@ -170,7 +174,7 @@ namespace Tharga.InfluxCapacitor
                 //        }
                 //    }
                 }
-            }
+            //}
 
             return new SendResponse(responseMessage.Item1, responseMessage.Item2, pointCount, stopWatch.Elapsed);
         }
@@ -244,10 +248,10 @@ namespace Tharga.InfluxCapacitor
 
         public IQueueCountInfo GetQueueInfo()
         {
-            lock (_syncRoot)
-            {
+            //lock (_syncRoot)
+            //{
                 return new QueueCountInfo(_queue.Sum(x => x.Length), _failQueue.Count);
-            }
+            //}
         }
 
         public IEnumerable<Point> Items
@@ -293,8 +297,8 @@ namespace Tharga.InfluxCapacitor
             {
                 stopwatch.Start();
 
-                lock (_syncRoot)
-                {
+                //lock (_syncRoot)
+                //{
                     if (_queueSettings.MaxQueueSize - GetQueueInfo().TotalQueueCount < points.Length)
                     {
                         message = $"Queue will reach max limit, cannot add more points. Have {GetQueueInfo().TotalQueueCount} points, want to add {points.Length} more. The limit is {_queueSettings.MaxQueueSize}.";
@@ -307,7 +311,7 @@ namespace Tharga.InfluxCapacitor
                         _queueAction.Execute(() => { _queue.Enqueue(validPoints); });
                         message = string.Join(", ", _pointValidator.Validate(points).ToArray());
                     }
-                }
+                //}
             }
             catch (Exception exception)
             {
