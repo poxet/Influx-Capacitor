@@ -29,5 +29,6 @@ namespace Tharga.InfluxCapacitor.Entities
 
         public OutputLevel Level { get; }
         public string Message => _exception?.Message ?? _message;
+        public Exception Exception => _exception;
     }
 }
