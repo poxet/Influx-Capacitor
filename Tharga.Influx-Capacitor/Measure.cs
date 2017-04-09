@@ -143,7 +143,7 @@ namespace Tharga.InfluxCapacitor
             var point = new Point
             {
                 Measurement = measurement,
-                Precision = TimeUnit.Microseconds,
+                Precision = TimeUnit.Milliseconds,
                 Timestamp = DateTime.UtcNow,
             };
 
