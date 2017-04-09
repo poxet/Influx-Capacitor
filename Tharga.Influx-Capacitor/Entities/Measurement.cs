@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Tharga.InfluxCapacitor.Interface;
@@ -24,7 +25,7 @@ namespace Tharga.InfluxCapacitor.Entities
             Checkpoints = new Dictionary<string, double>();
         }
 
-        public Stopwatch Stopwatch => _sw;
+        internal Stopwatch Stopwatch => _sw;
 
         public void AddTag(string key, object value)
         {
@@ -56,6 +57,11 @@ namespace Tharga.InfluxCapacitor.Entities
             if (string.IsNullOrEmpty(name)) return;
 
             Checkpoints.Add(name, _sw.Elapsed.TotalMilliseconds);
+        }
+
+        public TimeSpan GetElapsed()
+        {
+            return Stopwatch.Elapsed;
         }
     }
 }

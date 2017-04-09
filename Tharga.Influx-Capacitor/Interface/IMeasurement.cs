@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Tharga.InfluxCapacitor.Interface
@@ -10,7 +11,8 @@ namespace Tharga.InfluxCapacitor.Interface
 
         void AddTag(string key, object value);
         void AddField(string key, object value);
-
         void AddCheckpoint(string name);
+
+        TimeSpan GetElapsed();
     }
 }
