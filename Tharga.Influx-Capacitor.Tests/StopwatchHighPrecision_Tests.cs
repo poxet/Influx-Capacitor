@@ -174,5 +174,49 @@ namespace Tharga.Influx_Capacitor.Tests
             Assert.That(new TimeSpan(sw.ElapsedTotal).TotalMilliseconds, Is.EqualTo(0));
             Assert.That(new TimeSpan(segment1).TotalMilliseconds, Is.EqualTo(0));
         }
+
+        [Test]
+        public void Should_not_continue_when_paused()
+        {
+            //Arrange
+            var waitTime = 100;
+            var sw = new Tharga.InfluxCapacitor.Entities.StopwatchHighPrecision();
+            sw.Start();
+            Thread.Sleep(waitTime);
+            sw.Pause();
+
+            //Act
+            Thread.Sleep(waitTime * 2);
+
+            //Assert
+            var segment = sw.ElapsedSegment;
+            Assert.That(new TimeSpan(sw.ElapsedTotal).TotalMilliseconds, Is.GreaterThan(waitTime));
+            Assert.That(new TimeSpan(sw.ElapsedTotal).TotalMilliseconds, Is.LessThan(waitTime * 2));
+            Assert.That(new TimeSpan(segment).TotalMilliseconds, Is.GreaterThan(waitTime));
+            Assert.That(new TimeSpan(segment).TotalMilliseconds, Is.LessThan(waitTime * 2));
+        }
+
+        [Test]
+        public void Should_continue_on_when_resumed_after_pause()
+        {
+            //Arrange
+            var waitTime = 100;
+            var sw = new Tharga.InfluxCapacitor.Entities.StopwatchHighPrecision();
+            sw.Start();
+            Thread.Sleep(waitTime);
+            sw.Pause();
+            Thread.Sleep(waitTime);
+            sw.Resume();
+
+            //Act
+            Thread.Sleep(waitTime);
+
+            //Assert
+            var segment = sw.ElapsedSegment;
+            Assert.That(new TimeSpan(sw.ElapsedTotal).TotalMilliseconds, Is.GreaterThan(waitTime*2));
+            Assert.That(new TimeSpan(sw.ElapsedTotal).TotalMilliseconds, Is.LessThan(waitTime * 3));
+            Assert.That(new TimeSpan(segment).TotalMilliseconds, Is.GreaterThan(waitTime*2));
+            Assert.That(new TimeSpan(segment).TotalMilliseconds, Is.LessThan(waitTime * 3));
+        }
     }
 }
