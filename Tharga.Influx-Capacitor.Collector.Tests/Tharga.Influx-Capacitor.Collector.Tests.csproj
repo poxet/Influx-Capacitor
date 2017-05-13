@@ -47,8 +47,8 @@
       <HintPath>..\Solutions\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="InfluxDB.Net, Version=1.0.34.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Solutions\packages\InfluxDB.Net-Main.1.0.34\lib\net45\InfluxDB.Net.dll</HintPath>
+    <Reference Include="InfluxDB.Net, Version=1.0.35.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Solutions\packages\InfluxDB.Net-Main.1.0.35\lib\net45\InfluxDB.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks">
