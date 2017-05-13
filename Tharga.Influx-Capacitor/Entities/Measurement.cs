@@ -163,7 +163,7 @@ namespace Tharga.InfluxCapacitor.Entities
             Checkpoints.Add(name, new TimeSpan(_sw.ElapsedTotal - _pauseTime));
         }
 
-        public void Pause(string name)
+        public void Pause()
         {
             _sw.Pause();
         }
