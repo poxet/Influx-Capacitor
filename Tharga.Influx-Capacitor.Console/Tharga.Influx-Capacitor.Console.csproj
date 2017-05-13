@@ -125,7 +125,6 @@
     <Compile Include="Commands\Service\ServiceConnectCommand.cs" />
     <Compile Include="Commands\Service\ServiceDisconnectCommand.cs" />
     <Compile Include="Commands\Service\ServiceSendCommand.cs" />
-    <Compile Include="Commands\Service\ServiceStartListeningCommand.cs" />
     <Compile Include="Commands\Service\ServiceStatusCommand.cs" />
     <Compile Include="Commands\Service\ServiceCommands.cs" />
     <Compile Include="Commands\Service\ServiceRestartCommand.cs" />
@@ -137,7 +136,6 @@
     <Compile Include="Commands\Config\ConfigCommandBase.cs" />
     <Compile Include="Commands\Config\ConfigListCommand.cs" />
     <Compile Include="Commands\Config\ConfigShowCommand.cs" />
-    <Compile Include="Commands\Service\ServiceStopListeningCommand.cs" />
     <Compile Include="CompositeRoot.cs" />
     <Compile Include="ConsoleQueueEvents.cs" />
     <Compile Include="ICompositeRoot.cs" />

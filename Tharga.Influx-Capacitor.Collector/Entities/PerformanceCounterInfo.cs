@@ -64,9 +64,6 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
 
         public string CategoryName { get { return _performanceCounters == null ? null : _performanceCounters.CategoryName; } }
 
-        /// <summary>
-        /// Gets the read instance name for this counter.
-        /// </summary>
         public Naming InstanceName
         {
             get
@@ -84,9 +81,6 @@ namespace Tharga.InfluxCapacitor.Collector.Entities
             set { _instanceName = value; }
         }
 
-        /// <summary>
-        /// Gets the specific name to use as a field for this counter. <c>null</c> to use the default "value" field.
-        /// </summary>
         public string FieldName { get { return _fieldName; } }
 
         public string MachineName { get { return _performanceCounters == null ? null : _performanceCounters.MachineName; } }

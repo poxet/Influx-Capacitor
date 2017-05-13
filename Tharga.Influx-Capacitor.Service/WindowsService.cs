@@ -8,7 +8,6 @@ using Tharga.InfluxCapacitor.Collector.Business;
 using Tharga.InfluxCapacitor.Collector.Event;
 using Tharga.InfluxCapacitor.Collector.Handlers;
 using Tharga.InfluxCapacitor.Console;
-using Tharga.InfluxCapacitor.Entities;
 using Tharga.Toolkit.Console.Command;
 using Tharga.Toolkit.Console.Command.Base;
 
@@ -32,9 +31,7 @@ namespace Tharga.InfluxCapacitor.Service
             var publisherBusiness = new PublisherBusiness();
             counterBusiness.GetPerformanceCounterEvent += GetPerformanceCounterEvent;
             CounterBusiness.ChangedCurrentCultureEvent += ChangedCurrentCultureEvent;
-            var sendBusiness = new SendBusiness(configBusiness, //influxDbAgentLoader, 
-                new ConsoleQueueEvents(_console));
-            //sendBusiness.SendBusinessEvent += SendBusinessEvent;
+            var sendBusiness = new SendBusiness(configBusiness, new ConsoleQueueEvents(_console));
             var tagLoader = new TagLoader(configBusiness);
             _processor = new Processor(configBusiness, counterBusiness, publisherBusiness, sendBusiness, tagLoader);
             _processor.EngineActionEvent += _processor_EngineActionEvent;
@@ -52,26 +49,6 @@ namespace Tharga.InfluxCapacitor.Service
 
         private void _console_LineWrittenEvent(object sender, LineWrittenEventArgs e)
         {
-            //switch (e.Level.ToString())
-            //{
-            //    case "Default":
-            //        _logger.Debug(e.Value);
-            //        break;
-            //    case "Information":
-            //        _logger.Info(e.Value);
-            //        break;
-            //    case "Warning":
-            //        _logger.Warn(e.Value);
-            //        break;
-            //    case "Error":
-            //        _logger.Error(e.Value);
-            //        break;
-            //    default:
-            //        _logger.Error(string.Format("Unknown output level: {0}", e.Level));
-            //        _logger.Info(e.Value);
-            //        break;
-            //}
-
             Trace.WriteLine(e.Value, e.Level.ToString());
         }
 
@@ -81,11 +58,6 @@ namespace Tharga.InfluxCapacitor.Service
         {
             _console.WriteLine(e.Message, e.OutputLevel, null);
         }
-
-        //private void SendBusinessEvent(object sender, SendCompleteEventArgs e)
-        //{
-        //    _console.WriteLine(e.Message, e.Level.ToOutputLevel(), null);
-        //}
 
         private void ChangedCurrentCultureEvent(object sender, ChangedCurrentCultureEventArgs e)
         {
