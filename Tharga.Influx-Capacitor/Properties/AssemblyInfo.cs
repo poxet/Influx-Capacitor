@@ -25,3 +25,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Tharga.Influx-Capacitor.Collector")]
 [assembly: InternalsVisibleTo("Tharga.Influx-Capacitor.Service")]
 [assembly: InternalsVisibleTo("Tharga.Influx-Capacitor.Console")]
+[assembly: InternalsVisibleTo("Tharga.Influx-Capacitor.Tests")]

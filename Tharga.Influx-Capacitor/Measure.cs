@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using InfluxDB.Net.Enums;
@@ -153,28 +152,24 @@ namespace Tharga.InfluxCapacitor
             try
             {
                 var response = action();
+                m.Stopwatch.Stop();
                 m.AddTag("isSuccess", true);
-                Finalize(m, point, m.Stopwatch);
+                Finalize(m, point);
                 return response;
             }
             catch (Exception exp)
             {
+                m.Stopwatch.Stop();
                 m.AddTag("isSuccess", false);
                 m.AddTag("exception", exp.Message);
-                Finalize(m, point, m.Stopwatch);
+                Finalize(m, point); //, m.Stopwatch);
                 throw;
-            }
-            finally
-            {
-                m.Stopwatch.Stop();
             }
         }
 
-        private void Finalize(IMeasurement m, Point point, Stopwatch sw)
-        {
-            sw.Stop();
-
-            m.AddField("elapsed", sw.Elapsed.TotalMilliseconds);
+        private void Finalize(IMeasurement m, Point point)
+        {            
+            m.AddField("elapsed", m.GetElapsed());
             m.AddTag("isCheckpoint", false);
 
             point.Fields = m.Fields;
@@ -184,13 +179,13 @@ namespace Tharga.InfluxCapacitor
             if (m.Checkpoints.Any())
             {
                 //NOTE: Prepare all checkpoints
-                double prev = 0;
+                var prev = TimeSpan.Zero;
                 var index = 0;
                 foreach (var checkpoint in m.Checkpoints)
                 {
                     var pointFields = point.Fields.Where(x => x.Key != "value").ToDictionary(x => x.Key, x => x.Value);
                     var pointTags = point.Tags.Where(x => x.Key != "checkpoint" && x.Key != "isCheckpoint" && x.Key != "index").ToDictionary(x => x.Key, x => x.Value);
-                    pointFields.Add("value", checkpoint.Value - prev);
+                    pointFields.Add("value", (checkpoint.Value - prev).TotalMilliseconds);
                     pointTags.Add("isCheckpoint", true);
                     pointTags.Add("checkpoint", checkpoint.Key);
                     pointTags.Add("index", index++);
@@ -212,7 +207,7 @@ namespace Tharga.InfluxCapacitor
                 {
                     var pointFields = point.Fields.Where(x => x.Key != "value").ToDictionary(x => x.Key, x => x.Value);
                     var pointTags = point.Tags.Where(x => x.Key != "elapsed" && x.Key != "isCheckpoint").ToDictionary(x => x.Key, x => x.Value);
-                    pointFields.Add("value", sw.Elapsed.TotalMilliseconds - prev);
+                    pointFields.Add("value", (m.GetElapsed() - prev).TotalMilliseconds);
                     pointTags.Add("isCheckpoint", true);
                     pointTags.Add("checkpoint", "End");
                     pointTags.Add("index", index);

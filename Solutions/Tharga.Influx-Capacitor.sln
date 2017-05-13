@@ -66,7 +66,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{25F8AE5C
 		..\Build\Chocolatey\tools\chocolateyuninstall.ps1 = ..\Build\Chocolatey\tools\chocolateyuninstall.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.Influx-Capacitor.Tests", "Tharga.Influx-Capacitor.Tests\Tharga.Influx-Capacitor.Tests.csproj", "{663E42FE-D333-41EA-A119-AC066DA245CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tharga.Influx-Capacitor.Tests", "..\Tharga.Influx-Capacitor.Tests\Tharga.Influx-Capacitor.Tests.csproj", "{663E42FE-D333-41EA-A119-AC066DA245CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
