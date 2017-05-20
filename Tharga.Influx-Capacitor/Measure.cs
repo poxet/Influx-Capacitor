@@ -37,7 +37,7 @@ namespace Tharga.InfluxCapacitor
             Execute(GetName(action.Method.Name), action);
         }
 
-        public async Task ExecuteAsync<T>(Func<Task> action)
+        public async Task ExecuteAsync(Func<Task> action)
         {
             var m = new Measurement();
             await DoExecuteAsync(GetName(action.Method.Name), m, async () =>
@@ -47,7 +47,7 @@ namespace Tharga.InfluxCapacitor
             });
         }
 
-        public async Task ExecuteAsync<T>(Func<IMeasurement, Task> action)
+        public async Task ExecuteAsync(Func<IMeasurement, Task> action)
         {
             var m = new Measurement();
             await DoExecuteAsync(GetName(action.Method.Name), m, async () =>
@@ -99,7 +99,7 @@ namespace Tharga.InfluxCapacitor
             });
         }
 
-        public async Task ExecuteAsync<T>(string measurement, Func<IMeasurement, Task> action)
+        public async Task ExecuteAsync(string measurement, Func<IMeasurement, Task> action)
         {
             var m = new Measurement();
             await DoExecuteAsync(measurement, m, async () =>
@@ -114,7 +114,7 @@ namespace Tharga.InfluxCapacitor
             var m = new Measurement();
             return await DoExecuteAsync(measurement, m, async () => await action(m));
         }
-        
+
         private string GetName(string name)
         {
             var p1 = name.IndexOf("<", StringComparison.Ordinal);
@@ -189,7 +189,7 @@ namespace Tharga.InfluxCapacitor
         }
 
         private void Finalize(IMeasurement m, Point point)
-        {            
+        {
             m.AddField("elapsed", m.GetElapsed().TotalMilliseconds);
             m.AddTag("isCheckpoint", false);
 
