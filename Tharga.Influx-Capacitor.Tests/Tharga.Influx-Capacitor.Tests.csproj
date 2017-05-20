@@ -84,6 +84,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Measurement_Tests.cs" />
     <Compile Include="PointValidatorCleanTests.cs" />
     <Compile Include="PointValidatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

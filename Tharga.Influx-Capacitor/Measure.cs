@@ -37,24 +37,36 @@ namespace Tharga.InfluxCapacitor
             Execute(GetName(action.Method.Name), action);
         }
 
-        public async Task<T> ExecuteAsync<T>(Func<IMeasurement, T> action)
+        public async Task ExecuteAsync<T>(Func<Task> action)
         {
-            return await ExecuteAsync(GetName(action.Method.Name), action);
+            var m = new Measurement();
+            await DoExecuteAsync(GetName(action.Method.Name), m, async () =>
+            {
+                await action();
+                return true;
+            });
         }
 
-        public async Task<T> ExecuteAsync<T>(Func<T> action)
+        public async Task ExecuteAsync<T>(Func<IMeasurement, Task> action)
         {
-            return await ExecuteAsync(GetName(action.Method.Name), action);
+            var m = new Measurement();
+            await DoExecuteAsync(GetName(action.Method.Name), m, async () =>
+            {
+                await action(m);
+                return true;
+            });
         }
 
-        public async Task ExecuteAsync(Action action)
+        public async Task<T> ExecuteAsync<T>(Func<IMeasurement, Task<T>> action)
         {
-            await ExecuteAsync(GetName(action.Method.Name), action);
+            var m = new Measurement();
+            return await DoExecuteAsync(GetName(action.Method.Name), m, async () => await action(m));
         }
 
-        public async Task ExecuteAsync(Action<IMeasurement> action)
+        public async Task<T> ExecuteAsync<T>(Func<Task<T>> action)
         {
-            await ExecuteAsync(GetName(action.Method.Name), action);
+            var m = new Measurement();
+            return await DoExecuteAsync(GetName(action.Method.Name), m, async () => await action());
         }
 
         public T Execute<T>(string measurement, Func<IMeasurement, T> action)
@@ -87,45 +99,22 @@ namespace Tharga.InfluxCapacitor
             });
         }
 
-        public async Task<T> ExecuteAsync<T>(string measurement, Func<IMeasurement, T> action)
+        public async Task ExecuteAsync<T>(string measurement, Func<IMeasurement, Task> action)
         {
-            return await Task.Run(() =>
+            var m = new Measurement();
+            await DoExecuteAsync(measurement, m, async () =>
             {
-                var m = new Measurement();
-                return DoExecute(measurement, m, () => action(m));
+                await action(m);
+                return true;
             });
         }
 
-        public async Task<T> ExecuteAsync<T>(string measurement, Func<T> action)
+        public async Task<T> ExecuteAsync<T>(string measurement, Func<IMeasurement, Task<T>> action)
         {
-            return await Task.Run(() => DoExecute(measurement, new Measurement(), action));
+            var m = new Measurement();
+            return await DoExecuteAsync(measurement, m, async () => await action(m));
         }
-
-        public async Task ExecuteAsync(string measurement, Action action)
-        {
-            await Task.Run(() =>
-            {
-                DoExecute(measurement, new Measurement(), () =>
-                {
-                    action();
-                    return true;
-                });
-            });
-        }
-
-        public async Task ExecuteAsync(string measurement, Action<IMeasurement> action)
-        {
-            await Task.Run(() =>
-            {
-                var m = new Measurement();
-                DoExecute(measurement, m, () =>
-                {
-                    action(m);
-                    return true;
-                });
-            });
-        }
-
+        
         private string GetName(string name)
         {
             var p1 = name.IndexOf("<", StringComparison.Ordinal);
@@ -135,6 +124,38 @@ namespace Tharga.InfluxCapacitor
         }
 
         private T DoExecute<T>(string measurement, Measurement m, Func<T> action)
+        {
+            var point = Prepare(ref measurement, m);
+
+            try
+            {
+                var response = action();
+                return PrepareResult(m, point, response);
+            }
+            catch (Exception exp)
+            {
+                PrepareException(m, point, exp);
+                throw;
+            }
+        }
+
+        private async Task<T> DoExecuteAsync<T>(string measurement, Measurement m, Func<Task<T>> action)
+        {
+            var point = Prepare(ref measurement, m);
+
+            try
+            {
+                var response = await action();
+                return PrepareResult(m, point, response);
+            }
+            catch (Exception exp)
+            {
+                PrepareException(m, point, exp);
+                throw;
+            }
+        }
+
+        private static Point Prepare(ref string measurement, Measurement m)
         {
             if (string.IsNullOrEmpty(measurement))
                 measurement = "Unknown";
@@ -148,23 +169,23 @@ namespace Tharga.InfluxCapacitor
 
             m.Stopwatch.Reset();
             m.Stopwatch.Start();
+            return point;
+        }
 
-            try
-            {
-                var response = action();
-                m.Stopwatch.Stop();
-                m.AddTag("isSuccess", true);
-                Finalize(m, point);
-                return response;
-            }
-            catch (Exception exp)
-            {
-                m.Stopwatch.Stop();
-                m.AddTag("isSuccess", false);
-                m.AddTag("exception", exp.Message);
-                Finalize(m, point);
-                throw;
-            }
+        private T PrepareResult<T>(Measurement m, Point point, T response)
+        {
+            m.Stopwatch.Stop();
+            m.AddTag("isSuccess", true);
+            Finalize(m, point);
+            return response;
+        }
+
+        private void PrepareException(Measurement m, Point point, Exception exp)
+        {
+            m.Stopwatch.Stop();
+            m.AddTag("isSuccess", false);
+            m.AddTag("exception", exp.Message);
+            Finalize(m, point);
         }
 
         private void Finalize(IMeasurement m, Point point)

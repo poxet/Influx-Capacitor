@@ -100,6 +100,7 @@
     <Compile Include="Agents\NullSenderAgent.cs" />
     <Compile Include="Business\MetaDataBusiness.cs" />
     <Compile Include="Entities\EnqueueEventArgs.cs" />
+    <Compile Include="Entities\StopwatchHighPrecision.cs" />
     <Compile Include="RetryPoint.cs" />
     <Compile Include="Interface\IMeasure.cs" />
     <Compile Include="Entities\DebugMessageEventArgs.cs" />
