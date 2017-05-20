@@ -162,14 +162,14 @@ namespace Tharga.InfluxCapacitor
                 m.Stopwatch.Stop();
                 m.AddTag("isSuccess", false);
                 m.AddTag("exception", exp.Message);
-                Finalize(m, point); //, m.Stopwatch);
+                Finalize(m, point);
                 throw;
             }
         }
 
         private void Finalize(IMeasurement m, Point point)
         {            
-            m.AddField("elapsed", m.GetElapsed());
+            m.AddField("elapsed", m.GetElapsed().TotalMilliseconds);
             m.AddTag("isCheckpoint", false);
 
             point.Fields = m.Fields;
