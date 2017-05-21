@@ -5,7 +5,6 @@ using InfluxDB.Net.Models;
 using Moq;
 using NUnit.Framework;
 using Tharga.InfluxCapacitor;
-using Tharga.InfluxCapacitor.Entities;
 using Tharga.InfluxCapacitor.Interface;
 
 namespace Tharga.Influx_Capacitor.Tests
@@ -94,11 +93,8 @@ namespace Tharga.Influx_Capacitor.Tests
 
         private async Task<string> FA()
         {
-            //return await Task.Run(async () =>
-            //{
-              Thread.Sleep(200);
-              return "Bob Loblaw";
-            //});
+            Thread.Sleep(200);
+            return "Bob Loblaw";
         }
     }
 }
