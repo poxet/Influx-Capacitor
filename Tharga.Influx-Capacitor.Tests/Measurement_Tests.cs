@@ -82,7 +82,7 @@ namespace Tharga.Influx_Capacitor.Tests
             Assert.That(point.Fields, Is.Not.Empty);
             Assert.That(point.Fields.Count, Is.EqualTo(1));
             Assert.That(point.Fields.First().Value, Is.GreaterThan(200));
-            Assert.That(point.Fields.First().Value, Is.LessThan(250));
+            Assert.That(point.Fields.First().Value, Is.LessThan(500));
         }
 
         private string F()
