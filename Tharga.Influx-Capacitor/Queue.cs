@@ -113,13 +113,15 @@ namespace Tharga.InfluxCapacitor
                             var pts = new List<Point>();
                             Point[] localValue;
                             while (_queue.TryDequeue(out localValue))
+                            {
                                 pts.AddRange(localValue);
+                            }
                             points = pts.ToArray();
                         }
                     });
 
                     _queueEvents.OnDebugMessageEvent($"Sending:{Environment.NewLine}{GetPointsString(points)}");
-                    pointCount = points.Length;
+                    pointCount = points?.Length ?? 0;
                     responseMessage = SendPointsNow(points, 0);
                 }
 
@@ -127,12 +129,14 @@ namespace Tharga.InfluxCapacitor
                 {
                     RetryPoint localValue;
                     while (_failQueue.TryDequeue(out localValue))
+                    {
                         SendPointsNow(new[] { localValue.Point }, localValue.RetryCount);
+                    }
                 }
             }
             catch (Exception exception)
             {
-                responseMessage = new Tuple<bool, string>(false, exception?.Message ?? "Unknown");
+                responseMessage = new Tuple<bool, string>(false, exception.Message);
                 _queueEvents.OnSendEvent(new SendEventInfo(exception));
             }
 
@@ -141,6 +145,11 @@ namespace Tharga.InfluxCapacitor
 
         private Tuple<bool, string> SendPointsNow(Point[] points, int retryCount)
         {
+            if (points == null)
+            {
+                return new Tuple<bool, string>(false, "Null");
+            }
+
             try
             {
                 var isSuccess = false;
@@ -194,9 +203,14 @@ namespace Tharga.InfluxCapacitor
 
         private string GetPointsString(Point[] points)
         {
+            if (points == null) return string.Empty;
+
             var sb = new StringBuilder();
             foreach (var point in points)
+            {
                 sb.AppendLine(_senderAgent.PointToString(point));
+            }
+
             sb.AppendLine();
             return sb.ToString();
         }
@@ -206,7 +220,7 @@ namespace Tharga.InfluxCapacitor
             var validPoints = new Point[] { };
             var stopwatch = new Stopwatch();
             var success = true;
-            var message = string.Empty;
+            string message;
 
             try
             {

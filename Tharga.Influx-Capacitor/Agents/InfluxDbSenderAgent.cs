@@ -25,6 +25,8 @@ namespace Tharga.InfluxCapacitor.Agents
 
         public string PointToString(Point point)
         {
+            if (point == null) return string.Empty;
+
             try
             {
                 var formatter = _influxDbAgent.GetFormatter();

@@ -18,7 +18,7 @@ namespace Tharga.InfluxCapacitor.Agents
         public string PointToString(Point point)
         {
             //TODO: Add more details about the point
-            return point.Measurement;
+            return point?.Measurement ?? string.Empty;
         }
     }
 }
